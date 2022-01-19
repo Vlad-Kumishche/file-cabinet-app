@@ -117,7 +117,25 @@ namespace FileCabinetApp
             var firstName = InputOnlyLetters("First name: ");
             var lastName = InputOnlyLetters("Last name: ");
             DateTime birthday = InputDate("Date of birth");
-            int recordId = fileCabinetService.CreateRecord(firstName, lastName, birthday);
+
+            Console.Write("Height (cm): ");
+            short height;
+            if (!short.TryParse(Console.ReadLine(), out height))
+            {
+                height = 0;
+            }
+
+            Console.Write("Cash savings ($): ");
+            decimal cashSavings;
+            if (!decimal.TryParse(Console.ReadLine(), out cashSavings))
+            {
+                cashSavings = 0;
+            }
+
+            Console.Write("Favorite char: ");
+            var favoriteChar = Console.ReadKey().KeyChar;
+            Console.WriteLine();
+            int recordId = fileCabinetService.CreateRecord(firstName, lastName, birthday, height, cashSavings, favoriteChar);
             Console.WriteLine($"Record #{recordId} is created.");
         }
 
@@ -197,7 +215,7 @@ namespace FileCabinetApp
             foreach (var record in records)
             {
                 string date = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
-                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {date}");
+                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {date}, {record.Height} cm, {record.CashSavings}$, {record.FavoriteChar}");
             }
         }
     }
