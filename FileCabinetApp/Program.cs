@@ -1,4 +1,6 @@
-﻿namespace FileCabinetApp
+﻿using System.Globalization;
+
+namespace FileCabinetApp
 {
     public static class Program
     {
@@ -10,16 +12,24 @@
 
         private static bool isRunning = true;
 
+        private static FileCabinetService fileCabinetService = new FileCabinetService();
+
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
+            new Tuple<string, Action<string>>("stat", Stat),
+            new Tuple<string, Action<string>>("create", Create),
+            new Tuple<string, Action<string>>("list", List),
         };
 
         private static string[][] helpMessages = new string[][]
         {
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
+            new string[] { "stat", "prints statistics on records", "The 'stat' command prints statistics on records." },
+            new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
+            new string[] { "list", "prints all records", "The 'list' command prints all records." },
         };
 
         public static void Main(string[] args)
@@ -94,6 +104,119 @@
         {
             Console.WriteLine("Exiting an application...");
             isRunning = false;
+        }
+
+        private static void Stat(string parameters)
+        {
+            var recordsCount = Program.fileCabinetService.GetStat();
+            Console.WriteLine($"{recordsCount} record(s).");
+        }
+
+        private static void Create(string parameters)
+        {
+            var firstName = InputOnlyLetters("First name: ");
+            var lastName = InputOnlyLetters("Last name: ");
+            DateTime birthday = InputDate("Date of birth");
+
+            Console.Write("Height (cm): ");
+            short height;
+            if (!short.TryParse(Console.ReadLine(), out height))
+            {
+                height = 0;
+            }
+
+            Console.Write("Cash savings ($): ");
+            decimal cashSavings;
+            if (!decimal.TryParse(Console.ReadLine(), out cashSavings))
+            {
+                cashSavings = 0;
+            }
+
+            Console.Write("Favorite char: ");
+            var favoriteChar = Console.ReadKey().KeyChar;
+            Console.WriteLine();
+            int recordId = fileCabinetService.CreateRecord(firstName, lastName, birthday, height, cashSavings, favoriteChar);
+            Console.WriteLine($"Record #{recordId} is created.");
+        }
+
+        private static string InputOnlyLetters(string inputPrompt)
+        {
+            bool validationPassed;
+            string line;
+            do
+            {
+                validationPassed = true;
+                Console.Write(inputPrompt);
+                line = Console.ReadLine() ?? string.Empty;
+
+                if (string.IsNullOrEmpty(line))
+                {
+                    validationPassed = false;
+                }
+                else
+                {
+                    foreach (char c in line)
+                    {
+                        if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
+                        {
+                            validationPassed = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (!validationPassed)
+                {
+                    Console.WriteLine("Invalid date.");
+                }
+            }
+            while (!validationPassed);
+
+            return line;
+        }
+
+        private static DateTime InputDate(string inputPrompt)
+        {
+            bool validationPassed;
+            const int dateLenght = 10;
+            string? line;
+            DateTime birthday = DateTime.MinValue;
+            do
+            {
+                validationPassed = false;
+                Console.Write(inputPrompt + " (MM/DD/YYYY):");
+                line = Console.ReadLine();
+
+                if (!string.IsNullOrEmpty(line) && line.Length == dateLenght)
+                {
+                    string toParse = line[3..6] + line[..3] + line[6..];
+                    if (DateTime.TryParse(toParse, out birthday))
+                    {
+                        if (birthday < DateTime.Now)
+                        {
+                            validationPassed = true;
+                        }
+                    }
+                }
+
+                if (!validationPassed)
+                {
+                    Console.WriteLine("Invalid input. Only latin letters are allowed.");
+                }
+            }
+            while (!validationPassed);
+
+            return birthday;
+        }
+
+        private static void List(string parameters)
+        {
+            var records = fileCabinetService.GetRecords();
+            foreach (var record in records)
+            {
+                string date = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
+                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {date}, {record.Height} cm, {record.CashSavings}$, {record.FavoriteChar}");
+            }
         }
     }
 }
