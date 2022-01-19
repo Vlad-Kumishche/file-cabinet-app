@@ -17,6 +17,7 @@
             new Tuple<string, Action<string>>("help", PrintHelp),
             new Tuple<string, Action<string>>("exit", Exit),
             new Tuple<string, Action<string>>("stat", Stat),
+            new Tuple<string, Action<string>>("create", Create),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -24,6 +25,7 @@
             new string[] { "help", "prints the help screen", "The 'help' command prints the help screen." },
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "prints statistics on records", "The 'stat' command prints statistics on records." },
+            new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
         };
 
         public static void Main(string[] args)
@@ -104,6 +106,84 @@
         {
             var recordsCount = Program.fileCabinetService.GetStat();
             Console.WriteLine($"{recordsCount} record(s).");
+        }
+
+        private static void Create(string parameters)
+        {
+            var firstName = InputOnlyLetters("First name: ");
+            var lastName = InputOnlyLetters("Last name: ");
+            DateTime birthday = InputDate("Date of birth");
+            int recordId = fileCabinetService.CreateRecord(firstName, lastName, birthday);
+            Console.WriteLine($"Record #{recordId} is created.");
+        }
+
+        private static string InputOnlyLetters(string inputPrompt)
+        {
+            bool validationPassed;
+            string line;
+            do
+            {
+                validationPassed = true;
+                Console.Write(inputPrompt);
+                line = Console.ReadLine() ?? string.Empty;
+
+                if (string.IsNullOrEmpty(line))
+                {
+                    validationPassed = false;
+                }
+                else
+                {
+                    foreach (char c in line)
+                    {
+                        if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
+                        {
+                            validationPassed = false;
+                            break;
+                        }
+                    }
+                }
+
+                if (!validationPassed)
+                {
+                    Console.WriteLine("Invalid date.");
+                }
+            }
+            while (!validationPassed);
+
+            return line;
+        }
+
+        private static DateTime InputDate(string inputPrompt)
+        {
+            bool validationPassed;
+            string? line;
+            DateTime birthday = DateTime.MinValue;
+            do
+            {
+                validationPassed = false;
+                Console.Write(inputPrompt + " (MM/DD/YYYY):");
+                line = Console.ReadLine();
+
+                if (!string.IsNullOrEmpty(line))
+                {
+                    string toParse = line[3..6] + line[..3] + line[6..];
+                    if (DateTime.TryParse(toParse, out birthday))
+                    {
+                        if (birthday < DateTime.Now)
+                        {
+                            validationPassed = true;
+                        }
+                    }
+                }
+
+                if (!validationPassed)
+                {
+                    Console.WriteLine("Invalid input. Only latin letters are allowed.");
+                }
+            }
+            while (!validationPassed);
+
+            return birthday;
         }
     }
 }
