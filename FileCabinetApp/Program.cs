@@ -1,4 +1,6 @@
-﻿namespace FileCabinetApp
+﻿using System.Globalization;
+
+namespace FileCabinetApp
 {
     public static class Program
     {
@@ -18,6 +20,7 @@
             new Tuple<string, Action<string>>("exit", Exit),
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("create", Create),
+            new Tuple<string, Action<string>>("list", List),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -26,6 +29,7 @@
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "prints statistics on records", "The 'stat' command prints statistics on records." },
             new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
+            new string[] { "list", "prints all records", "The 'list' command prints all records." },
         };
 
         public static void Main(string[] args)
@@ -156,6 +160,7 @@
         private static DateTime InputDate(string inputPrompt)
         {
             bool validationPassed;
+            const int dateLenght = 10;
             string? line;
             DateTime birthday = DateTime.MinValue;
             do
@@ -164,7 +169,7 @@
                 Console.Write(inputPrompt + " (MM/DD/YYYY):");
                 line = Console.ReadLine();
 
-                if (!string.IsNullOrEmpty(line))
+                if (!string.IsNullOrEmpty(line) && line.Length == dateLenght)
                 {
                     string toParse = line[3..6] + line[..3] + line[6..];
                     if (DateTime.TryParse(toParse, out birthday))
@@ -184,6 +189,16 @@
             while (!validationPassed);
 
             return birthday;
+        }
+
+        private static void List(string parameters)
+        {
+            var records = fileCabinetService.GetRecords();
+            foreach (var record in records)
+            {
+                string date = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
+                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {date}");
+            }
         }
     }
 }
