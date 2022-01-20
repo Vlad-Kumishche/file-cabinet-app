@@ -14,6 +14,6 @@
 
         public decimal CashSavings { get; set; }
 
-        public char FavoriteChar { get; set; }
+        public char FavoriteLetter { get; set; }
     }
 }

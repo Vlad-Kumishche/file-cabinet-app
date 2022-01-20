@@ -114,32 +114,26 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            var firstName = InputOnlyLetters("First name: ");
-            var lastName = InputOnlyLetters("Last name: ");
-            DateTime birthday = InputDate("Date of birth");
+            const int minLength = 2;
+            const int maxLength = 60;
+            DateTime minDate = new DateTime(1950, 1, 1);
+            const short minHeight = 40;
+            const short maxHeight = 300;
+            const decimal minCashSavings = 0M;
+            const decimal maxCashSavings = 10_000_000M;
 
-            Console.Write("Height (cm): ");
-            short height;
-            if (!short.TryParse(Console.ReadLine(), out height))
-            {
-                height = 0;
-            }
+            var firstName = InputOnlyLetters("First name: ", minLength, maxLength);
+            var lastName = InputOnlyLetters("Last name: ", minLength, maxLength);
+            DateTime birthday = InputDate("Date of birth", minDate);
+            var height = InputNumber("Height (cm): ", minHeight, maxHeight);
+            var cashSavings = InputNumber("Cash savings ($): ", minCashSavings, maxCashSavings);
+            var favoriteLetter = char.Parse(InputOnlyLetters("Favorite char: ", 1, 1));
 
-            Console.Write("Cash savings ($): ");
-            decimal cashSavings;
-            if (!decimal.TryParse(Console.ReadLine(), out cashSavings))
-            {
-                cashSavings = 0;
-            }
-
-            Console.Write("Favorite char: ");
-            var favoriteChar = Console.ReadKey().KeyChar;
-            Console.WriteLine();
-            int recordId = fileCabinetService.CreateRecord(firstName, lastName, birthday, height, cashSavings, favoriteChar);
+            int recordId = fileCabinetService.CreateRecord(firstName, lastName, birthday, height, cashSavings, favoriteLetter);
             Console.WriteLine($"Record #{recordId} is created.");
         }
 
-        private static string InputOnlyLetters(string inputPrompt)
+        private static string InputOnlyLetters(string inputPrompt, int minLengh, int maxLength)
         {
             bool validationPassed;
             string line;
@@ -149,7 +143,7 @@ namespace FileCabinetApp
                 Console.Write(inputPrompt);
                 line = Console.ReadLine() ?? string.Empty;
 
-                if (string.IsNullOrEmpty(line))
+                if (string.IsNullOrEmpty(line) || line.Length < minLengh || line.Length > maxLength)
                 {
                     validationPassed = false;
                 }
@@ -167,7 +161,7 @@ namespace FileCabinetApp
 
                 if (!validationPassed)
                 {
-                    Console.WriteLine("Invalid date.");
+                    Console.WriteLine($"Invalid input. Only latin letters are allowed. Min length: {minLengh}, max lenght: {maxLength}.");
                 }
             }
             while (!validationPassed);
@@ -175,7 +169,7 @@ namespace FileCabinetApp
             return line;
         }
 
-        private static DateTime InputDate(string inputPrompt)
+        private static DateTime InputDate(string inputPrompt, DateTime minDate)
         {
             bool validationPassed;
             const int dateLenght = 10;
@@ -192,7 +186,7 @@ namespace FileCabinetApp
                     string toParse = line[3..6] + line[..3] + line[6..];
                     if (DateTime.TryParse(toParse, out birthday))
                     {
-                        if (birthday < DateTime.Now)
+                        if (birthday >= minDate && birthday < DateTime.Now)
                         {
                             validationPassed = true;
                         }
@@ -201,12 +195,58 @@ namespace FileCabinetApp
 
                 if (!validationPassed)
                 {
-                    Console.WriteLine("Invalid input. Only latin letters are allowed.");
+                    Console.WriteLine($"Invalid date. Min date: {minDate.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture)}, max date: now.");
                 }
             }
             while (!validationPassed);
 
             return birthday;
+        }
+
+        private static short InputNumber(string inputPrompt, short minNumber, short maxNumber)
+        {
+            short number;
+            bool validationPassed;
+            do
+            {
+                validationPassed = false;
+                Console.Write(inputPrompt);
+                if (short.TryParse(Console.ReadLine(), out number) && number >= minNumber && number <= maxNumber)
+                {
+                    validationPassed = true;
+                }
+
+                if (!validationPassed)
+                {
+                    Console.WriteLine($"Invalid number. Min number: {minNumber}, max number: {maxNumber}.");
+                }
+            }
+            while (!validationPassed);
+
+            return number;
+        }
+
+        private static decimal InputNumber(string inputPrompt, decimal minNumber, decimal maxNumber)
+        {
+            decimal number;
+            bool validationPassed;
+            do
+            {
+                validationPassed = false;
+                Console.Write(inputPrompt);
+                if (decimal.TryParse(Console.ReadLine(), out number) && number >= minNumber && number <= maxNumber)
+                {
+                    validationPassed = true;
+                }
+
+                if (!validationPassed)
+                {
+                    Console.WriteLine($"Invalid number. Min number: {minNumber}, max number: {maxNumber}.");
+                }
+            }
+            while (!validationPassed);
+
+            return number;
         }
 
         private static void List(string parameters)
@@ -215,7 +255,7 @@ namespace FileCabinetApp
             foreach (var record in records)
             {
                 string date = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
-                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {date}, {record.Height} cm, {record.CashSavings}$, {record.FavoriteChar}");
+                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {date}, {record.Height} cm, {record.CashSavings}$, {record.FavoriteLetter}");
             }
         }
     }
