@@ -195,7 +195,7 @@ namespace FileCabinetApp
 
                 if (!validationPassed)
                 {
-                    Console.WriteLine($"Invalid date. Min date: {minDate.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture)}, max date: now.");
+                    Console.WriteLine($"Invalid date. Min date: {minDate.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture)}, max date: today.");
                 }
             }
             while (!validationPassed);
