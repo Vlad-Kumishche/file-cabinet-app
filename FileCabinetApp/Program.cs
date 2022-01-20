@@ -21,6 +21,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("stat", Stat),
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
+            new Tuple<string, Action<string>>("edit", Edit),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -30,6 +31,7 @@ namespace FileCabinetApp
             new string[] { "stat", "prints statistics on records", "The 'stat' command prints statistics on records." },
             new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
             new string[] { "list", "prints all records", "The 'list' command prints all records." },
+            new string[] { "edit", "edits an existing record", "The 'edit' command edits an existing record." },
         };
 
         public static void Main(string[] args)
@@ -114,6 +116,21 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
+            string? firstName;
+            string? lastName;
+            DateTime dateOfBirth;
+            short height;
+            decimal cashSavings;
+            char favoriteLetter;
+
+            InputRecord(out firstName, out lastName, out dateOfBirth, out height, out cashSavings, out favoriteLetter);
+
+            int recordId = fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, height, cashSavings, favoriteLetter);
+            Console.WriteLine($"Record #{recordId} is created.");
+        }
+
+        private static void InputRecord(out string? firstName, out string? lastName, out DateTime dateOfBirth, out short height, out decimal cashSavings, out char favoriteLetter)
+        {
             const int minLength = 2;
             const int maxLength = 60;
             DateTime minDate = new DateTime(1950, 1, 1);
@@ -122,15 +139,12 @@ namespace FileCabinetApp
             const decimal minCashSavings = 0M;
             const decimal maxCashSavings = 10_000_000M;
 
-            var firstName = InputOnlyLetters("First name: ", minLength, maxLength);
-            var lastName = InputOnlyLetters("Last name: ", minLength, maxLength);
-            DateTime birthday = InputDate("Date of birth", minDate);
-            var height = InputNumber("Height (cm): ", minHeight, maxHeight);
-            var cashSavings = InputNumber("Cash savings ($): ", minCashSavings, maxCashSavings);
-            var favoriteLetter = char.Parse(InputOnlyLetters("Favorite char: ", 1, 1));
-
-            int recordId = fileCabinetService.CreateRecord(firstName, lastName, birthday, height, cashSavings, favoriteLetter);
-            Console.WriteLine($"Record #{recordId} is created.");
+            firstName = InputOnlyLetters("First name: ", minLength, maxLength);
+            lastName = InputOnlyLetters("Last name: ", minLength, maxLength);
+            dateOfBirth = InputDate("Date of birth", minDate);
+            height = InputNumber("Height (cm): ", minHeight, maxHeight);
+            cashSavings = InputNumber("Cash savings ($): ", minCashSavings, maxCashSavings);
+            favoriteLetter = char.Parse(InputOnlyLetters("Favorite char: ", 1, 1));
         }
 
         private static string InputOnlyLetters(string inputPrompt, int minLengh, int maxLength)
@@ -257,6 +271,36 @@ namespace FileCabinetApp
                 string date = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
                 Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {date}, {record.Height} cm, {record.CashSavings}$, {record.FavoriteLetter}");
             }
+        }
+
+        private static void Edit(string parameters)
+        {
+            int id;
+            if (!int.TryParse(parameters, out id))
+            {
+                Console.WriteLine($"#{parameters} record is not found.");
+                return;
+            }
+
+            try
+            {
+                fileCabinetService.GetRecordById(id);
+            }
+            catch
+            {
+                Console.WriteLine($"#{parameters} record is not found.");
+                return;
+            }
+
+            string? firstName;
+            string? lastName;
+            DateTime dateOfBirth;
+            short height;
+            decimal cashSavings;
+            char favoriteLetter;
+
+            InputRecord(out firstName, out lastName, out dateOfBirth, out height, out cashSavings, out favoriteLetter);
+            fileCabinetService.EditRecord(id, firstName, lastName, dateOfBirth, height, cashSavings, favoriteLetter);
         }
     }
 }

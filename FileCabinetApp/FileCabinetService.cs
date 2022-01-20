@@ -8,20 +8,7 @@ namespace FileCabinetApp
 
         public int CreateRecord(string? firstName, string? lastName, DateTime dateOfBirth, short height, decimal cashSavings, char favoriteLetter)
         {
-            const int minLength = 2;
-            const int maxLength = 60;
-            DateTime minDate = new DateTime(1950, 1, 1);
-            const short minHeight = 40;
-            const short maxHeight = 300;
-            const decimal minCashSavings = 0M;
-            const decimal maxCashSavings = 10_000_000M;
-
-            ValidateOnlyLetters(firstName, minLength, maxLength);
-            ValidateOnlyLetters(lastName, minLength, maxLength);
-            ValidateDate(dateOfBirth, minDate);
-            ValidateNumber(height, minHeight, maxHeight);
-            ValidateNumber(cashSavings, minCashSavings, maxCashSavings);
-            ValidateOnlyLetters(favoriteLetter.ToString(), 1, 1);
+            ValidateRecord(firstName, lastName, dateOfBirth, height, cashSavings, favoriteLetter);
 
             var record = new FileCabinetRecord
             {
@@ -39,6 +26,30 @@ namespace FileCabinetApp
             return record.Id;
         }
 
+        public void EditRecord(int id, string? firstName, string? lastName, DateTime dateOfBirth, short height, decimal cashSavings, char favoriteLetter)
+        {
+            ValidateRecord(firstName, lastName, dateOfBirth, height, cashSavings, favoriteLetter);
+
+            var record = this.GetRecordById(id);
+            record.FirstName = firstName;
+            record.LastName = lastName;
+            record.DateOfBirth = dateOfBirth;
+            record.Height = height;
+            record.CashSavings = cashSavings;
+            record.FavoriteLetter = favoriteLetter;
+        }
+
+        public FileCabinetRecord GetRecordById(int id)
+        {
+            var record = this.list.Find(x => x.Id == id);
+            if (record == null)
+            {
+                throw new ArgumentException($"There is no record with {nameof(id)} == {id}", nameof(id));
+            }
+
+            return record;
+        }
+
         public FileCabinetRecord[] GetRecords()
         {
             return this.list.ToArray();
@@ -47,6 +58,24 @@ namespace FileCabinetApp
         public int GetStat()
         {
             return this.list.Count;
+        }
+
+        private static void ValidateRecord(string? firstName, string? lastName, DateTime dateOfBirth, short height, decimal cashSavings, char favoriteLetter)
+        {
+            const int minLength = 2;
+            const int maxLength = 60;
+            DateTime minDate = new DateTime(1950, 1, 1);
+            const short minHeight = 40;
+            const short maxHeight = 300;
+            const decimal minCashSavings = 0M;
+            const decimal maxCashSavings = 10_000_000M;
+
+            ValidateOnlyLetters(firstName, minLength, maxLength);
+            ValidateOnlyLetters(lastName, minLength, maxLength);
+            ValidateDate(dateOfBirth, minDate);
+            ValidateNumber(height, minHeight, maxHeight);
+            ValidateNumber(cashSavings, minCashSavings, maxCashSavings);
+            ValidateOnlyLetters(favoriteLetter.ToString(), 1, 1);
         }
 
         private static void ValidateOnlyLetters(string? line, int minLengh, int maxLength)
