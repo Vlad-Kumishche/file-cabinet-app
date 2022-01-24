@@ -32,8 +32,8 @@ namespace FileCabinetApp
             new string[] { "stat", "prints statistics on records", "The 'stat' command prints statistics on records." },
             new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
             new string[] { "list", "prints all records", "The 'list' command prints all records." },
-            new string[] { "edit", "edits an existing record where id = <param1>. <param1> - id to search for", "The 'edit' command edits an existing record where id = <param1>. <param1> - id to search for." },
-            new string[] { "find", "finds a list of records where <param1> = <param2>. <param1> - property name, <param2> - search text in quotes", "The 'edit' command finds a list of records where <param1> = <param2>. <param1> - property name, <param2> - search text in quotes." },
+            new string[] { "edit", "edits an existing record", "The 'edit' command edits an existing record where id = <param1>. <param1> - id to search for." },
+            new string[] { "find", "finds a list of records matching the search text", "The 'edit' command finds a list of records where <param1> = <param2>. <param1> - property name, <param2> - search text in quotes." },
         };
 
         public static void Main(string[] args)
@@ -128,7 +128,7 @@ namespace FileCabinetApp
             InputRecord(out firstName, out lastName, out dateOfBirth, out height, out cashSavings, out favoriteLetter);
 
             int recordId = fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, height, cashSavings, favoriteLetter);
-            Console.WriteLine($"Record #{recordId} is created.");
+            Console.WriteLine($"Record #{recordId} created.");
         }
 
         private static void InputRecord(out string? firstName, out string? lastName, out DateTime dateOfBirth, out short height, out decimal cashSavings, out char favoriteLetter)
@@ -308,6 +308,7 @@ namespace FileCabinetApp
 
             InputRecord(out firstName, out lastName, out dateOfBirth, out height, out cashSavings, out favoriteLetter);
             fileCabinetService.EditRecord(id, firstName, lastName, dateOfBirth, height, cashSavings, favoriteLetter);
+            Console.WriteLine($"Record #{id} edited.");
         }
 
         private static void Find(string parameters)

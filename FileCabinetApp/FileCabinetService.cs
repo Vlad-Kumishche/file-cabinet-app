@@ -5,10 +5,15 @@ namespace FileCabinetApp
     public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
+        private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.OrdinalIgnoreCase);
 
         public int CreateRecord(string? firstName, string? lastName, DateTime dateOfBirth, short height, decimal cashSavings, char favoriteLetter)
         {
             ValidateRecord(firstName, lastName, dateOfBirth, height, cashSavings, favoriteLetter);
+
+            // to avoid CS8604
+            firstName ??= string.Empty;
+            lastName ??= string.Empty;
 
             var record = new FileCabinetRecord
             {
@@ -22,6 +27,14 @@ namespace FileCabinetApp
             };
 
             this.list.Add(record);
+            if (this.firstNameDictionary.ContainsKey(firstName))
+            {
+                this.firstNameDictionary[firstName].Add(record);
+            }
+            else
+            {
+                this.firstNameDictionary[firstName] = new List<FileCabinetRecord>() { record };
+            }
 
             return record.Id;
         }
@@ -41,8 +54,12 @@ namespace FileCabinetApp
 
         public FileCabinetRecord[] FindByFirstName(string firstName)
         {
-            var record = this.list.FindAll(x => string.Equals(x.FirstName, firstName, StringComparison.OrdinalIgnoreCase));
-            return record.ToArray();
+            if (this.firstNameDictionary.ContainsKey(firstName))
+            {
+                return this.firstNameDictionary[firstName].ToArray();
+            }
+
+            return Array.Empty<FileCabinetRecord>();
         }
 
         public FileCabinetRecord[] FindByLastName(string lastName)
