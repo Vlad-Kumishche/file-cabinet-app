@@ -327,12 +327,19 @@ namespace FileCabinetApp
             var records = propertyName switch
             {
                 "firstname" => fileCabinetService.FindByFirstName(searchText),
+                "lastname" => fileCabinetService.FindByLastName(searchText),
                 _ => null,
             };
 
             if (records is null)
             {
                 Console.WriteLine("Invalid <param1> - property name");
+                return;
+            }
+
+            if (records.Length == 0)
+            {
+                Console.WriteLine("Nothing found");
                 return;
             }
 
