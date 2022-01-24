@@ -22,6 +22,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("create", Create),
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
+            new Tuple<string, Action<string>>("find", Find),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -31,7 +32,8 @@ namespace FileCabinetApp
             new string[] { "stat", "prints statistics on records", "The 'stat' command prints statistics on records." },
             new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
             new string[] { "list", "prints all records", "The 'list' command prints all records." },
-            new string[] { "edit", "edits an existing record", "The 'edit' command edits an existing record." },
+            new string[] { "edit", "edits an existing record", "The 'edit' command edits an existing record where id = <param1>. <param1> - id to search for." },
+            new string[] { "find", "finds a list of records matching the search text", "The 'edit' command finds a list of records where <param1> = <param2>. <param1> - property name, <param2> - search text in quotes." },
         };
 
         public static void Main(string[] args)
@@ -126,7 +128,7 @@ namespace FileCabinetApp
             InputRecord(out firstName, out lastName, out dateOfBirth, out height, out cashSavings, out favoriteLetter);
 
             int recordId = fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, height, cashSavings, favoriteLetter);
-            Console.WriteLine($"Record #{recordId} is created.");
+            Console.WriteLine($"Record #{recordId} created.");
         }
 
         private static void InputRecord(out string? firstName, out string? lastName, out DateTime dateOfBirth, out short height, out decimal cashSavings, out char favoriteLetter)
@@ -266,6 +268,11 @@ namespace FileCabinetApp
         private static void List(string parameters)
         {
             var records = fileCabinetService.GetRecords();
+            ShowRecords(records);
+        }
+
+        private static void ShowRecords(FileCabinetRecord[] records)
+        {
             foreach (var record in records)
             {
                 string date = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
@@ -301,6 +308,44 @@ namespace FileCabinetApp
 
             InputRecord(out firstName, out lastName, out dateOfBirth, out height, out cashSavings, out favoriteLetter);
             fileCabinetService.EditRecord(id, firstName, lastName, dateOfBirth, height, cashSavings, favoriteLetter);
+            Console.WriteLine($"Record #{id} edited.");
+        }
+
+        private static void Find(string parameters)
+        {
+            var paramsArray = parameters.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
+            var propertyName = paramsArray[0];
+            var searchText = paramsArray[1];
+
+            if (string.IsNullOrWhiteSpace(propertyName) || string.IsNullOrWhiteSpace(searchText) || searchText[0] != '\"' || searchText[^1] != '\"')
+            {
+                Console.WriteLine("Two parameters required. <param1> - property name, <param2> - search text in quotes");
+                return;
+            }
+
+            propertyName = propertyName.ToLowerInvariant();
+            searchText = searchText[1..^1];
+            var records = propertyName switch
+            {
+                "firstname" => fileCabinetService.FindByFirstName(searchText),
+                "lastname" => fileCabinetService.FindByLastName(searchText),
+                "dateofbirth" => fileCabinetService.FindByDateOfBirth(searchText),
+                _ => null,
+            };
+
+            if (records is null)
+            {
+                Console.WriteLine("Invalid <param1> - property name");
+                return;
+            }
+
+            if (records.Length == 0)
+            {
+                Console.WriteLine("Nothing found");
+                return;
+            }
+
+            ShowRecords(records);
         }
     }
 }
