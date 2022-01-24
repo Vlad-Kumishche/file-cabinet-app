@@ -188,16 +188,16 @@ namespace FileCabinetApp
         private static DateTime InputDate(string inputPrompt, DateTime minDate)
         {
             bool validationPassed;
-            const int dateLenght = 10;
+            const string requiredDateFormat = "MM/DD/YYYY";
             string? line;
             DateTime birthday = DateTime.MinValue;
             do
             {
                 validationPassed = false;
-                Console.Write(inputPrompt + " (MM/DD/YYYY):");
+                Console.Write(inputPrompt + $" ({requiredDateFormat}):");
                 line = Console.ReadLine();
 
-                if (!string.IsNullOrEmpty(line) && line.Length == dateLenght)
+                if (!string.IsNullOrEmpty(line) && line.Length == requiredDateFormat.Length)
                 {
                     string toParse = line[3..6] + line[..3] + line[6..];
                     if (DateTime.TryParse(toParse, out birthday))
