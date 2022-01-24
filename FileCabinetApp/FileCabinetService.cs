@@ -51,6 +51,17 @@ namespace FileCabinetApp
             return record.ToArray();
         }
 
+        public FileCabinetRecord[] FindByDateOfBirth(string date)
+        {
+            if (!DateTime.TryParse(date, out var dateOfBirth))
+            {
+                throw new ArgumentException($"Invalid {nameof(date)}", nameof(date));
+            }
+
+            var record = this.list.FindAll(x => x.DateOfBirth == dateOfBirth);
+            return record.ToArray();
+        }
+
         public FileCabinetRecord GetRecordById(int id)
         {
             var record = this.list.Find(x => x.Id == id);

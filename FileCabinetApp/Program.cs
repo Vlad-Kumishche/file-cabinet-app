@@ -328,6 +328,7 @@ namespace FileCabinetApp
             {
                 "firstname" => fileCabinetService.FindByFirstName(searchText),
                 "lastname" => fileCabinetService.FindByLastName(searchText),
+                "dateofbirth" => fileCabinetService.FindByDateOfBirth(searchText),
                 _ => null,
             };
 
