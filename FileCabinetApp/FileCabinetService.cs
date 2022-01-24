@@ -39,6 +39,12 @@ namespace FileCabinetApp
             record.FavoriteLetter = favoriteLetter;
         }
 
+        public FileCabinetRecord[] FindByFirstName(string firstName)
+        {
+            var record = this.list.FindAll(x => string.Equals(x.FirstName, firstName, StringComparison.OrdinalIgnoreCase));
+            return record.ToArray();
+        }
+
         public FileCabinetRecord GetRecordById(int id)
         {
             var record = this.list.Find(x => x.Id == id);
