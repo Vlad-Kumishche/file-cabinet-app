@@ -2,6 +2,9 @@
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Сlass provides a service for storing file cabinet records and operations on them.
+    /// </summary>
     public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
@@ -9,6 +12,16 @@ namespace FileCabinetApp
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
+        /// <summary>
+        /// Creates file cabinet records with given parameters.
+        /// </summary>
+        /// <param name="firstName">The first name of the person.</param>
+        /// <param name="lastName">The last name of the person.</param>
+        /// <param name="dateOfBirth">The date of birth of the person.</param>
+        /// <param name="height">The height of the person.</param>
+        /// <param name="cashSavings">The cash savings of the person.</param>
+        /// <param name="favoriteLetter">The favorite letter of the person.</param>
+        /// <returns>The id of the record.</returns>
         public int CreateRecord(string? firstName, string? lastName, DateTime dateOfBirth, short height, decimal cashSavings, char favoriteLetter)
         {
             ValidateRecord(firstName, lastName, dateOfBirth, height, cashSavings, favoriteLetter);
@@ -59,6 +72,16 @@ namespace FileCabinetApp
             return record.Id;
         }
 
+        /// <summary>
+        /// Edits file cabinet records with the specified id.
+        /// </summary>
+        /// <param name="id">The id of the record.</param>
+        /// <param name="firstName">The first name of the person.</param>
+        /// <param name="lastName">The last name of the person.</param>
+        /// <param name="dateOfBirth">The date of birth of the person.</param>
+        /// <param name="height">The height of the person.</param>
+        /// <param name="cashSavings">The cash savings of the person.</param>
+        /// <param name="favoriteLetter">The favorite letter of the person.</param>
         public void EditRecord(int id, string? firstName, string? lastName, DateTime dateOfBirth, short height, decimal cashSavings, char favoriteLetter)
         {
             ValidateRecord(firstName, lastName, dateOfBirth, height, cashSavings, favoriteLetter);
@@ -72,6 +95,11 @@ namespace FileCabinetApp
             record.FavoriteLetter = favoriteLetter;
         }
 
+        /// <summary>
+        /// Finds records by first name.
+        /// </summary>
+        /// <param name="firstName">The first name of the person.</param>
+        /// <returns>Array of records.</returns>
         public FileCabinetRecord[] FindByFirstName(string firstName)
         {
             if (this.firstNameDictionary.ContainsKey(firstName))
@@ -82,6 +110,11 @@ namespace FileCabinetApp
             return Array.Empty<FileCabinetRecord>();
         }
 
+        /// <summary>
+        /// Finds records by last name.
+        /// </summary>
+        /// <param name="lastName">The last name of the person.</param>
+        /// <returns>Array of records.</returns>
         public FileCabinetRecord[] FindByLastName(string lastName)
         {
             if (this.lastNameDictionary.ContainsKey(lastName))
@@ -92,6 +125,11 @@ namespace FileCabinetApp
             return Array.Empty<FileCabinetRecord>();
         }
 
+        /// <summary>
+        /// Finds records by date of birth.
+        /// </summary>
+        /// <param name="date">The date of birth of the person.</param>
+        /// <returns>Array of records.</returns>
         public FileCabinetRecord[] FindByDateOfBirth(string date)
         {
             if (!DateTime.TryParse(date, out var dateOfBirth))
@@ -107,6 +145,12 @@ namespace FileCabinetApp
             return Array.Empty<FileCabinetRecord>();
         }
 
+        /// <summary>
+        /// Gets record by id.
+        /// </summary>
+        /// <param name="id">The id of the record.</param>
+        /// <returns>Required file cabinet record.</returns>
+        /// <exception cref="ArgumentException">Thrown when record with given id was not found.</exception>
         public FileCabinetRecord GetRecordById(int id)
         {
             var record = this.list.Find(x => x.Id == id);
@@ -118,11 +162,19 @@ namespace FileCabinetApp
             return record;
         }
 
+        /// <summary>
+        /// Gets all file cabinet records.
+        /// </summary>
+        /// <returns>Array of records.</returns>
         public FileCabinetRecord[] GetRecords()
         {
             return this.list.ToArray();
         }
 
+        /// <summary>
+        /// Gets the number of records.
+        /// </summary>
+        /// <returns>Number of records.</returns>
         public int GetStat()
         {
             return this.list.Count;

@@ -2,6 +2,9 @@
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Class provides user interaction.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Uladzislau Kumishcha";
@@ -36,6 +39,10 @@ namespace FileCabinetApp
             new string[] { "find", "finds a list of records matching the search text", "The 'edit' command finds a list of records where <param1> = <param2>. <param1> - property name, <param2> - search text in quotes." },
         };
 
+        /// <summary>
+        /// Function that processes user input and calls the appropriate functions.
+        /// </summary>
+        /// <param name="args">Сommand line arguments.</param>
         public static void Main(string[] args)
         {
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
