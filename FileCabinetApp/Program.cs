@@ -125,20 +125,13 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            string? firstName;
-            string? lastName;
-            DateTime dateOfBirth;
-            short height;
-            decimal cashSavings;
-            char favoriteLetter;
-
-            InputRecord(out firstName, out lastName, out dateOfBirth, out height, out cashSavings, out favoriteLetter);
-
-            int recordId = fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, height, cashSavings, favoriteLetter);
+            var recordToCreate = new RecordArgs();
+            InputRecord(recordToCreate);
+            int recordId = fileCabinetService.CreateRecord(recordToCreate);
             Console.WriteLine($"Record #{recordId} created.");
         }
 
-        private static void InputRecord(out string? firstName, out string? lastName, out DateTime dateOfBirth, out short height, out decimal cashSavings, out char favoriteLetter)
+        private static void InputRecord(RecordArgs record)
         {
             const int minLength = 2;
             const int maxLength = 60;
@@ -148,12 +141,12 @@ namespace FileCabinetApp
             const decimal minCashSavings = 0M;
             const decimal maxCashSavings = 10_000_000M;
 
-            firstName = InputOnlyLetters("First name: ", minLength, maxLength);
-            lastName = InputOnlyLetters("Last name: ", minLength, maxLength);
-            dateOfBirth = InputDate("Date of birth", minDate);
-            height = InputNumber("Height (cm): ", minHeight, maxHeight);
-            cashSavings = InputNumber("Cash savings ($): ", minCashSavings, maxCashSavings);
-            favoriteLetter = char.Parse(InputOnlyLetters("Favorite char: ", 1, 1));
+            record.FirstName = InputOnlyLetters("First name: ", minLength, maxLength);
+            record.LastName = InputOnlyLetters("Last name: ", minLength, maxLength);
+            record.DateOfBirth = InputDate("Date of birth", minDate);
+            record.Height = InputNumber("Height (cm): ", minHeight, maxHeight);
+            record.CashSavings = InputNumber("Cash savings ($): ", minCashSavings, maxCashSavings);
+            record.FavoriteLetter = char.Parse(InputOnlyLetters("Favorite char: ", 1, 1));
         }
 
         private static string InputOnlyLetters(string inputPrompt, int minLengh, int maxLength)
@@ -306,15 +299,10 @@ namespace FileCabinetApp
                 return;
             }
 
-            string? firstName;
-            string? lastName;
-            DateTime dateOfBirth;
-            short height;
-            decimal cashSavings;
-            char favoriteLetter;
-
-            InputRecord(out firstName, out lastName, out dateOfBirth, out height, out cashSavings, out favoriteLetter);
-            fileCabinetService.EditRecord(id, firstName, lastName, dateOfBirth, height, cashSavings, favoriteLetter);
+            var recordToEdit = new RecordArgs();
+            InputRecord(recordToEdit);
+            recordToEdit.Id = id;
+            fileCabinetService.EditRecord(recordToEdit);
             Console.WriteLine($"Record #{id} edited.");
         }
 

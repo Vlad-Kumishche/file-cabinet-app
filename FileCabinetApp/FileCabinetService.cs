@@ -13,86 +13,76 @@ namespace FileCabinetApp
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
 
         /// <summary>
-        /// Creates file cabinet records with given parameters.
+        /// Creates file cabinet record.
         /// </summary>
-        /// <param name="firstName">The first name of the person.</param>
-        /// <param name="lastName">The last name of the person.</param>
-        /// <param name="dateOfBirth">The date of birth of the person.</param>
-        /// <param name="height">The height of the person.</param>
-        /// <param name="cashSavings">The cash savings of the person.</param>
-        /// <param name="favoriteLetter">The favorite letter of the person.</param>
+        /// <param name="recordToCreate">Record to create.</param>
         /// <returns>The id of the record.</returns>
-        public int CreateRecord(string? firstName, string? lastName, DateTime dateOfBirth, short height, decimal cashSavings, char favoriteLetter)
+        public int CreateRecord(RecordArgs recordToCreate)
         {
-            ValidateRecord(firstName, lastName, dateOfBirth, height, cashSavings, favoriteLetter);
-
-            // to avoid CS8604
-            firstName ??= string.Empty;
-            lastName ??= string.Empty;
+            ValidateRecord(recordToCreate);
 
             var record = new FileCabinetRecord
             {
                 Id = this.list.Count + 1,
-                FirstName = firstName,
-                LastName = lastName,
-                DateOfBirth = dateOfBirth,
-                Height = height,
-                CashSavings = cashSavings,
-                FavoriteLetter = favoriteLetter,
+                FirstName = recordToCreate.FirstName,
+                LastName = recordToCreate.LastName,
+                DateOfBirth = recordToCreate.DateOfBirth,
+                Height = recordToCreate.Height,
+                CashSavings = recordToCreate.CashSavings,
+                FavoriteLetter = recordToCreate.FavoriteLetter,
             };
 
             this.list.Add(record);
-            if (this.firstNameDictionary.ContainsKey(firstName))
+
+            // to avoid CS8604
+            record.FirstName ??= string.Empty;
+            record.LastName ??= string.Empty;
+
+            if (this.firstNameDictionary.ContainsKey(record.FirstName))
             {
-                this.firstNameDictionary[firstName].Add(record);
+                this.firstNameDictionary[record.FirstName].Add(record);
             }
             else
             {
-                this.firstNameDictionary[firstName] = new List<FileCabinetRecord>() { record };
+                this.firstNameDictionary[record.FirstName] = new List<FileCabinetRecord>() { record };
             }
 
-            if (this.lastNameDictionary.ContainsKey(lastName))
+            if (this.lastNameDictionary.ContainsKey(record.LastName))
             {
-                this.lastNameDictionary[lastName].Add(record);
+                this.lastNameDictionary[record.LastName].Add(record);
             }
             else
             {
-                this.lastNameDictionary[lastName] = new List<FileCabinetRecord>() { record };
+                this.lastNameDictionary[record.LastName] = new List<FileCabinetRecord>() { record };
             }
 
-            if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
+            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))
             {
-                this.dateOfBirthDictionary[dateOfBirth].Add(record);
+                this.dateOfBirthDictionary[record.DateOfBirth].Add(record);
             }
             else
             {
-                this.dateOfBirthDictionary[dateOfBirth] = new List<FileCabinetRecord>() { record };
+                this.dateOfBirthDictionary[record.DateOfBirth] = new List<FileCabinetRecord>() { record };
             }
 
             return record.Id;
         }
 
         /// <summary>
-        /// Edits file cabinet records with the specified id.
+        /// Edits specified file cabinet record.
         /// </summary>
-        /// <param name="id">The id of the record.</param>
-        /// <param name="firstName">The first name of the person.</param>
-        /// <param name="lastName">The last name of the person.</param>
-        /// <param name="dateOfBirth">The date of birth of the person.</param>
-        /// <param name="height">The height of the person.</param>
-        /// <param name="cashSavings">The cash savings of the person.</param>
-        /// <param name="favoriteLetter">The favorite letter of the person.</param>
-        public void EditRecord(int id, string? firstName, string? lastName, DateTime dateOfBirth, short height, decimal cashSavings, char favoriteLetter)
+        /// <param name="recordToEdit">Record to edit.</param>
+        public void EditRecord(RecordArgs recordToEdit)
         {
-            ValidateRecord(firstName, lastName, dateOfBirth, height, cashSavings, favoriteLetter);
+            ValidateRecord(recordToEdit);
 
-            var record = this.GetRecordById(id);
-            record.FirstName = firstName;
-            record.LastName = lastName;
-            record.DateOfBirth = dateOfBirth;
-            record.Height = height;
-            record.CashSavings = cashSavings;
-            record.FavoriteLetter = favoriteLetter;
+            var record = this.GetRecordById(recordToEdit.Id);
+            record.FirstName = recordToEdit.FirstName;
+            record.LastName = recordToEdit.LastName;
+            record.DateOfBirth = recordToEdit.DateOfBirth;
+            record.Height = recordToEdit.Height;
+            record.CashSavings = recordToEdit.CashSavings;
+            record.FavoriteLetter = recordToEdit.FavoriteLetter;
         }
 
         /// <summary>
@@ -180,7 +170,7 @@ namespace FileCabinetApp
             return this.list.Count;
         }
 
-        private static void ValidateRecord(string? firstName, string? lastName, DateTime dateOfBirth, short height, decimal cashSavings, char favoriteLetter)
+        private static void ValidateRecord(RecordArgs recordToValidate)
         {
             const int minLength = 2;
             const int maxLength = 60;
@@ -190,12 +180,12 @@ namespace FileCabinetApp
             const decimal minCashSavings = 0M;
             const decimal maxCashSavings = 10_000_000M;
 
-            ValidateOnlyLetters(firstName, minLength, maxLength);
-            ValidateOnlyLetters(lastName, minLength, maxLength);
-            ValidateDate(dateOfBirth, minDate);
-            ValidateNumber(height, minHeight, maxHeight);
-            ValidateNumber(cashSavings, minCashSavings, maxCashSavings);
-            ValidateOnlyLetters(favoriteLetter.ToString(), 1, 1);
+            ValidateOnlyLetters(recordToValidate.FirstName, minLength, maxLength);
+            ValidateOnlyLetters(recordToValidate.LastName, minLength, maxLength);
+            ValidateDate(recordToValidate.DateOfBirth, minDate);
+            ValidateNumber(recordToValidate.Height, minHeight, maxHeight);
+            ValidateNumber(recordToValidate.CashSavings, minCashSavings, maxCashSavings);
+            ValidateOnlyLetters(recordToValidate.FavoriteLetter.ToString(), 1, 1);
         }
 
         private static void ValidateOnlyLetters(string? line, int minLengh, int maxLength)

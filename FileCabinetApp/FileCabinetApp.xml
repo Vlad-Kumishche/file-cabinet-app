@@ -4,5 +4,169 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.FileCabinetRecord">
+            <summary>
+            Сlass represents the file cabinet record.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Id">
+            <summary>
+            Gets or sets the id of the record.
+            </summary>
+            <value>The id of the record.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.FirstName">
+            <summary>
+            Gets or sets the first name of the person.
+            </summary>
+            <value>The first name of the person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.LastName">
+            <summary>
+            Gets or sets the last name of the person.
+            </summary>
+            <value>The last name of the person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.DateOfBirth">
+            <summary>
+            Gets or sets the date of birth of the person.
+            </summary>
+            <value>The date of birth of the person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.Height">
+            <summary>
+            Gets or sets the height of the person.
+            </summary>
+            <value>The height of the person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.CashSavings">
+            <summary>
+            Gets or sets the cash savings of the person.
+            </summary>
+            <value>The cash savings of the person.</value>
+        </member>
+        <member name="P:FileCabinetApp.FileCabinetRecord.FavoriteLetter">
+            <summary>
+            Gets or sets the favorite letter of the person.
+            </summary>
+            <value>The favorite letter of the person.</value>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetService">
+            <summary>
+            Сlass provides a service for storing file cabinet records and operations on them.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.RecordArgs)">
+            <summary>
+            Creates file cabinet record.
+            </summary>
+            <param name="recordToCreate">Record to create.</param>
+            <returns>The id of the record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.EditRecord(FileCabinetApp.RecordArgs)">
+            <summary>
+            Edits specified file cabinet record.
+            </summary>
+            <param name="recordToEdit">Record to edit.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.FindByFirstName(System.String)">
+            <summary>
+            Finds records by first name.
+            </summary>
+            <param name="firstName">The first name of the person.</param>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.FindByLastName(System.String)">
+            <summary>
+            Finds records by last name.
+            </summary>
+            <param name="lastName">The last name of the person.</param>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.FindByDateOfBirth(System.String)">
+            <summary>
+            Finds records by date of birth.
+            </summary>
+            <param name="date">The date of birth of the person.</param>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.GetRecordById(System.Int32)">
+            <summary>
+            Gets record by id.
+            </summary>
+            <param name="id">The id of the record.</param>
+            <returns>Required file cabinet record.</returns>
+            <exception cref="T:System.ArgumentException">Thrown when record with given id was not found.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.GetRecords">
+            <summary>
+            Gets all file cabinet records.
+            </summary>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.GetStat">
+            <summary>
+            Gets the number of records.
+            </summary>
+            <returns>Number of records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Program">
+            <summary>
+            Class provides user interaction.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Program.Main(System.String[])">
+            <summary>
+            Function that processes user input and calls the appropriate functions.
+            </summary>
+            <param name="args">Сommand line arguments.</param>
+        </member>
+        <member name="T:FileCabinetApp.RecordArgs">
+            <summary>
+            Class for introducing parameters for file cabinet record.
+            </summary>
+        </member>
+        <member name="P:FileCabinetApp.RecordArgs.Id">
+            <summary>
+            Gets or sets the id of the record.
+            </summary>
+            <value>The id of the record.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordArgs.FirstName">
+            <summary>
+            Gets or sets the first name of the person.
+            </summary>
+            <value>The first name of the person.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordArgs.LastName">
+            <summary>
+            Gets or sets the last name of the person.
+            </summary>
+            <value>The last name of the person.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordArgs.DateOfBirth">
+            <summary>
+            Gets or sets the date of birth of the person.
+            </summary>
+            <value>The date of birth of the person.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordArgs.Height">
+            <summary>
+            Gets or sets the height of the person.
+            </summary>
+            <value>The height of the person.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordArgs.CashSavings">
+            <summary>
+            Gets or sets the cash savings of the person.
+            </summary>
+            <value>The cash savings of the person.</value>
+        </member>
+        <member name="P:FileCabinetApp.RecordArgs.FavoriteLetter">
+            <summary>
+            Gets or sets the favorite letter of the person.
+            </summary>
+            <value>The favorite letter of the person.</value>
+        </member>
     </members>
 </doc>
