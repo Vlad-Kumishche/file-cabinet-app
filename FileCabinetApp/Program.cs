@@ -12,10 +12,14 @@ namespace FileCabinetApp
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
+        private const string ValidationParameter = "--validation-rules=";
+        private const string ShortValidationParameter = "-v";
+        private const string DefaultValidation = "default";
+        private const string CustomValidation = "custom";
 
         private static bool isRunning = true;
 
-        private static FileCabinetService fileCabinetService = new FileCabinetCustomService();
+        private static FileCabinetService fileCabinetService = new FileCabinetDefaultService();
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -45,7 +49,9 @@ namespace FileCabinetApp
         /// <param name="args">Сommand line arguments.</param>
         public static void Main(string[] args)
         {
+            var message = ParseCommandLineArguments(args);
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
+            Console.WriteLine(message);
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -76,6 +82,28 @@ namespace FileCabinetApp
                 }
             }
             while (isRunning);
+        }
+
+        private static string ParseCommandLineArguments(string[] args)
+        {
+            bool shortArgumentNotation = false;
+            string message = $"Using {DefaultValidation} validation rules.";
+            foreach (var argument in args)
+            {
+                if (string.Equals(argument, "-v", StringComparison.Ordinal))
+                {
+                    shortArgumentNotation = true;
+                }
+
+                if ((shortArgumentNotation && string.Equals(argument, CustomValidation, StringComparison.OrdinalIgnoreCase)) || (!shortArgumentNotation && string.Equals(argument, ValidationParameter + CustomValidation, StringComparison.OrdinalIgnoreCase)))
+                {
+                    fileCabinetService = new FileCabinetCustomService();
+                    message = $"Using {CustomValidation} validation rules.";
+                    break;
+                }
+            }
+
+            return message;
         }
 
         private static void PrintMissedCommandInfo(string command)
@@ -307,9 +335,19 @@ namespace FileCabinetApp
 
         private static void Find(string parameters)
         {
-            var paramsArray = parameters.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-            var propertyName = paramsArray[0];
-            var searchText = paramsArray[1];
+            const int paramsNumber = 2;
+            var paramsArray = parameters.Split(' ', paramsNumber, StringSplitOptions.RemoveEmptyEntries);
+            string propertyName, searchText;
+            try
+            {
+                propertyName = paramsArray[0];
+                searchText = paramsArray[1];
+            }
+            catch
+            {
+                Console.WriteLine("Two parameters required. <param1> - property name, <param2> - search text in quotes");
+                return;
+            }
 
             if (string.IsNullOrWhiteSpace(propertyName) || string.IsNullOrWhiteSpace(searchText) || searchText[0] != '\"' || searchText[^1] != '\"')
             {
