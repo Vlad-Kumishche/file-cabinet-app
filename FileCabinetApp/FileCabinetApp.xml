@@ -4,6 +4,88 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.FileCabinetCustomService">
+            <summary>
+            Сlass provides a custom service for storing file cabinet records and operations on them.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateName(System.String)">
+            <summary>
+            Сhecks if a string contains only English characters.
+            </summary>
+            <param name="line">String to validate.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when string to validate is null or empty.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when the length of the string does not match the given range.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateDateOfBirth(System.DateTime)">
+            <summary>
+            Checks if the date is within a specified range.
+            </summary>
+            <param name="dateOfBirth">Date to validate.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the length of the string does not match the specified range.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateHeight(System.Int16)">
+            <summary>
+            Checks if the height is within a specified range.
+            </summary>
+            <param name="height">Height to validate.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the height does not match the specified range.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateCashSavings(System.Decimal)">
+            <summary>
+            Checks if the cash savings is within a specified range.
+            </summary>
+            <param name="cashSavings">Cash savings to validate.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the cash savings does not match the specified range.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetCustomService.ValidateLetter(System.Char)">
+            <summary>
+            Checks if the character is an English letter.
+            </summary>
+            <param name="c">Character to validate.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the character is not an English letter.</exception>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetDefaultService">
+            <summary>
+            Сlass provides a default service for storing file cabinet records and operations on them.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateName(System.String)">
+            <summary>
+            Сhecks if a string contains only English characters.
+            </summary>
+            <param name="line">String to validate.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when string to validate is null or empty.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when the length of the string does not match the given range.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateDateOfBirth(System.DateTime)">
+            <summary>
+            Checks if the date is within a specified range.
+            </summary>
+            <param name="dateOfBirth">Date to validate.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the length of the string does not match the specified range.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateHeight(System.Int16)">
+            <summary>
+            Checks if the height is within a specified range.
+            </summary>
+            <param name="height">Height to validate.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the height does not match the specified range.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateCashSavings(System.Decimal)">
+            <summary>
+            Checks if the cash savings is within a specified range.
+            </summary>
+            <param name="cashSavings">Cash savings to validate.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the cash savings does not match the specified range.</exception>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetDefaultService.ValidateLetter(System.Char)">
+            <summary>
+            Checks if the character is an English letter.
+            </summary>
+            <param name="c">Character to validate.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the character is not an English letter.</exception>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
             Сlass represents the file cabinet record.
@@ -109,6 +191,42 @@
             Gets the number of records.
             </summary>
             <returns>Number of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.ValidateParameters(FileCabinetApp.RecordArgs)">
+            <summary>
+            Validates the file cabinet record.
+            </summary>
+            <param name="recordToValidate">Record to validate.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.ValidateName(System.String)">
+            <summary>
+            Сhecks if a string contains only English characters.
+            </summary>
+            <param name="line">String to validate.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.ValidateDateOfBirth(System.DateTime)">
+            <summary>
+            Checks if the date is within a specified range.
+            </summary>
+            <param name="dateOfBirth">Date to validate.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.ValidateHeight(System.Int16)">
+            <summary>
+            Checks if the height is within a specified range.
+            </summary>
+            <param name="height">Height to validate.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.ValidateCashSavings(System.Decimal)">
+            <summary>
+            Checks if the cash savings is within a specified range.
+            </summary>
+            <param name="cashSavings">Cash savings to validate.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.ValidateLetter(System.Char)">
+            <summary>
+            Checks if the character is an English letter.
+            </summary>
+            <param name="c">Character to validate.</param>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>

@@ -5,7 +5,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Сlass provides a service for storing file cabinet records and operations on them.
     /// </summary>
-    public class FileCabinetService
+    public abstract class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.OrdinalIgnoreCase);
@@ -19,7 +19,7 @@ namespace FileCabinetApp
         /// <returns>The id of the record.</returns>
         public int CreateRecord(RecordArgs recordToCreate)
         {
-            ValidateRecord(recordToCreate);
+            this.ValidateParameters(recordToCreate);
 
             var record = new FileCabinetRecord
             {
@@ -74,7 +74,7 @@ namespace FileCabinetApp
         /// <param name="recordToEdit">Record to edit.</param>
         public void EditRecord(RecordArgs recordToEdit)
         {
-            ValidateRecord(recordToEdit);
+            this.ValidateParameters(recordToEdit);
 
             var record = this.GetRecordById(recordToEdit.Id);
             record.FirstName = recordToEdit.FirstName;
@@ -170,68 +170,48 @@ namespace FileCabinetApp
             return this.list.Count;
         }
 
-        private static void ValidateRecord(RecordArgs recordToValidate)
+        /// <summary>
+        /// Validates the file cabinet record.
+        /// </summary>
+        /// <param name="recordToValidate">Record to validate.</param>
+        protected void ValidateParameters(RecordArgs recordToValidate)
         {
-            const int minLength = 2;
-            const int maxLength = 60;
-            DateTime minDate = new DateTime(1950, 1, 1);
-            const short minHeight = 40;
-            const short maxHeight = 300;
-            const decimal minCashSavings = 0M;
-            const decimal maxCashSavings = 10_000_000M;
-
-            ValidateOnlyLetters(recordToValidate.FirstName, minLength, maxLength);
-            ValidateOnlyLetters(recordToValidate.LastName, minLength, maxLength);
-            ValidateDate(recordToValidate.DateOfBirth, minDate);
-            ValidateNumber(recordToValidate.Height, minHeight, maxHeight);
-            ValidateNumber(recordToValidate.CashSavings, minCashSavings, maxCashSavings);
-            ValidateOnlyLetters(recordToValidate.FavoriteLetter.ToString(), 1, 1);
+            this.ValidateName(recordToValidate.FirstName);
+            this.ValidateName(recordToValidate.LastName);
+            this.ValidateDateOfBirth(recordToValidate.DateOfBirth);
+            this.ValidateHeight(recordToValidate.Height);
+            this.ValidateCashSavings(recordToValidate.CashSavings);
+            this.ValidateLetter(recordToValidate.FavoriteLetter);
         }
 
-        private static void ValidateOnlyLetters(string? line, int minLengh, int maxLength)
-        {
-            if (string.IsNullOrEmpty(line))
-            {
-                throw new ArgumentNullException(nameof(line));
-            }
-            else if (line.Length < minLengh || line.Length > maxLength)
-            {
-                throw new ArgumentException($"{nameof(line)}.Length does not meet the requirements.", nameof(line));
-            }
-            else
-            {
-                foreach (char c in line)
-                {
-                    if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
-                    {
-                        throw new ArgumentException($"{nameof(line)} contains a non-Latin character.", nameof(line));
-                    }
-                }
-            }
-        }
+        /// <summary>
+        /// Сhecks if a string contains only English characters.
+        /// </summary>
+        /// <param name="line">String to validate.</param>
+        protected abstract void ValidateName(string? line);
 
-        private static void ValidateDate(DateTime date, DateTime minDate)
-        {
-            if (date < minDate || date >= DateTime.Now)
-            {
-                throw new ArgumentException($"Invalid {nameof(date)}. Min date: {minDate.ToString("MM / dd / yyyy", CultureInfo.InvariantCulture)}, max date: today.", nameof(date));
-            }
-        }
+        /// <summary>
+        /// Checks if the date is within a specified range.
+        /// </summary>
+        /// <param name="dateOfBirth">Date to validate.</param>
+        protected abstract void ValidateDateOfBirth(DateTime dateOfBirth);
 
-        private static void ValidateNumber(short number, short minNumber, short maxNumber)
-        {
-            if (number < minNumber || number > maxNumber)
-            {
-                throw new ArgumentException($"The {nameof(number)} is not within the allowed range.", nameof(number));
-            }
-        }
+        /// <summary>
+        /// Checks if the height is within a specified range.
+        /// </summary>
+        /// <param name="height">Height to validate.</param>
+        protected abstract void ValidateHeight(short height);
 
-        private static void ValidateNumber(decimal number, decimal minNumber, decimal maxNumber)
-        {
-            if (number < minNumber || number > maxNumber)
-            {
-                throw new ArgumentException($"The {nameof(number)} is not within the allowed range.", nameof(number));
-            }
-        }
+        /// <summary>
+        /// Checks if the cash savings is within a specified range.
+        /// </summary>
+        /// <param name="cashSavings">Cash savings to validate.</param>
+        protected abstract void ValidateCashSavings(decimal cashSavings);
+
+        /// <summary>
+        /// Checks if the character is an English letter.
+        /// </summary>
+        /// <param name="c">Character to validate.</param>
+        protected abstract void ValidateLetter(char c);
     }
 }

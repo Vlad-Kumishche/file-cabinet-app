@@ -15,7 +15,7 @@ namespace FileCabinetApp
 
         private static bool isRunning = true;
 
-        private static FileCabinetService fileCabinetService = new FileCabinetService();
+        private static FileCabinetService fileCabinetService = new FileCabinetCustomService();
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -282,8 +282,7 @@ namespace FileCabinetApp
 
         private static void Edit(string parameters)
         {
-            int id;
-            if (!int.TryParse(parameters, out id))
+            if (!int.TryParse(parameters, out int id))
             {
                 Console.WriteLine($"#{parameters} record is not found.");
                 return;
