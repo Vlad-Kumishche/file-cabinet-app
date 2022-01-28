@@ -1,4 +1,5 @@
-﻿using System.Globalization;
+﻿using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace FileCabinetApp
 {
@@ -299,7 +300,7 @@ namespace FileCabinetApp
             ShowRecords(records);
         }
 
-        private static void ShowRecords(FileCabinetRecord[] records)
+        private static void ShowRecords(ReadOnlyCollection<FileCabinetRecord> records)
         {
             foreach (var record in records)
             {
@@ -357,6 +358,7 @@ namespace FileCabinetApp
 
             propertyName = propertyName.ToLowerInvariant();
             searchText = searchText[1..^1];
+
             var records = propertyName switch
             {
                 "firstname" => fileCabinetService.FindByFirstName(searchText),
@@ -371,7 +373,7 @@ namespace FileCabinetApp
                 return;
             }
 
-            if (records.Length == 0)
+            if (records.Count == 0)
             {
                 Console.WriteLine("Nothing found");
                 return;
