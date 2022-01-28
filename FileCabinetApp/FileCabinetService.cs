@@ -19,7 +19,7 @@ namespace FileCabinetApp
         /// <returns>The id of the record.</returns>
         public int CreateRecord(RecordArgs recordToCreate)
         {
-            this.ValidateParameters(recordToCreate);
+            this.CreateValidator().ValidateParameters(recordToCreate);
 
             var record = new FileCabinetRecord
             {
@@ -74,7 +74,7 @@ namespace FileCabinetApp
         /// <param name="recordToEdit">Record to edit.</param>
         public void EditRecord(RecordArgs recordToEdit)
         {
-            this.ValidateParameters(recordToEdit);
+            this.CreateValidator().ValidateParameters(recordToEdit);
 
             var record = this.GetRecordById(recordToEdit.Id);
             record.FirstName = recordToEdit.FirstName;
@@ -170,48 +170,6 @@ namespace FileCabinetApp
             return this.list.Count;
         }
 
-        /// <summary>
-        /// Validates the file cabinet record.
-        /// </summary>
-        /// <param name="recordToValidate">Record to validate.</param>
-        protected void ValidateParameters(RecordArgs recordToValidate)
-        {
-            this.ValidateName(recordToValidate.FirstName);
-            this.ValidateName(recordToValidate.LastName);
-            this.ValidateDateOfBirth(recordToValidate.DateOfBirth);
-            this.ValidateHeight(recordToValidate.Height);
-            this.ValidateCashSavings(recordToValidate.CashSavings);
-            this.ValidateLetter(recordToValidate.FavoriteLetter);
-        }
-
-        /// <summary>
-        /// Сhecks if a string contains only English characters.
-        /// </summary>
-        /// <param name="line">String to validate.</param>
-        protected abstract void ValidateName(string? line);
-
-        /// <summary>
-        /// Checks if the date is within a specified range.
-        /// </summary>
-        /// <param name="dateOfBirth">Date to validate.</param>
-        protected abstract void ValidateDateOfBirth(DateTime dateOfBirth);
-
-        /// <summary>
-        /// Checks if the height is within a specified range.
-        /// </summary>
-        /// <param name="height">Height to validate.</param>
-        protected abstract void ValidateHeight(short height);
-
-        /// <summary>
-        /// Checks if the cash savings is within a specified range.
-        /// </summary>
-        /// <param name="cashSavings">Cash savings to validate.</param>
-        protected abstract void ValidateCashSavings(decimal cashSavings);
-
-        /// <summary>
-        /// Checks if the character is an English letter.
-        /// </summary>
-        /// <param name="c">Character to validate.</param>
-        protected abstract void ValidateLetter(char c);
+        protected abstract IRecordValidator CreateValidator();
     }
 }
