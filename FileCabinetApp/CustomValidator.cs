@@ -55,7 +55,7 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">Thrown when the length of the string does not match the specified range.</exception>
         private static void ValidateDateOfBirth(DateTime dateOfBirth)
         {
-            DateTime minDate = new DateTime(1950, 1, 1);
+            DateTime minDate = new DateTime(1940, 1, 1);
             const int ageOfMajority = 18;
             DateTime maxDate = DateTime.Now.AddYears(-ageOfMajority);
             if (dateOfBirth < minDate || dateOfBirth >= maxDate)
