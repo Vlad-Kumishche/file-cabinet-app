@@ -5,14 +5,18 @@ namespace FileCabinetApp
     /// <summary>
     /// Сlass provides a service for storing file cabinet records and operations on them.
     /// </summary>
-    public abstract class FileCabinetService
+    public class FileCabinetService
     {
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new Dictionary<string, List<FileCabinetRecord>>(StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new Dictionary<DateTime, List<FileCabinetRecord>>();
-        private IRecordValidator validator;
+        private readonly IRecordValidator validator;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
+        /// </summary>
+        /// <param name="validator">Specified validation strategy.</param>
         public FileCabinetService(IRecordValidator validator)
         {
             this.validator = validator;
@@ -25,7 +29,7 @@ namespace FileCabinetApp
         /// <returns>The id of the record.</returns>
         public int CreateRecord(RecordArgs recordToCreate)
         {
-            this.CreateValidator().ValidateParameters(recordToCreate);
+            this.validator.ValidateParameters(recordToCreate);
 
             var record = new FileCabinetRecord
             {
@@ -80,7 +84,7 @@ namespace FileCabinetApp
         /// <param name="recordToEdit">Record to edit.</param>
         public void EditRecord(RecordArgs recordToEdit)
         {
-            this.CreateValidator().ValidateParameters(recordToEdit);
+            this.validator.ValidateParameters(recordToEdit);
 
             var record = this.GetRecordById(recordToEdit.Id);
             record.FirstName = recordToEdit.FirstName;
@@ -175,7 +179,5 @@ namespace FileCabinetApp
         {
             return this.list.Count;
         }
-
-        protected abstract IRecordValidator CreateValidator();
     }
 }

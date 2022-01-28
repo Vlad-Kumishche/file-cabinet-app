@@ -19,7 +19,7 @@ namespace FileCabinetApp
 
         private static bool isRunning = true;
 
-        private static FileCabinetService fileCabinetService = new FileCabinetDefaultService();
+        private static FileCabinetService fileCabinetService = new FileCabinetService(new DefaultValidator());
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -97,7 +97,7 @@ namespace FileCabinetApp
 
                 if ((shortArgumentNotation && string.Equals(argument, CustomValidation, StringComparison.OrdinalIgnoreCase)) || (!shortArgumentNotation && string.Equals(argument, ValidationParameter + CustomValidation, StringComparison.OrdinalIgnoreCase)))
                 {
-                    fileCabinetService = new FileCabinetCustomService();
+                    fileCabinetService = new FileCabinetService(new CustomValidator());
                     message = $"Using {CustomValidation} validation rules.";
                     break;
                 }

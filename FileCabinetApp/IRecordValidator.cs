@@ -1,13 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace FileCabinetApp
+﻿namespace FileCabinetApp
 {
+    /// <summary>
+    /// Interface for validation strategy.
+    /// </summary>
     public interface IRecordValidator
     {
+        /// <summary>
+        /// Validates the file cabinet record.
+        /// </summary>
+        /// <param name="recordToValidate">Record to validate.</param>
         public void ValidateParameters(RecordArgs recordToValidate);
     }
 }

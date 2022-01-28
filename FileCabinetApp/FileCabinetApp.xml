@@ -4,6 +4,11 @@
         <name>FileCabinetApp</name>
     </assembly>
     <members>
+        <member name="T:FileCabinetApp.CustomValidator">
+            <summary>
+            Class for custom validation strategy.
+            </summary>
+        </member>
         <member name="M:FileCabinetApp.CustomValidator.ValidateParameters(FileCabinetApp.RecordArgs)">
             <summary>
             Validates the file cabinet record.
@@ -46,6 +51,11 @@
             <param name="c">Character to validate.</param>
             <exception cref="T:System.ArgumentException">Thrown when the character is not an English letter.</exception>
         </member>
+        <member name="T:FileCabinetApp.DefaultValidator">
+            <summary>
+            Class for default validation strategy.
+            </summary>
+        </member>
         <member name="M:FileCabinetApp.DefaultValidator.ValidateParameters(FileCabinetApp.RecordArgs)">
             <summary>
             Validates the file cabinet record.
@@ -87,16 +97,6 @@
             </summary>
             <param name="c">Character to validate.</param>
             <exception cref="T:System.ArgumentException">Thrown when the character is not an English letter.</exception>
-        </member>
-        <member name="T:FileCabinetApp.FileCabinetCustomService">
-            <summary>
-            Сlass provides a custom service for storing file cabinet records and operations on them.
-            </summary>
-        </member>
-        <member name="T:FileCabinetApp.FileCabinetDefaultService">
-            <summary>
-            Сlass provides a default service for storing file cabinet records and operations on them.
-            </summary>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
             <summary>
@@ -149,6 +149,12 @@
             <summary>
             Сlass provides a service for storing file cabinet records and operations on them.
             </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.#ctor(FileCabinetApp.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetService"/> class.
+            </summary>
+            <param name="validator">Specified validation strategy.</param>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.CreateRecord(FileCabinetApp.RecordArgs)">
             <summary>
@@ -203,6 +209,17 @@
             Gets the number of records.
             </summary>
             <returns>Number of records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.IRecordValidator">
+            <summary>
+            Interface for validation strategy.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IRecordValidator.ValidateParameters(FileCabinetApp.RecordArgs)">
+            <summary>
+            Validates the file cabinet record.
+            </summary>
+            <param name="recordToValidate">Record to validate.</param>
         </member>
         <member name="T:FileCabinetApp.Program">
             <summary>

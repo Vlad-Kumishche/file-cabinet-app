@@ -1,13 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 
 namespace FileCabinetApp
 {
-    internal class CustomValidator : IRecordValidator
+    /// <summary>
+    /// Class for custom validation strategy.
+    /// </summary>
+    public class CustomValidator : IRecordValidator
     {
         /// <summary>
         /// Validates the file cabinet record.
@@ -15,12 +13,12 @@ namespace FileCabinetApp
         /// <param name="recordToValidate">Record to validate.</param>
         public void ValidateParameters(RecordArgs recordToValidate)
         {
-            this.ValidateName(recordToValidate.FirstName);
-            this.ValidateName(recordToValidate.LastName);
-            this.ValidateDateOfBirth(recordToValidate.DateOfBirth);
-            this.ValidateHeight(recordToValidate.Height);
-            this.ValidateCashSavings(recordToValidate.CashSavings);
-            this.ValidateLetter(recordToValidate.FavoriteLetter);
+            ValidateName(recordToValidate.FirstName);
+            ValidateName(recordToValidate.LastName);
+            ValidateDateOfBirth(recordToValidate.DateOfBirth);
+            ValidateHeight(recordToValidate.Height);
+            ValidateCashSavings(recordToValidate.CashSavings);
+            ValidateLetter(recordToValidate.FavoriteLetter);
         }
 
         /// <summary>
@@ -29,7 +27,7 @@ namespace FileCabinetApp
         /// <param name="line">String to validate.</param>
         /// <exception cref="ArgumentNullException">Thrown when string to validate is null or empty.</exception>
         /// <exception cref="ArgumentException">Thrown when the length of the string does not match the given range.</exception>
-        private void ValidateName(string? line)
+        private static void ValidateName(string? line)
         {
             const int minLength = 4;
             const int maxLength = 20;
@@ -45,7 +43,7 @@ namespace FileCabinetApp
             {
                 foreach (char c in line)
                 {
-                    this.ValidateLetter(c);
+                    ValidateLetter(c);
                 }
             }
         }
@@ -55,7 +53,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="dateOfBirth">Date to validate.</param>
         /// <exception cref="ArgumentException">Thrown when the length of the string does not match the specified range.</exception>
-        private void ValidateDateOfBirth(DateTime dateOfBirth)
+        private static void ValidateDateOfBirth(DateTime dateOfBirth)
         {
             DateTime minDate = new DateTime(1950, 1, 1);
             const int ageOfMajority = 18;
@@ -71,7 +69,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="height">Height to validate.</param>
         /// <exception cref="ArgumentException">Thrown when the height does not match the specified range.</exception>
-        private void ValidateHeight(short height)
+        private static void ValidateHeight(short height)
         {
             const short minHeight = 120;
             const short maxHeight = 250;
@@ -86,7 +84,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="cashSavings">Cash savings to validate.</param>
         /// <exception cref="ArgumentException">Thrown when the cash savings does not match the specified range.</exception>
-        private void ValidateCashSavings(decimal cashSavings)
+        private static void ValidateCashSavings(decimal cashSavings)
         {
             const decimal minCashSavings = 100M;
             const decimal maxCashSavings = 100_000_000M;
@@ -101,7 +99,7 @@ namespace FileCabinetApp
         /// </summary>
         /// <param name="c">Character to validate.</param>
         /// <exception cref="ArgumentException">Thrown when the character is not an English letter.</exception>
-        private void ValidateLetter(char c)
+        private static void ValidateLetter(char c)
         {
             if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
             {
