@@ -6,7 +6,7 @@ namespace FileCabinetApp
     /// <summary>
     /// Сlass provides a service for storing file cabinet records and operations on them.
     /// </summary>
-    public class FileCabinetService
+    public class FileCabinetService : IFileCabinetService
     {
         private static readonly ReadOnlyCollection<FileCabinetRecord> EmptyRecordReadOnlyCollection = new List<FileCabinetRecord>().AsReadOnly();
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
@@ -132,13 +132,13 @@ namespace FileCabinetApp
         /// <summary>
         /// Finds records by date of birth.
         /// </summary>
-        /// <param name="date">The date of birth of the person.</param>
+        /// <param name="sourceDate">The date of birth of the person.</param>
         /// <returns>Array of records.</returns>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string date)
+        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
         {
-            if (!DateTime.TryParse(date, out var dateOfBirth))
+            if (!DateTime.TryParse(sourceDate, out var dateOfBirth))
             {
-                throw new ArgumentException($"Invalid {nameof(date)}", nameof(date));
+                throw new ArgumentException($"Invalid {nameof(sourceDate)}", nameof(sourceDate));
             }
 
             if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))

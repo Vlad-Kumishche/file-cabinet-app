@@ -187,7 +187,7 @@
             <summary>
             Finds records by date of birth.
             </summary>
-            <param name="date">The date of birth of the person.</param>
+            <param name="sourceDate">The date of birth of the person.</param>
             <returns>Array of records.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.GetRecordById(System.Int32)">
@@ -205,6 +205,65 @@
             <returns>Array of records.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.GetStat">
+            <summary>
+            Gets the number of records.
+            </summary>
+            <returns>Number of records.</returns>
+        </member>
+        <member name="T:FileCabinetApp.IFileCabinetService">
+            <summary>
+            Interface provides a service for storing file cabinet records and operations on them.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.CreateRecord(FileCabinetApp.RecordArgs)">
+            <summary>
+            Creates file cabinet record.
+            </summary>
+            <param name="recordToCreate">Record to create.</param>
+            <returns>The id of the record.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.EditRecord(FileCabinetApp.RecordArgs)">
+            <summary>
+            Edits specified file cabinet record.
+            </summary>
+            <param name="recordToEdit">Record to edit.</param>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByFirstName(System.String)">
+            <summary>
+            Finds records by first name.
+            </summary>
+            <param name="firstName">The first name of the person.</param>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByLastName(System.String)">
+            <summary>
+            Finds records by last name.
+            </summary>
+            <param name="lastName">The last name of the person.</param>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.FindByDateOfBirth(System.String)">
+            <summary>
+            Finds records by date of birth.
+            </summary>
+            <param name="sourceDate">The date of birth of the person.</param>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.GetRecordById(System.Int32)">
+            <summary>
+            Gets record by id.
+            </summary>
+            <param name="id">The id of the record.</param>
+            <returns>Required file cabinet record.</returns>
+            <exception cref="T:System.ArgumentException">Thrown when record with given id was not found.</exception>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.GetRecords">
+            <summary>
+            Gets all file cabinet records.
+            </summary>
+            <returns>Array of records.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.GetStat">
             <summary>
             Gets the number of records.
             </summary>
