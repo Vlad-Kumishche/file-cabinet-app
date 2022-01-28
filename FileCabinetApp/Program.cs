@@ -1,7 +1,11 @@
-﻿using System.Globalization;
+﻿using System.Collections.ObjectModel;
+using System.Globalization;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Class provides user interaction.
+    /// </summary>
     public static class Program
     {
         private const string DeveloperName = "Uladzislau Kumishcha";
@@ -9,10 +13,16 @@ namespace FileCabinetApp
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
+        private const string ValidationParameter = "--validation-rules=";
+        private const string ShortValidationParameter = "-v";
+        private const string DefaultValidation = "default";
+        private const string CustomValidation = "custom";
 
         private static bool isRunning = true;
 
-        private static FileCabinetService fileCabinetService = new FileCabinetService();
+        private static bool isDefaultValidation = true;
+
+        private static IFileCabinetService fileCabinetService = new FileCabinetService(new DefaultValidator());
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -36,9 +46,15 @@ namespace FileCabinetApp
             new string[] { "find", "finds a list of records matching the search text", "The 'edit' command finds a list of records where <param1> = <param2>. <param1> - property name, <param2> - search text in quotes." },
         };
 
+        /// <summary>
+        /// Function that processes user input and calls the appropriate functions.
+        /// </summary>
+        /// <param name="args">Сommand line arguments.</param>
         public static void Main(string[] args)
         {
+            var message = ParseCommandLineArguments(args);
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
+            Console.WriteLine(message);
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -69,6 +85,29 @@ namespace FileCabinetApp
                 }
             }
             while (isRunning);
+        }
+
+        private static string ParseCommandLineArguments(string[] args)
+        {
+            bool shortArgumentNotation = false;
+            string message = $"Using {DefaultValidation} validation rules.";
+            foreach (var argument in args)
+            {
+                if (string.Equals(argument, "-v", StringComparison.Ordinal))
+                {
+                    shortArgumentNotation = true;
+                }
+
+                if ((shortArgumentNotation && string.Equals(argument, CustomValidation, StringComparison.OrdinalIgnoreCase)) || (!shortArgumentNotation && string.Equals(argument, ValidationParameter + CustomValidation, StringComparison.OrdinalIgnoreCase)))
+                {
+                    fileCabinetService = new FileCabinetService(new CustomValidator());
+                    message = $"Using {CustomValidation} validation rules.";
+                    isDefaultValidation = false;
+                    break;
+                }
+            }
+
+            return message;
         }
 
         private static void PrintMissedCommandInfo(string command)
@@ -118,151 +157,220 @@ namespace FileCabinetApp
 
         private static void Create(string parameters)
         {
-            string? firstName;
-            string? lastName;
-            DateTime dateOfBirth;
-            short height;
-            decimal cashSavings;
-            char favoriteLetter;
+            var recordToCreate = new RecordArgs();
 
-            InputRecord(out firstName, out lastName, out dateOfBirth, out height, out cashSavings, out favoriteLetter);
+            Console.Write("First name: ");
+            recordToCreate.FirstName = ReadInput(StringConverter, NameValidator);
 
-            int recordId = fileCabinetService.CreateRecord(firstName, lastName, dateOfBirth, height, cashSavings, favoriteLetter);
+            Console.Write("Last name: ");
+            recordToCreate.LastName = ReadInput(StringConverter, NameValidator);
+
+            Console.Write("Date of birth: ");
+            recordToCreate.DateOfBirth = ReadInput(DateConverter, DateValidator);
+
+            Console.Write("Height (cm): ");
+            recordToCreate.Height = ReadInput(ShortConverter, HeightValidator);
+
+            Console.Write("Cash savings ($): ");
+            recordToCreate.CashSavings = ReadInput(DecimalConverter, CashSavingsValidator);
+
+            Console.Write("Favorite char: ");
+            recordToCreate.FavoriteLetter = ReadInput(CharConverter, LetterValidator);
+
+            int recordId = fileCabinetService.CreateRecord(recordToCreate);
             Console.WriteLine($"Record #{recordId} created.");
         }
 
-        private static void InputRecord(out string? firstName, out string? lastName, out DateTime dateOfBirth, out short height, out decimal cashSavings, out char favoriteLetter)
+        private static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
         {
-            const int minLength = 2;
-            const int maxLength = 60;
-            DateTime minDate = new DateTime(1950, 1, 1);
-            const short minHeight = 40;
-            const short maxHeight = 300;
-            const decimal minCashSavings = 0M;
-            const decimal maxCashSavings = 10_000_000M;
-
-            firstName = InputOnlyLetters("First name: ", minLength, maxLength);
-            lastName = InputOnlyLetters("Last name: ", minLength, maxLength);
-            dateOfBirth = InputDate("Date of birth", minDate);
-            height = InputNumber("Height (cm): ", minHeight, maxHeight);
-            cashSavings = InputNumber("Cash savings ($): ", minCashSavings, maxCashSavings);
-            favoriteLetter = char.Parse(InputOnlyLetters("Favorite char: ", 1, 1));
-        }
-
-        private static string InputOnlyLetters(string inputPrompt, int minLengh, int maxLength)
-        {
-            bool validationPassed;
-            string line;
             do
             {
-                validationPassed = true;
-                Console.Write(inputPrompt);
-                line = Console.ReadLine() ?? string.Empty;
+                T value;
 
-                if (string.IsNullOrEmpty(line) || line.Length < minLengh || line.Length > maxLength)
+                var input = Console.ReadLine();
+                var conversionResult = converter(input ?? string.Empty);
+
+                if (!conversionResult.Item1)
                 {
-                    validationPassed = false;
-                }
-                else
-                {
-                    foreach (char c in line)
-                    {
-                        if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
-                        {
-                            validationPassed = false;
-                            break;
-                        }
-                    }
+                    Console.WriteLine($"Conversion failed: {conversionResult.Item2}. Please, correct your input.");
+                    continue;
                 }
 
-                if (!validationPassed)
+                value = conversionResult.Item3;
+
+                var validationResult = validator(value);
+                if (!validationResult.Item1)
                 {
-                    Console.WriteLine($"Invalid input. Only latin letters are allowed. Min length: {minLengh}, max lenght: {maxLength}.");
+                    Console.WriteLine($"Validation failed: {validationResult.Item2}. Please, correct your input.");
+                    continue;
                 }
+
+                return value;
             }
-            while (!validationPassed);
-
-            return line;
+            while (true);
         }
 
-        private static DateTime InputDate(string inputPrompt, DateTime minDate)
+        private static Tuple<bool, string, string> StringConverter(string stringToConvert)
         {
-            bool validationPassed;
-            const int dateLenght = 10;
-            string? line;
+            return Tuple.Create(true, string.Empty, stringToConvert);
+        }
+
+        private static Tuple<bool, string, DateTime> DateConverter(string stringToConvert)
+        {
+            const string requiredDateFormat = "MM/DD/YYYY";
             DateTime birthday = DateTime.MinValue;
-            do
+            if (!string.IsNullOrEmpty(stringToConvert) && stringToConvert.Length == requiredDateFormat.Length)
             {
-                validationPassed = false;
-                Console.Write(inputPrompt + " (MM/DD/YYYY):");
-                line = Console.ReadLine();
-
-                if (!string.IsNullOrEmpty(line) && line.Length == dateLenght)
+                string toParse = stringToConvert[3..6] + stringToConvert[..3] + stringToConvert[6..];
+                if (DateTime.TryParse(toParse, out birthday))
                 {
-                    string toParse = line[3..6] + line[..3] + line[6..];
-                    if (DateTime.TryParse(toParse, out birthday))
-                    {
-                        if (birthday >= minDate && birthday < DateTime.Now)
-                        {
-                            validationPassed = true;
-                        }
-                    }
-                }
-
-                if (!validationPassed)
-                {
-                    Console.WriteLine($"Invalid date. Min date: {minDate.ToString("MM/dd/yyyy", CultureInfo.InvariantCulture)}, max date: today.");
+                    return Tuple.Create(true, string.Empty, birthday);
                 }
             }
-            while (!validationPassed);
 
-            return birthday;
+            return Tuple.Create(false, $"{stringToConvert} is not a date", birthday);
         }
 
-        private static short InputNumber(string inputPrompt, short minNumber, short maxNumber)
+        private static Tuple<bool, string, short> ShortConverter(string stringToConvert)
         {
-            short number;
-            bool validationPassed;
-            do
+            if (short.TryParse(stringToConvert, out var number))
             {
-                validationPassed = false;
-                Console.Write(inputPrompt);
-                if (short.TryParse(Console.ReadLine(), out number) && number >= minNumber && number <= maxNumber)
-                {
-                    validationPassed = true;
-                }
-
-                if (!validationPassed)
-                {
-                    Console.WriteLine($"Invalid number. Min number: {minNumber}, max number: {maxNumber}.");
-                }
+                return Tuple.Create(true, string.Empty, number);
             }
-            while (!validationPassed);
 
-            return number;
+            return Tuple.Create(false, $"{stringToConvert} is not short number", number);
         }
 
-        private static decimal InputNumber(string inputPrompt, decimal minNumber, decimal maxNumber)
+        private static Tuple<bool, string, decimal> DecimalConverter(string stringToConvert)
         {
-            decimal number;
-            bool validationPassed;
-            do
+            if (decimal.TryParse(stringToConvert, out var number))
             {
-                validationPassed = false;
-                Console.Write(inputPrompt);
-                if (decimal.TryParse(Console.ReadLine(), out number) && number >= minNumber && number <= maxNumber)
-                {
-                    validationPassed = true;
-                }
+                return Tuple.Create(true, string.Empty, number);
+            }
 
-                if (!validationPassed)
+            return Tuple.Create(false, $"{stringToConvert} is not decimal number", number);
+        }
+
+        private static Tuple<bool, string, char> CharConverter(string stringToConvert)
+        {
+            if (char.TryParse(stringToConvert, out var c))
+            {
+                return Tuple.Create(true, string.Empty, c);
+            }
+
+            return Tuple.Create(false, $"{stringToConvert} is not character", c);
+        }
+
+        private static Tuple<bool, string> NameValidator(string nameToValidate)
+        {
+            int minLength;
+            int maxLength;
+            if (isDefaultValidation)
+            {
+                minLength = 2;
+                maxLength = 60;
+            }
+            else
+            {
+                minLength = 4;
+                maxLength = 20;
+            }
+
+            if (string.IsNullOrEmpty(nameToValidate) || nameToValidate.Length < minLength || nameToValidate.Length > maxLength)
+            {
+                return Tuple.Create(false, $"Length of \"{nameToValidate}\" does not meet the requirements. Min. length = {minLength}, max. lenght = {maxLength}");
+            }
+
+            foreach (char c in nameToValidate)
+            {
+                var validationResult = LetterValidator(c);
+                if (!validationResult.Item1)
                 {
-                    Console.WriteLine($"Invalid number. Min number: {minNumber}, max number: {maxNumber}.");
+                    return Tuple.Create(false, validationResult.Item2);
                 }
             }
-            while (!validationPassed);
 
-            return number;
+            return Tuple.Create(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> DateValidator(DateTime dateToValidate)
+        {
+            DateTime minDate;
+            DateTime maxDate;
+            if (isDefaultValidation)
+            {
+                minDate = new DateTime(1950, 1, 1);
+                maxDate = DateTime.Now;
+            }
+            else
+            {
+                minDate = new DateTime(1940, 1, 1);
+                const int ageOfMajority = 18;
+                maxDate = DateTime.Now.AddYears(-ageOfMajority);
+            }
+
+            if (dateToValidate < minDate || dateToValidate >= maxDate)
+            {
+                return Tuple.Create(false, $"Invalid date. Min date: {minDate.ToString("MM / dd / yyyy", CultureInfo.InvariantCulture)}, max date: {maxDate.ToString("MM / dd / yyyy", CultureInfo.InvariantCulture)}.");
+            }
+
+            return Tuple.Create(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> HeightValidator(short heightToValidate)
+        {
+            short minHeight;
+            short maxHeight;
+            if (isDefaultValidation)
+            {
+                minHeight = 40;
+                maxHeight = 300;
+            }
+            else
+            {
+                minHeight = 120;
+                maxHeight = 250;
+            }
+
+            if (heightToValidate < minHeight || heightToValidate > maxHeight)
+            {
+                return Tuple.Create(false, $"The height is not within the allowed range. Min. value = {minHeight}, max. value = {maxHeight}");
+            }
+
+            return Tuple.Create(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> CashSavingsValidator(decimal heightToValidate)
+        {
+            decimal minCashSavings;
+            decimal maxCashSavings;
+            if (isDefaultValidation)
+            {
+                minCashSavings = 0M;
+                maxCashSavings = 10_000_000M;
+            }
+            else
+            {
+                minCashSavings = 100M;
+                maxCashSavings = 100_000_000M;
+            }
+
+            if (heightToValidate < minCashSavings || heightToValidate > maxCashSavings)
+            {
+                return Tuple.Create(false, $"The cash savings is not within the allowed range. Min. value = {minCashSavings}, max. value = {maxCashSavings}");
+            }
+
+            return Tuple.Create(true, string.Empty);
+        }
+
+        private static Tuple<bool, string> LetterValidator(char c)
+        {
+            if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
+            {
+                return Tuple.Create(false, $"\"{c}\" is not an English letter");
+            }
+
+            return Tuple.Create(true, string.Empty);
         }
 
         private static void List(string parameters)
@@ -271,7 +379,7 @@ namespace FileCabinetApp
             ShowRecords(records);
         }
 
-        private static void ShowRecords(FileCabinetRecord[] records)
+        private static void ShowRecords(ReadOnlyCollection<FileCabinetRecord> records)
         {
             foreach (var record in records)
             {
@@ -282,8 +390,7 @@ namespace FileCabinetApp
 
         private static void Edit(string parameters)
         {
-            int id;
-            if (!int.TryParse(parameters, out id))
+            if (!int.TryParse(parameters, out int id))
             {
                 Console.WriteLine($"#{parameters} record is not found.");
                 return;
@@ -299,23 +406,45 @@ namespace FileCabinetApp
                 return;
             }
 
-            string? firstName;
-            string? lastName;
-            DateTime dateOfBirth;
-            short height;
-            decimal cashSavings;
-            char favoriteLetter;
+            var recordToEdit = new RecordArgs();
+            Console.Write("First name: ");
+            recordToEdit.FirstName = ReadInput(StringConverter, NameValidator);
 
-            InputRecord(out firstName, out lastName, out dateOfBirth, out height, out cashSavings, out favoriteLetter);
-            fileCabinetService.EditRecord(id, firstName, lastName, dateOfBirth, height, cashSavings, favoriteLetter);
+            Console.Write("Last name: ");
+            recordToEdit.LastName = ReadInput(StringConverter, NameValidator);
+
+            Console.Write("Date of birth: ");
+            recordToEdit.DateOfBirth = ReadInput(DateConverter, DateValidator);
+
+            Console.Write("Height (cm): ");
+            recordToEdit.Height = ReadInput(ShortConverter, HeightValidator);
+
+            Console.Write("Cash savings ($): ");
+            recordToEdit.CashSavings = ReadInput(DecimalConverter, CashSavingsValidator);
+
+            Console.Write("Favorite char: ");
+            recordToEdit.FavoriteLetter = ReadInput(CharConverter, LetterValidator);
+
+            recordToEdit.Id = id;
+            fileCabinetService.EditRecord(recordToEdit);
             Console.WriteLine($"Record #{id} edited.");
         }
 
         private static void Find(string parameters)
         {
-            var paramsArray = parameters.Split(' ', 2, StringSplitOptions.RemoveEmptyEntries);
-            var propertyName = paramsArray[0];
-            var searchText = paramsArray[1];
+            const int paramsNumber = 2;
+            var paramsArray = parameters.Split(' ', paramsNumber, StringSplitOptions.RemoveEmptyEntries);
+            string propertyName, searchText;
+            try
+            {
+                propertyName = paramsArray[0];
+                searchText = paramsArray[1];
+            }
+            catch
+            {
+                Console.WriteLine("Two parameters required. <param1> - property name, <param2> - search text in quotes");
+                return;
+            }
 
             if (string.IsNullOrWhiteSpace(propertyName) || string.IsNullOrWhiteSpace(searchText) || searchText[0] != '\"' || searchText[^1] != '\"')
             {
@@ -325,6 +454,7 @@ namespace FileCabinetApp
 
             propertyName = propertyName.ToLowerInvariant();
             searchText = searchText[1..^1];
+
             var records = propertyName switch
             {
                 "firstname" => fileCabinetService.FindByFirstName(searchText),
@@ -339,7 +469,7 @@ namespace FileCabinetApp
                 return;
             }
 
-            if (records.Length == 0)
+            if (records.Count == 0)
             {
                 Console.WriteLine("Nothing found");
                 return;

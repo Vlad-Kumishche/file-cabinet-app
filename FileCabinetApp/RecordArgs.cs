@@ -1,9 +1,9 @@
 ﻿namespace FileCabinetApp
 {
     /// <summary>
-    /// Сlass represents the file cabinet record.
+    /// Class for introducing parameters for file cabinet record.
     /// </summary>
-    public class FileCabinetRecord
+    public class RecordArgs
     {
         /// <summary>
         /// Gets or sets the id of the record.
