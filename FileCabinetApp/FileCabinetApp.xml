@@ -145,6 +145,12 @@
             </summary>
             <value>The favorite letter of the person.</value>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.#ctor(System.IO.StreamWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvWriter"/> class.
+            </summary>
+            <param name="writer">Writer to file.</param>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
             Сlass provides a service for storing file cabinet records and operations on them.
@@ -168,6 +174,12 @@
             Edits specified file cabinet record.
             </summary>
             <param name="recordToEdit">Record to edit.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetService.MakeSnapshot">
+            <summary>
+            Makes snapshot of current class state.
+            </summary>
+            <returns>Snapshot of FileCabinetService.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetService.FindByFirstName(System.String)">
             <summary>
@@ -210,6 +222,17 @@
             </summary>
             <returns>Number of records.</returns>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetServiceSnapshot">
+            <summary>
+            Class for snapshot of FileCabinetService.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.#ctor(System.Collections.Generic.List{FileCabinetApp.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
+            </summary>
+            <param name="records">List of records.</param>
+        </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
             Interface provides a service for storing file cabinet records and operations on them.
@@ -227,6 +250,12 @@
             Edits specified file cabinet record.
             </summary>
             <param name="recordToEdit">Record to edit.</param>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.MakeSnapshot">
+            <summary>
+            Makes snapshot of current class state.
+            </summary>
+            <returns>Snapshot of FileCabinetService.</returns>
         </member>
         <member name="M:FileCabinetApp.IFileCabinetService.FindByFirstName(System.String)">
             <summary>
