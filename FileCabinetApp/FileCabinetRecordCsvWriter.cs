@@ -7,6 +7,9 @@ using System.Threading.Tasks;
 
 namespace FileCabinetApp
 {
+    /// <summary>
+    /// Class provides serialization of FileCabinetRecord to CSV.
+    /// </summary>
     public class FileCabinetRecordCsvWriter
     {
         private readonly TextWriter writer;
@@ -20,11 +23,18 @@ namespace FileCabinetApp
             this.writer = writer;
         }
 
+        /// <summary>
+        /// Writes first line of CSV file.
+        /// </summary>
         public void WriteFirstLine()
         {
             this.writer.WriteLine("Id,First Name,Last Name,Date of Birth,Height,Cash Savings,Favorite Letter,");
         }
 
+        /// <summary>
+        /// Writes single record to the file.
+        /// </summary>
+        /// <param name="record">Record to write.</param>
         public void Write(FileCabinetRecord record)
         {
             var stringToWrite = new StringBuilder();

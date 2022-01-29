@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Text;
+using System.Xml;
 
 namespace FileCabinetApp
 {
@@ -521,18 +522,34 @@ namespace FileCabinetApp
             try
             {
                 var snapshot = fileCabinetService.MakeSnapshot();
+                string messageToUser;
                 switch (fileFormat)
                 {
                     case "csv":
-                        var fileWriter = new StreamWriter(path, false, Encoding.UTF8);
-                        snapshot.SaveToCsv(fileWriter);
-                        fileWriter.Close();
-                        Console.WriteLine($"All records are exported to file {path}");
+                        var csvWriter = new StreamWriter(path, false, Encoding.UTF8);
+                        snapshot.SaveToCsv(csvWriter);
+                        csvWriter.Close();
+                        messageToUser = $"All records are exported to file {path}";
                         break;
+
+                    case "xml":
+                        XmlWriterSettings settings = new XmlWriterSettings();
+                        settings.Indent = true;
+                        settings.IndentChars = "\t";
+                        settings.OmitXmlDeclaration = true;
+
+                        var xmlWriter = XmlWriter.Create(path, settings);
+                        snapshot.SaveToXml(xmlWriter);
+                        xmlWriter.Close();
+                        messageToUser = $"All records are exported to file {path}";
+                        break;
+
                     default:
-                        Console.WriteLine($"<param1> - unsuppurted file format.");
+                        messageToUser = $"<param1> - unsuppurted file format.";
                         break;
                 }
+
+                Console.WriteLine(messageToUser);
             }
             catch (DirectoryNotFoundException)
             {

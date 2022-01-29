@@ -145,11 +145,54 @@
             </summary>
             <value>The favorite letter of the person.</value>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
+            <summary>
+            Class provides serialization of FileCabinetRecord to CSV.
+            </summary>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.#ctor(System.IO.StreamWriter)">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvWriter"/> class.
             </summary>
             <param name="writer">Writer to file.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.WriteFirstLine">
+            <summary>
+            Writes first line of CSV file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes single record to the file.
+            </summary>
+            <param name="record">Record to write.</param>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
+            <summary>
+            Class provides serialization of FileCabinetRecord to XML.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.#ctor(System.Xml.XmlWriter)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlWriter"/> class.
+            </summary>
+            <param name="writer">Writer to file.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.WriteFirstLine">
+            <summary>
+            Writes first line of XML file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.WriteEndLine">
+            <summary>
+            Writes last line of XML file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlWriter.Write(FileCabinetApp.FileCabinetRecord)">
+            <summary>
+            Writes single record to the file.
+            </summary>
+            <param name="record">Record to write.</param>
         </member>
         <member name="T:FileCabinetApp.FileCabinetService">
             <summary>
@@ -232,6 +275,18 @@
             Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetServiceSnapshot"/> class.
             </summary>
             <param name="records">List of records.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
+            <summary>
+            Writes snapshot of FileCabinetService to the CSV file.
+            </summary>
+            <param name="writer">Writer to file.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToXml(System.Xml.XmlWriter)">
+            <summary>
+            Writes snapshot of FileCabinetService to the XML file.
+            </summary>
+            <param name="writer">Writer to file.</param>
         </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
