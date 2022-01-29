@@ -24,7 +24,7 @@ namespace FileCabinetApp
 
         private static bool isDefaultValidation = true;
 
-        private static IFileCabinetService fileCabinetService = new FileCabinetService(new DefaultValidator());
+        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -104,7 +104,7 @@ namespace FileCabinetApp
 
                 if ((shortArgumentNotation && string.Equals(argument, CustomValidation, StringComparison.OrdinalIgnoreCase)) || (!shortArgumentNotation && string.Equals(argument, ValidationParameter + CustomValidation, StringComparison.OrdinalIgnoreCase)))
                 {
-                    fileCabinetService = new FileCabinetService(new CustomValidator());
+                    fileCabinetService = new FileCabinetMemoryService(new CustomValidator());
                     message = $"Using {CustomValidation} validation rules.";
                     isDefaultValidation = false;
                     break;
