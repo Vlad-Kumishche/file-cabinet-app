@@ -21,6 +21,12 @@ namespace FileCabinetApp
         void EditRecord(RecordArgs recordToEdit);
 
         /// <summary>
+        /// Makes snapshot of current class state.
+        /// </summary>
+        /// <returns>Snapshot of FileCabinetService.</returns>
+        FileCabinetServiceSnapshot MakeSnapshot();
+
+        /// <summary>
         /// Finds records by first name.
         /// </summary>
         /// <param name="firstName">The first name of the person.</param>

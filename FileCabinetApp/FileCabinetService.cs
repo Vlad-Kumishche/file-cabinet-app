@@ -98,6 +98,15 @@ namespace FileCabinetApp
         }
 
         /// <summary>
+        /// Makes snapshot of current class state.
+        /// </summary>
+        /// <returns>Snapshot of FileCabinetService.</returns>
+        public FileCabinetServiceSnapshot MakeSnapshot()
+        {
+            return new FileCabinetServiceSnapshot(this.list);
+        }
+
+        /// <summary>
         /// Finds records by first name.
         /// </summary>
         /// <param name="firstName">The first name of the person.</param>

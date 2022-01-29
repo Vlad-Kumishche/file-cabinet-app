@@ -1,5 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
+using System.Text;
+using System.Xml;
 
 namespace FileCabinetApp
 {
@@ -33,6 +35,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("list", List),
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
+            new Tuple<string, Action<string>>("export", Export),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -44,6 +47,7 @@ namespace FileCabinetApp
             new string[] { "list", "prints all records", "The 'list' command prints all records." },
             new string[] { "edit", "edits an existing record", "The 'edit' command edits an existing record where id = <param1>. <param1> - id to search for." },
             new string[] { "find", "finds a list of records matching the search text", "The 'edit' command finds a list of records where <param1> = <param2>. <param1> - property name, <param2> - search text in quotes." },
+            new string[] { "export", "exports data to the file", "The 'export' command exports the data to the <param1> file format located in the <param2> folder." },
         };
 
         /// <summary>
@@ -433,27 +437,20 @@ namespace FileCabinetApp
         private static void Find(string parameters)
         {
             const int paramsNumber = 2;
-            var paramsArray = parameters.Split(' ', paramsNumber, StringSplitOptions.RemoveEmptyEntries);
-            string propertyName, searchText;
-            try
+            string[] parameterExplanations = new string[] { "property name", "search text in quotes" };
+            if (!GetParameters(paramsNumber, parameters, parameterExplanations, out var paramsArray))
             {
-                propertyName = paramsArray[0];
-                searchText = paramsArray[1];
-            }
-            catch
-            {
-                Console.WriteLine("Two parameters required. <param1> - property name, <param2> - search text in quotes");
                 return;
             }
 
-            if (string.IsNullOrWhiteSpace(propertyName) || string.IsNullOrWhiteSpace(searchText) || searchText[0] != '\"' || searchText[^1] != '\"')
+            var propertyName = paramsArray[0].ToLowerInvariant();
+            var searchText = paramsArray[1][1..^1];
+
+            if (searchText[0] != '\"' || searchText[^1] != '\"')
             {
-                Console.WriteLine("Two parameters required. <param1> - property name, <param2> - search text in quotes");
+                Console.WriteLine($"<param2> - {parameterExplanations[1]}");
                 return;
             }
-
-            propertyName = propertyName.ToLowerInvariant();
-            searchText = searchText[1..^1];
 
             var records = propertyName switch
             {
@@ -476,6 +473,88 @@ namespace FileCabinetApp
             }
 
             ShowRecords(records);
+        }
+
+        private static bool GetParameters(int count, string sourceString, string[] parameterExplanations, out string[] paramsArray)
+        {
+            paramsArray = sourceString.Split(' ', count, StringSplitOptions.RemoveEmptyEntries);
+            foreach (var parameter in paramsArray)
+            {
+                if (parameter is null)
+                {
+                    Console.Write($"{count} parameters required.");
+                    int i = 0;
+                    foreach (var explanation in parameterExplanations)
+                    {
+                        Console.Write($" <param{++i}> - {explanation}.");
+                    }
+
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private static void Export(string parameters)
+        {
+            const int paramsNumber = 2;
+            string[] parameterExplanations = new string[] { "file format", "path" };
+            if (!GetParameters(paramsNumber, parameters, parameterExplanations, out var paramsArray))
+            {
+                return;
+            }
+
+            var fileFormat = paramsArray[0];
+            var path = paramsArray[1];
+            var file = new FileInfo(path);
+            if (file.Exists)
+            {
+                Console.Write($"File is exist - rewrite {path}? [Y/n] ");
+                char answer = Console.ReadKey().KeyChar;
+                Console.WriteLine();
+                if (answer != 'Y')
+                {
+                    return;
+                }
+            }
+
+            try
+            {
+                var snapshot = fileCabinetService.MakeSnapshot();
+                string messageToUser;
+                switch (fileFormat)
+                {
+                    case "csv":
+                        var csvWriter = new StreamWriter(path, false, Encoding.UTF8);
+                        snapshot.SaveToCsv(csvWriter);
+                        csvWriter.Close();
+                        messageToUser = $"All records are exported to file {path}";
+                        break;
+
+                    case "xml":
+                        XmlWriterSettings settings = new XmlWriterSettings();
+                        settings.Indent = true;
+                        settings.IndentChars = "\t";
+                        settings.OmitXmlDeclaration = true;
+
+                        var xmlWriter = XmlWriter.Create(path, settings);
+                        snapshot.SaveToXml(xmlWriter);
+                        xmlWriter.Close();
+                        messageToUser = $"All records are exported to file {path}";
+                        break;
+
+                    default:
+                        messageToUser = $"<param1> - unsuppurted file format.";
+                        break;
+                }
+
+                Console.WriteLine(messageToUser);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                Console.WriteLine($"Export failed: can't open file {path}");
+            }
         }
     }
 }
