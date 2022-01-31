@@ -102,7 +102,7 @@ namespace FileCabinetApp
             string[] currentArgs = new string[2];
             if (args != null && args.Length > 0)
             {
-                for (int i = 1; i < args.Length; i += 2)
+                for (int i = 1; i < args.Length; i++)
                 {
                     currentArgs[0] = args[i - 1];
                     currentArgs[1] = args[i];
@@ -168,7 +168,7 @@ namespace FileCabinetApp
             switch (storageRules)
             {
                 case "file":
-                    FileStream fileStream = new FileStream(FileName, FileMode.Create);
+                    FileStream fileStream = new FileStream(FileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
                     fileCabinetService = new FileCabinetFilesystemService(fileStream, validator);
                     break;
 
