@@ -9,7 +9,7 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetFilesystemService : IFileCabinetService
     {
-        private const int MaxRecordLength = 279;
+        private const int RecordLength = 279;
         private const int MaxNameLength = 120;
         private readonly IRecordValidator validator;
 
@@ -43,7 +43,7 @@ namespace FileCabinetApp
         /// <value>
         /// Count of record.
         /// </value>
-        public int RecordsCount => (int)this.fileStream.Length / MaxRecordLength;
+        public int RecordsCount => (int)this.fileStream.Length / RecordLength;
 
         /// <inheritdoc/>
         public int CreateRecord(RecordArgs recordToCreate)
@@ -112,13 +112,60 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+            var recordBuffer = new byte[RecordLength];
+
+            this.fileStream.Seek(0, SeekOrigin.Begin);
+            for (int i = 0; i < this.fileStream.Length; i += RecordLength)
+            {
+                this.fileStream.Read(recordBuffer, 0, RecordLength);
+                records.Add(BytesToFileCabinetRecord(recordBuffer));
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(records);
+        }
+
+        private static FileCabinetRecord BytesToFileCabinetRecord(byte[] bytes)
+        {
+            if (bytes == null)
+            {
+                throw new ArgumentNullException(nameof(bytes));
+            }
+
+            if (bytes.Length < RecordLength)
+            {
+                throw new ArgumentException("Error. Record is corrupted.", nameof(bytes));
+            }
+
+            var record = new FileCabinetRecord();
+
+            using (var memoryStream = new MemoryStream(bytes))
+            using (var binaryReader = new BinaryReader(memoryStream))
+            {
+                short status = binaryReader.ReadInt16();
+                record.Id = binaryReader.ReadInt32();
+
+                record.FirstName = binaryReader.ReadString().Trim(' ');
+                record.LastName = binaryReader.ReadString().Trim(' ');
+
+                int year = binaryReader.ReadInt32();
+                int month = binaryReader.ReadInt32();
+                int day = binaryReader.ReadInt32();
+
+                record.DateOfBirth = new DateTime(year, month, day);
+
+                record.Height = binaryReader.ReadInt16();
+                record.CashSavings = binaryReader.ReadDecimal();
+                record.FavoriteLetter = binaryReader.ReadChar();
+            }
+
+            return record;
         }
 
         /// <inheritdoc/>
         public int GetStat()
         {
-            throw new NotImplementedException();
+            return (int)(this.fileStream.Length / RecordLength);
         }
 
         /// <summary>
@@ -136,7 +183,7 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(fileCabinetRecord));
             }
 
-            var bytes = new byte[MaxRecordLength];
+            var bytes = new byte[RecordLength];
             using (var memoryStream = new MemoryStream(bytes))
             using (var binaryWriter = new BinaryWriter(memoryStream))
             {

@@ -168,7 +168,7 @@ namespace FileCabinetApp
             switch (storageRules)
             {
                 case "file":
-                    FileStream fileStream = new FileStream(FileName, FileMode.OpenOrCreate, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    FileStream fileStream = new FileStream(FileName, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                     fileCabinetService = new FileCabinetFilesystemService(fileStream, validator);
                     break;
 
