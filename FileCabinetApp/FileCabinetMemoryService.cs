@@ -125,7 +125,7 @@ namespace FileCabinetApp
         {
             if (!DateTime.TryParse(sourceDate, out var dateOfBirth))
             {
-                throw new ArgumentException($"Invalid {nameof(sourceDate)}", nameof(sourceDate));
+                return EmptyRecordReadOnlyCollection;
             }
 
             if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))

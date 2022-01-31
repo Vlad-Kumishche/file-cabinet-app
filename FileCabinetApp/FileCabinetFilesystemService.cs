@@ -11,6 +11,7 @@ namespace FileCabinetApp
     {
         private const int RecordSize = 279;
         private const int MaxNameLength = 120;
+        private static readonly ReadOnlyCollection<FileCabinetRecord> EmptyRecordReadOnlyCollection = new List<FileCabinetRecord>().AsReadOnly();
         private readonly IRecordValidator validator;
 
         /// <summary>
@@ -127,19 +128,54 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> recorecordsFound = new List<FileCabinetRecord>();
+            foreach (var record in this.GetRecords())
+            {
+                if (string.Equals(record.FirstName, firstName, StringComparison.OrdinalIgnoreCase))
+                {
+                    recorecordsFound.Add(record);
+                }
+            }
+
+            var records = new ReadOnlyCollection<FileCabinetRecord>(recorecordsFound);
+            return records;
         }
 
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            throw new NotImplementedException();
+            List<FileCabinetRecord> recorecordsFound = new List<FileCabinetRecord>();
+            foreach (var record in this.GetRecords())
+            {
+                if (string.Equals(record.LastName, lastName, StringComparison.OrdinalIgnoreCase))
+                {
+                    recorecordsFound.Add(record);
+                }
+            }
+
+            var records = new ReadOnlyCollection<FileCabinetRecord>(recorecordsFound);
+            return records;
         }
 
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
         {
-            throw new NotImplementedException();
+            if (!DateTime.TryParse(sourceDate, out var dateOfBirth))
+            {
+                return EmptyRecordReadOnlyCollection;
+            }
+
+            List<FileCabinetRecord> recorecordsFound = new List<FileCabinetRecord>();
+            foreach (var record in this.GetRecords())
+            {
+                if (record.DateOfBirth == dateOfBirth)
+                {
+                    recorecordsFound.Add(record);
+                }
+            }
+
+            var records = new ReadOnlyCollection<FileCabinetRecord>(recorecordsFound);
+            return records;
         }
 
         /// <inheritdoc/>

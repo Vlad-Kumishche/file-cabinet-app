@@ -507,14 +507,27 @@ namespace FileCabinetApp
                 return;
             }
 
-            var propertyName = paramsArray[0].ToLowerInvariant();
-            var searchText = paramsArray[1][1..^1];
+            string propertyName;
+            string searchText;
+
+            try
+            {
+                propertyName = paramsArray[0].ToLowerInvariant();
+                searchText = paramsArray[1];
+            }
+            catch
+            {
+                Console.WriteLine($"Invalid parameters. <param1> - {parameterExplanations[0]}. <param2> - {parameterExplanations[1]}");
+                return;
+            }
 
             if (searchText[0] != '\"' || searchText[^1] != '\"')
             {
                 Console.WriteLine($"<param2> - {parameterExplanations[1]}");
                 return;
             }
+
+            searchText = searchText[1..^1];
 
             var records = propertyName switch
             {
