@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FileCabinetGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "-t xml --output=rec.xml --records-amount=11000 -i 677"
+    }
+  }
+}
