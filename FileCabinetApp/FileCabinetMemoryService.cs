@@ -4,9 +4,9 @@ using System.Globalization;
 namespace FileCabinetApp
 {
     /// <summary>
-    /// Сlass provides a service for storing file cabinet records and operations on them.
+    /// Сlass provides a service for storing file cabinet records in memory and operations on them.
     /// </summary>
-    public class FileCabinetService : IFileCabinetService
+    public class FileCabinetMemoryService : IFileCabinetService
     {
         private static readonly ReadOnlyCollection<FileCabinetRecord> EmptyRecordReadOnlyCollection = new List<FileCabinetRecord>().AsReadOnly();
         private readonly List<FileCabinetRecord> list = new List<FileCabinetRecord>();
@@ -16,19 +16,15 @@ namespace FileCabinetApp
         private readonly IRecordValidator validator;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FileCabinetService"/> class.
+        /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
         /// </summary>
         /// <param name="validator">Specified validation strategy.</param>
-        public FileCabinetService(IRecordValidator validator)
+        public FileCabinetMemoryService(IRecordValidator validator)
         {
             this.validator = validator;
         }
 
-        /// <summary>
-        /// Creates file cabinet record.
-        /// </summary>
-        /// <param name="recordToCreate">Record to create.</param>
-        /// <returns>The id of the record.</returns>
+        /// <inheritdoc/>
         public int CreateRecord(RecordArgs recordToCreate)
         {
             this.validator.ValidateParameters(recordToCreate);
@@ -80,10 +76,7 @@ namespace FileCabinetApp
             return record.Id;
         }
 
-        /// <summary>
-        /// Edits specified file cabinet record.
-        /// </summary>
-        /// <param name="recordToEdit">Record to edit.</param>
+        /// <inheritdoc/>
         public void EditRecord(RecordArgs recordToEdit)
         {
             this.validator.ValidateParameters(recordToEdit);
@@ -97,20 +90,13 @@ namespace FileCabinetApp
             record.FavoriteLetter = recordToEdit.FavoriteLetter;
         }
 
-        /// <summary>
-        /// Makes snapshot of current class state.
-        /// </summary>
-        /// <returns>Snapshot of FileCabinetService.</returns>
+        /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             return new FileCabinetServiceSnapshot(this.list);
         }
 
-        /// <summary>
-        /// Finds records by first name.
-        /// </summary>
-        /// <param name="firstName">The first name of the person.</param>
-        /// <returns>Array of records.</returns>
+        /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
             if (this.firstNameDictionary.ContainsKey(firstName))
@@ -122,11 +108,7 @@ namespace FileCabinetApp
             return EmptyRecordReadOnlyCollection;
         }
 
-        /// <summary>
-        /// Finds records by last name.
-        /// </summary>
-        /// <param name="lastName">The last name of the person.</param>
-        /// <returns>Array of records.</returns>
+        /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
             if (this.lastNameDictionary.ContainsKey(lastName))
@@ -138,16 +120,12 @@ namespace FileCabinetApp
             return EmptyRecordReadOnlyCollection;
         }
 
-        /// <summary>
-        /// Finds records by date of birth.
-        /// </summary>
-        /// <param name="sourceDate">The date of birth of the person.</param>
-        /// <returns>Array of records.</returns>
+        /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
         {
             if (!DateTime.TryParse(sourceDate, out var dateOfBirth))
             {
-                throw new ArgumentException($"Invalid {nameof(sourceDate)}", nameof(sourceDate));
+                return EmptyRecordReadOnlyCollection;
             }
 
             if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
@@ -159,12 +137,7 @@ namespace FileCabinetApp
             return EmptyRecordReadOnlyCollection;
         }
 
-        /// <summary>
-        /// Gets record by id.
-        /// </summary>
-        /// <param name="id">The id of the record.</param>
-        /// <returns>Required file cabinet record.</returns>
-        /// <exception cref="ArgumentException">Thrown when record with given id was not found.</exception>
+        /// <inheritdoc/>
         public FileCabinetRecord GetRecordById(int id)
         {
             var record = this.list.Find(x => x.Id == id);
@@ -176,20 +149,14 @@ namespace FileCabinetApp
             return record;
         }
 
-        /// <summary>
-        /// Gets all file cabinet records.
-        /// </summary>
-        /// <returns>Array of records.</returns>
+        /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
             var records = new ReadOnlyCollection<FileCabinetRecord>(this.list);
             return records;
         }
 
-        /// <summary>
-        /// Gets the number of records.
-        /// </summary>
-        /// <returns>Number of records.</returns>
+        /// <inheritdoc/>
         public int GetStat()
         {
             return this.list.Count;
