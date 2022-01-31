@@ -7,6 +7,21 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetFilesystemService : IFileCabinetService
     {
+        private readonly FileStream fileStream;
+
+        private readonly IRecordValidator validator;
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
+        /// </summary>
+        /// <param name="fileStream">FileStream to specified file.</param>
+        /// <param name="validator">Specified validation strategy.</param>
+        public FileCabinetFilesystemService(FileStream fileStream, IRecordValidator validator)
+        {
+            this.fileStream = fileStream;
+            this.validator = validator;
+        }
+
         /// <inheritdoc/>
         public int CreateRecord(RecordArgs recordToCreate)
         {
@@ -59,6 +74,14 @@ namespace FileCabinetApp
         public int GetStat()
         {
             throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Closes the stream.
+        /// </summary>
+        public void Close()
+        {
+            this.fileStream.Close();
         }
     }
 }

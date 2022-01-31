@@ -15,16 +15,12 @@ namespace FileCabinetApp
         private const int CommandHelpIndex = 0;
         private const int DescriptionHelpIndex = 1;
         private const int ExplanationHelpIndex = 2;
-        private const string ValidationParameter = "--validation-rules=";
-        private const string ShortValidationParameter = "-v";
-        private const string DefaultValidation = "default";
-        private const string CustomValidation = "custom";
-
+        private const string FileName = "cabinet-records.db";
+        private static string currentValidationRules = "default";
+        private static IRecordValidator validator = new DefaultValidator();
         private static bool isRunning = true;
 
-        private static bool isDefaultValidation = true;
-
-        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(new DefaultValidator());
+        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(validator);
 
         private static Tuple<string, Action<string>>[] commands = new Tuple<string, Action<string>>[]
         {
@@ -50,15 +46,25 @@ namespace FileCabinetApp
             new string[] { "export", "exports data to the file", "The 'export' command exports the data to the <param1> file format located in the <param2> folder." },
         };
 
+        private static Dictionary<string, SetRule> paramsList = new Dictionary<string, SetRule>
+        {
+            ["--storage"] = new SetRule(SetStorageRules),
+            ["-s"] = new SetRule(SetStorageRules),
+            ["--validation-rules"] = new SetRule(SetValidationRules),
+            ["-v"] = new SetRule(SetValidationRules),
+        };
+
+        private delegate void SetRule(string args);
+
         /// <summary>
         /// Function that processes user input and calls the appropriate functions.
         /// </summary>
         /// <param name="args">Сommand line arguments.</param>
         public static void Main(string[] args)
         {
-            var message = ParseCommandLineArguments(args);
+            ParseCommandLineParams(args);
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
-            Console.WriteLine(message);
+            Console.WriteLine($"Using {currentValidationRules} validation rules.");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -91,27 +97,85 @@ namespace FileCabinetApp
             while (isRunning);
         }
 
-        private static string ParseCommandLineArguments(string[] args)
+        private static void ParseCommandLineParams(string[] args)
         {
-            bool shortArgumentNotation = false;
-            string message = $"Using {DefaultValidation} validation rules.";
-            foreach (var argument in args)
+            string[] currentArgs = new string[2];
+            if (args != null && args.Length > 0)
             {
-                if (string.Equals(argument, "-v", StringComparison.Ordinal))
+                for (int i = 1; i < args.Length; i += 2)
                 {
-                    shortArgumentNotation = true;
+                    currentArgs[0] = args[i - 1];
+                    currentArgs[1] = args[i];
+                    ParsePairOfParams(currentArgs);
+                }
+            }
+        }
+
+        private static void ParsePairOfParams(string[] args)
+        {
+            string operation = string.Empty;
+            string parameter = string.Empty;
+            SetRule? changeRule = null;
+            const int first = 0;
+            const int second = 1;
+
+            if (args[first].StartsWith("--", StringComparison.InvariantCulture))
+            {
+                int index = args[first].IndexOf("=", StringComparison.InvariantCulture);
+                if (index != -1)
+                {
+                    operation = args[first].Substring(0, index);
+                    parameter = args[first].Substring(index + 1);
+                    if (paramsList.ContainsKey(operation.ToLower(CultureInfo.InvariantCulture)))
+                    {
+                        changeRule = paramsList[operation.ToLower(CultureInfo.InvariantCulture)];
+                    }
+                }
+            }
+            else if (args[first].StartsWith("-", StringComparison.InvariantCulture))
+            {
+                operation = args[first];
+                if (args[second] != null)
+                {
+                    parameter = args[second];
                 }
 
-                if ((shortArgumentNotation && string.Equals(argument, CustomValidation, StringComparison.OrdinalIgnoreCase)) || (!shortArgumentNotation && string.Equals(argument, ValidationParameter + CustomValidation, StringComparison.OrdinalIgnoreCase)))
+                if (paramsList.ContainsKey(operation.ToLower(CultureInfo.InvariantCulture)))
                 {
-                    fileCabinetService = new FileCabinetMemoryService(new CustomValidator());
-                    message = $"Using {CustomValidation} validation rules.";
-                    isDefaultValidation = false;
-                    break;
+                    changeRule = paramsList[operation.ToLower(CultureInfo.InvariantCulture)];
                 }
             }
 
-            return message;
+            if (changeRule != null && !string.IsNullOrEmpty(operation) && !string.IsNullOrEmpty(parameter))
+            {
+                changeRule.Invoke(parameter.ToLower(CultureInfo.InvariantCulture));
+            }
+        }
+
+        private static void SetValidationRules(string validationRules)
+        {
+            validator = validationRules switch
+            {
+                "custom" => new CustomValidator(),
+                _ => new DefaultValidator(),
+            };
+
+            currentValidationRules = validationRules;
+        }
+
+        private static void SetStorageRules(string storageRules)
+        {
+            switch (storageRules)
+            {
+                case "file":
+                    FileStream fileStream = new FileStream(FileName, FileMode.Create);
+                    fileCabinetService = new FileCabinetFilesystemService(fileStream, validator);
+                    break;
+
+                default:
+                    fileCabinetService = new FileCabinetMemoryService(validator);
+                    break;
+            }
         }
 
         private static void PrintMissedCommandInfo(string command)
@@ -269,7 +333,7 @@ namespace FileCabinetApp
         {
             int minLength;
             int maxLength;
-            if (isDefaultValidation)
+            if (validator is DefaultValidator)
             {
                 minLength = 2;
                 maxLength = 60;
@@ -301,7 +365,7 @@ namespace FileCabinetApp
         {
             DateTime minDate;
             DateTime maxDate;
-            if (isDefaultValidation)
+            if (validator is DefaultValidator)
             {
                 minDate = new DateTime(1950, 1, 1);
                 maxDate = DateTime.Now;
@@ -325,7 +389,7 @@ namespace FileCabinetApp
         {
             short minHeight;
             short maxHeight;
-            if (isDefaultValidation)
+            if (validator is DefaultValidator)
             {
                 minHeight = 40;
                 maxHeight = 300;
@@ -348,7 +412,7 @@ namespace FileCabinetApp
         {
             decimal minCashSavings;
             decimal maxCashSavings;
-            if (isDefaultValidation)
+            if (validator is DefaultValidator)
             {
                 minCashSavings = 0M;
                 maxCashSavings = 10_000_000M;

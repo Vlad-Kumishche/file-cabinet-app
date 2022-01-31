@@ -103,6 +103,13 @@
             Сlass provides a service for storing file cabinet records in filesystem and operations on them.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.#ctor(System.IO.FileStream,FileCabinetApp.IRecordValidator)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetFilesystemService"/> class.
+            </summary>
+            <param name="fileStream">FileStream to specified file.</param>
+            <param name="validator">Specified validation strategy.</param>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.CreateRecord(FileCabinetApp.RecordArgs)">
             <inheritdoc/>
         </member>
@@ -129,6 +136,11 @@
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetStat">
             <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Close">
+            <summary>
+            Closes the stream.
+            </summary>
         </member>
         <member name="T:FileCabinetApp.FileCabinetMemoryService">
             <summary>
