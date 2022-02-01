@@ -15,8 +15,8 @@ namespace FileCabinetGenerator
             return new FileCabinetRecord
             {
                 Id = id,
-                FirstName = GenerateString(rand, rand.Next(0, 120)),
-                LastName = GenerateString(rand, rand.Next(0, 120)),
+                FirstName = GenerateString(rand, rand.Next(2, 60)),
+                LastName = GenerateString(rand, rand.Next(2, 60)),
                 DateOfBirth = new DateTime(rand.Next(1950, DateTime.Now.Year - 1), rand.Next(1, 12), rand.Next(1, 28)),
                 Height = (short)rand.Next(40, 300),
                 CashSavings = (decimal)rand.Next(0, 10_000_000),

@@ -126,6 +126,54 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
+        public int Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            if (snapshot == null)
+            {
+                throw new ArgumentNullException(nameof(snapshot));
+            }
+
+            var loadedRecords = snapshot.Records;
+            var importedRecordsCount = 0;
+
+            foreach (var importedRecord in loadedRecords)
+            {
+                var recordArgs = new RecordArgs()
+                {
+                    Id = importedRecord.Id,
+                    FirstName = importedRecord.FirstName,
+                    LastName = importedRecord.LastName,
+                    DateOfBirth = importedRecord.DateOfBirth,
+                    Height = importedRecord.Height,
+                    CashSavings = importedRecord.CashSavings,
+                    FavoriteLetter = importedRecord.FavoriteLetter,
+                };
+
+                try
+                {
+                    this.validator.ValidateParameters(recordArgs);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error. Record #{importedRecord.Id} was not imported. Error message: {ex.Message}.");
+                    continue;
+                }
+
+                importedRecordsCount++;
+                try
+                {
+                    this.EditRecord(recordArgs);
+                }
+                catch
+                {
+                    this.CreateRecord(recordArgs);
+                }
+            }
+
+            return importedRecordsCount;
+        }
+
+        /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
             List<FileCabinetRecord> recorecordsFound = new List<FileCabinetRecord>();

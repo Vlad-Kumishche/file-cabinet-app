@@ -674,26 +674,37 @@ namespace FileCabinetApp
             var file = new FileInfo(path);
             if (!file.Exists)
             {
-                Console.Write($"File does not exist.");
+                Console.WriteLine($"Import error: file {path} is not exist.");
                 return;
             }
 
             try
             {
+                string message = string.Empty;
                 switch (fileFormat)
                 {
                     case "csv":
-                        
+                        var snapshot = fileCabinetService.MakeSnapshot();
+                        using (var reader = new StreamReader(path))
+                        {
+                            Console.WriteLine("Import started.");
+                            snapshot.LoadFromCsv(reader);
+                            int countOfRestoredrecords = fileCabinetService.Restore(snapshot);
+                            message = $"{countOfRestoredrecords} records were imported from {path}";
+                        }
+
                         break;
 
                     case "xml":
-                        
+                        //message = $"{countOfRestoredrecords} records were imported from {path}";
                         break;
 
                     default:
-                        Console.WriteLine($"<param1> - unsuppurted file format.");
+                        message = $"<param1> - unsuppurted file format.";
                         break;
                 }
+
+                Console.WriteLine(message);
             }
             catch (DirectoryNotFoundException)
             {

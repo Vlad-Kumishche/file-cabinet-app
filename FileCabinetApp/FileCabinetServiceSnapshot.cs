@@ -1,4 +1,5 @@
-﻿using System.Xml;
+﻿using System.Collections.ObjectModel;
+using System.Xml;
 using System.Xml.Serialization;
 
 namespace FileCabinetApp
@@ -8,7 +9,7 @@ namespace FileCabinetApp
     /// </summary>
     public class FileCabinetServiceSnapshot
     {
-        private readonly FileCabinetRecord[] records;
+        private FileCabinetRecord[] records;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetServiceSnapshot"/> class.
@@ -17,6 +18,20 @@ namespace FileCabinetApp
         public FileCabinetServiceSnapshot(List<FileCabinetRecord> records)
         {
             this.records = records.ToArray();
+        }
+
+        /// <summary>
+        /// Gets file cabinet records.
+        /// </summary>
+        /// <value>
+        /// File cabinet records.
+        /// </value>
+        public ReadOnlyCollection<FileCabinetRecord> Records
+        {
+            get
+            {
+                return new ReadOnlyCollection<FileCabinetRecord>(this.records);
+            }
         }
 
         /// <summary>
@@ -31,6 +46,23 @@ namespace FileCabinetApp
             {
                 csvWriter.Write(record);
             }
+        }
+
+        /// <summary>
+        /// Loads records from file to snapshot.
+        /// </summary>
+        /// <param name="reader">Reader to file.</param>
+        public void LoadFromCsv(StreamReader reader)
+        {
+            var csvReader = new FileCabinetRecordCsvReader(reader);
+            var loadedRecords = csvReader.ReadAll();
+
+            if (loadedRecords.Count == 0)
+            {
+                return;
+            }
+
+            this.records = loadedRecords.ToArray();
         }
 
         /// <summary>

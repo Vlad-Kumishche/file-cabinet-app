@@ -2,7 +2,7 @@
   "profiles": {
     "FileCabinetGenerator": {
       "commandName": "Project",
-      "commandLineArgs": "-t xml --output=rec.xml --records-amount=11000 -i 677"
+      "commandLineArgs": "-t csv --output=c.csv --records-amount=1000 -i 500"
     }
   }
 }
