@@ -66,5 +66,12 @@ namespace FileCabinetApp
         /// </summary>
         /// <returns>Number of records.</returns>
         int GetStat();
+
+        /// <summary>
+        /// Restores file cabinet records from snapshot.
+        /// </summary>
+        /// <param name="snapshot">snapshot.</param>
+        /// <returns>Number of restores records.</returns>
+        public int Restore(FileCabinetServiceSnapshot snapshot);
     }
 }

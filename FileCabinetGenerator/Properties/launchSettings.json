@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "FileCabinetGenerator": {
+      "commandName": "Project",
+      "commandLineArgs": "-t csv --output=c.csv --records-amount=1000 -i 500"
+    }
+  }
+}

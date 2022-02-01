@@ -28,10 +28,10 @@ namespace FileCabinetApp
         public int CreateRecord(RecordArgs recordToCreate)
         {
             this.validator.ValidateParameters(recordToCreate);
-
+            int indexOfLastRecord = this.list.Count - 1;
             var record = new FileCabinetRecord
             {
-                Id = this.list.Count + 1,
+                Id = (recordToCreate.Id == 0) ? this.list[indexOfLastRecord].Id + 1 : recordToCreate.Id,
                 FirstName = recordToCreate.FirstName,
                 LastName = recordToCreate.LastName,
                 DateOfBirth = recordToCreate.DateOfBirth,
@@ -94,6 +94,54 @@ namespace FileCabinetApp
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             return new FileCabinetServiceSnapshot(this.list);
+        }
+
+        /// <inheritdoc/>
+        public int Restore(FileCabinetServiceSnapshot snapshot)
+        {
+            if (snapshot == null)
+            {
+                throw new ArgumentNullException(nameof(snapshot));
+            }
+
+            var loadedRecords = snapshot.Records;
+            var importedRecordsCount = 0;
+
+            foreach (var importedRecord in loadedRecords)
+            {
+                var recordArgs = new RecordArgs()
+                {
+                    Id = importedRecord.Id,
+                    FirstName = importedRecord.FirstName,
+                    LastName = importedRecord.LastName,
+                    DateOfBirth = importedRecord.DateOfBirth,
+                    Height = importedRecord.Height,
+                    CashSavings = importedRecord.CashSavings,
+                    FavoriteLetter = importedRecord.FavoriteLetter,
+                };
+
+                try
+                {
+                    this.validator.ValidateParameters(recordArgs);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error. Record #{importedRecord.Id} was not imported. Error message: {ex.Message}.");
+                    continue;
+                }
+
+                importedRecordsCount++;
+                try
+                {
+                    this.EditRecord(recordArgs);
+                }
+                catch
+                {
+                    this.CreateRecord(recordArgs);
+                }
+            }
+
+            return importedRecordsCount;
         }
 
         /// <inheritdoc/>

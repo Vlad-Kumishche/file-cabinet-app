@@ -1,0 +1,50 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>FileCabinetGenerator</name>
+    </assembly>
+    <members>
+        <member name="T:FileCabinetGenerator.DefaultRecordGenerator">
+            <summary>
+            Generates default records.
+            </summary>
+        </member>
+        <member name="M:FileCabinetGenerator.DefaultRecordGenerator.GenerateRecord(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetGenerator.DefaultRecordGenerator.GenerateRecords(System.Int32,System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetGenerator.IRecordGenerator">
+            <summary>
+            Record-generator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetGenerator.IRecordGenerator.GenerateRecord(System.Int32)">
+            <summary>
+            Generates a record with the given id.
+            </summary>
+            <param name="id">Id.</param>
+            <returns>Generated record.</returns>
+        </member>
+        <member name="M:FileCabinetGenerator.IRecordGenerator.GenerateRecords(System.Int32,System.Int32)">
+            <summary>
+            Generates the list of records of given amount, starting with given id.
+            </summary>
+            <param name="startId">Start id for records.</param>
+            <param name="amount">Amount of records to generate.</param>
+            <returns>List of generated records.</returns>
+        </member>
+        <member name="T:FileCabinetGenerator.Program">
+            <summary>
+            Class provides user interaction.
+            </summary>
+        </member>
+        <member name="M:FileCabinetGenerator.Program.Main(System.String[])">
+            <summary>
+            Processes user input and calls the appropriate functions.
+            </summary>
+            <param name="args">Сommand line arguments.</param>
+        </member>
+    </members>
+</doc>

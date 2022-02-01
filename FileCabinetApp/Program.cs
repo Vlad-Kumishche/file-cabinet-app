@@ -32,6 +32,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
+            new Tuple<string, Action<string>>("import", Import),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -42,8 +43,9 @@ namespace FileCabinetApp
             new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
             new string[] { "list", "prints all records", "The 'list' command prints all records." },
             new string[] { "edit", "edits an existing record", "The 'edit' command edits an existing record where id = <param1>. <param1> - id to search for." },
-            new string[] { "find", "finds a list of records matching the search text", "The 'edit' command finds a list of records where <param1> = <param2>. <param1> - property name, <param2> - search text in quotes." },
+            new string[] { "find", "finds a list of records matching the search text", "The 'find' command finds a list of records where <param1> = <param2>. <param1> - property name, <param2> - search text in quotes." },
             new string[] { "export", "exports data to the file", "The 'export' command exports the data to the <param1> file format located in the <param2> folder." },
+            new string[] { "import", "imports data from the file", "The 'import' command imports the data from the <param1> path." },
         };
 
         private static Dictionary<string, SetRule> paramsList = new Dictionary<string, SetRule>
@@ -57,7 +59,7 @@ namespace FileCabinetApp
         private delegate void SetRule(string args);
 
         /// <summary>
-        /// Function that processes user input and calls the appropriate functions.
+        /// Processes user input and calls the appropriate functions.
         /// </summary>
         /// <param name="args">Сommand line arguments.</param>
         public static void Main(string[] args)
@@ -82,7 +84,7 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                var index = Array.FindIndex(commands, 0, commands.Length, i => i.Item1.Equals(command, StringComparison.InvariantCultureIgnoreCase));
+                var index = Array.FindIndex(commands, 0, commands.Length, i => i.Item1.Equals(command, StringComparison.OrdinalIgnoreCase));
                 if (index >= 0)
                 {
                     const int parametersIndex = 1;
@@ -188,7 +190,7 @@ namespace FileCabinetApp
         {
             if (!string.IsNullOrEmpty(parameters))
             {
-                var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[Program.CommandHelpIndex], parameters, StringComparison.InvariantCultureIgnoreCase));
+                var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[Program.CommandHelpIndex], parameters, StringComparison.OrdinalIgnoreCase));
                 if (index >= 0)
                 {
                     Console.WriteLine(helpMessages[index][Program.ExplanationHelpIndex]);
@@ -582,8 +584,20 @@ namespace FileCabinetApp
                 return;
             }
 
-            var fileFormat = paramsArray[0];
-            var path = paramsArray[1];
+            string fileFormat;
+            string path;
+
+            try
+            {
+                fileFormat = paramsArray[0];
+                path = paramsArray[1];
+            }
+            catch
+            {
+                Console.WriteLine($"Invalid parameters. <param1> - {parameterExplanations[0]}. <param2> - {parameterExplanations[1]}");
+                return;
+            }
+
             var file = new FileInfo(path);
             if (file.Exists)
             {
@@ -631,6 +645,81 @@ namespace FileCabinetApp
             catch (DirectoryNotFoundException)
             {
                 Console.WriteLine($"Export failed: can't open file {path}");
+            }
+        }
+
+        private static void Import(string parameters)
+        {
+            const int paramsNumber = 2;
+            string[] parameterExplanations = new string[] { "file format", "path" };
+            if (!GetParameters(paramsNumber, parameters, parameterExplanations, out var paramsArray))
+            {
+                return;
+            }
+
+            string fileFormat;
+            string path;
+
+            try
+            {
+                fileFormat = paramsArray[0];
+                path = paramsArray[1];
+            }
+            catch
+            {
+                Console.WriteLine($"Invalid parameters. <param1> - {parameterExplanations[0]}. <param2> - {parameterExplanations[1]}");
+                return;
+            }
+
+            var file = new FileInfo(path);
+            if (!file.Exists)
+            {
+                Console.WriteLine($"Import error: file {path} is not exist.");
+                return;
+            }
+
+            try
+            {
+                string message = string.Empty;
+                var snapshot = fileCabinetService.MakeSnapshot();
+                Console.WriteLine("Import started.");
+                switch (fileFormat)
+                {
+                    case "csv":
+                        using (var reader = new StreamReader(path))
+                        {
+                            snapshot.LoadFromCsv(reader);
+                            int countOfRestoredrecords = fileCabinetService.Restore(snapshot);
+                            message = $"{countOfRestoredrecords} records were imported from {path}";
+                        }
+
+                        break;
+
+                    case "xml":
+                        XmlWriterSettings settings = new XmlWriterSettings();
+                        settings.Indent = true;
+                        settings.IndentChars = "\t";
+                        settings.OmitXmlDeclaration = true;
+
+                        using (var xmlReader = XmlReader.Create(path))
+                        {
+                            snapshot.LoadFromXmlWithXmlSerializer(xmlReader);
+                            int countOfRestoredrecords = fileCabinetService.Restore(snapshot);
+                            message = $"{countOfRestoredrecords} records were imported from {path}";
+                        }
+
+                        break;
+
+                    default:
+                        message = $"<param1> - unsuppurted file format.";
+                        break;
+                }
+
+                Console.WriteLine(message);
+            }
+            catch
+            {
+                Console.WriteLine($"Import failed: can't open file {path}");
             }
         }
     }

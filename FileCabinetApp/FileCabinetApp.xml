@@ -140,6 +140,9 @@
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.MakeSnapshot">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByFirstName(System.String)">
             <inheritdoc/>
         </member>
@@ -148,6 +151,12 @@
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByDateOfBirth(System.String)">
             <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetIdOfLastRecord">
+            <summary>
+            Gets id of last record.
+            </summary>
+            <returns>Id of last record.</returns>
         </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetRecordById(System.Int32)">
             <inheritdoc/>
@@ -181,6 +190,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.FindByFirstName(System.String)">
@@ -248,6 +260,23 @@
             </summary>
             <value>The favorite letter of the person.</value>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordCsvReader">
+            <summary>
+            Read records from csv file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvReader.#ctor(System.IO.StreamReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordCsvReader"/> class.
+            </summary>
+            <param name="streamReader">StreamReader.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordCsvReader.ReadAll">
+            <summary>
+            Gets a list of records to import.
+            </summary>
+            <returns>List of records to import.</returns>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
             <summary>
             Class provides serialization of FileCabinetRecord to CSV.
@@ -269,6 +298,23 @@
             Writes single record to the file.
             </summary>
             <param name="record">Record to write.</param>
+        </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlReader">
+            <summary>
+            Loads information from xml file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlReader.#ctor(System.Xml.XmlReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlReader"/> class.
+            </summary>
+            <param name="reader">Xml reader.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlReader.ReadAll">
+            <summary>
+            Reads records from csv file.
+            </summary>
+            <returns>List of records.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
             <summary>
@@ -308,17 +354,43 @@
             </summary>
             <param name="records">List of records.</param>
         </member>
+        <member name="P:FileCabinetApp.FileCabinetServiceSnapshot.Records">
+            <summary>
+            Gets file cabinet records.
+            </summary>
+            <value>
+            File cabinet records.
+            </value>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToCsv(System.IO.StreamWriter)">
             <summary>
             Writes snapshot of FileCabinetService to the CSV file.
             </summary>
             <param name="writer">Writer to file.</param>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromCsv(System.IO.StreamReader)">
+            <summary>
+            Loads records from CSV file to snapshot.
+            </summary>
+            <param name="reader">Reader to file.</param>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToXml(System.Xml.XmlWriter)">
             <summary>
             Writes snapshot of FileCabinetService to the XML file.
             </summary>
             <param name="writer">Writer to file.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToXmlWithXmlSerializer(System.Xml.XmlWriter)">
+            <summary>
+            Writes snapshot of FileCabinetService to the XML file via XmlSerializer.
+            </summary>
+            <param name="writer">Writer to file.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromXmlWithXmlSerializer(System.Xml.XmlReader)">
+            <summary>
+            Loads records from XML file to snapshot.
+            </summary>
+            <param name="reader">Reader to file.</param>
         </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
@@ -385,6 +457,13 @@
             </summary>
             <returns>Number of records.</returns>
         </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Restore(FileCabinetApp.FileCabinetServiceSnapshot)">
+            <summary>
+            Restores file cabinet records from snapshot.
+            </summary>
+            <param name="snapshot">snapshot.</param>
+            <returns>Number of restores records.</returns>
+        </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>
             Interface for validation strategy.
@@ -403,7 +482,7 @@
         </member>
         <member name="M:FileCabinetApp.Program.Main(System.String[])">
             <summary>
-            Function that processes user input and calls the appropriate functions.
+            Processes user input and calls the appropriate functions.
             </summary>
             <param name="args">Сommand line arguments.</param>
         </member>
