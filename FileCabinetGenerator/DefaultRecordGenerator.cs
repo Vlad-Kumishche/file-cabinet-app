@@ -15,11 +15,11 @@ namespace FileCabinetGenerator
             return new FileCabinetRecord
             {
                 Id = id,
-                FirstName = GenerateString(rand, rand.Next(0, 60)),
-                LastName = GenerateString(rand, rand.Next(0, 60)),
-                DateOfBirth = new DateTime(rand.Next(1950, DateTime.Now.Year), rand.Next(1, 12), rand.Next(1, 28)),
-                Height = (short)rand.Next(0, 100),
-                CashSavings = (decimal)rand.Next(0, 100),
+                FirstName = GenerateString(rand, rand.Next(0, 120)),
+                LastName = GenerateString(rand, rand.Next(0, 120)),
+                DateOfBirth = new DateTime(rand.Next(1950, DateTime.Now.Year - 1), rand.Next(1, 12), rand.Next(1, 28)),
+                Height = (short)rand.Next(40, 300),
+                CashSavings = (decimal)rand.Next(0, 10_000_000),
                 FavoriteLetter = (char)rand.Next(97, 122),
             };
         }

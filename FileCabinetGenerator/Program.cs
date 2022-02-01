@@ -1,4 +1,6 @@
 ﻿using System.Globalization;
+using System.Text;
+using FileCabinetApp;
 
 namespace FileCabinetGenerator
 {
@@ -40,6 +42,49 @@ namespace FileCabinetGenerator
             Console.WriteLine($"{nameof(outputFileName)} = {outputFileName}");
             Console.WriteLine($"{nameof(recordsAmount)} = {recordsAmount}");
             Console.WriteLine($"{nameof(startId)} = {startId}");
+
+            Export();
+        }
+
+        private static void Export()
+        {
+            var file = new FileInfo(outputFileName);
+            try
+            {
+                string messageToUser;
+                var snapshot = new FileCabinetServiceSnapshot(generator.GenerateRecords(startId, recordsAmount));
+                switch (outputType)
+                {
+                    case "csv":
+                        var csvWriter = new StreamWriter(outputFileName, false, Encoding.UTF8);
+                        snapshot.SaveToCsv(csvWriter);
+                        csvWriter.Close();
+                        messageToUser = $"All records are exported to file {outputFileName}";
+                        break;
+
+                    case "xml":
+                        /*XmlWriterSettings settings = new XmlWriterSettings();
+                        settings.Indent = true;
+                        settings.IndentChars = "\t";
+                        settings.OmitXmlDeclaration = true;
+
+                        var xmlWriter = XmlWriter.Create(outputFileName, settings);
+                        snapshot.SaveToXml(xmlWriter);
+                        xmlWriter.Close();
+                        messageToUser = $"All records are exported to file {outputFileName}";
+                        break;*/
+
+                    default:
+                        messageToUser = $"<param1> - unsuppurted file format.";
+                        break;
+                }
+
+                Console.WriteLine(messageToUser);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                Console.WriteLine($"Export failed: can't open file {outputFileName}");
+            }
         }
 
         private static void ParseCommandLineParams(string[] args)

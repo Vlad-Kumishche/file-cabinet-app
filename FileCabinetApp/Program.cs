@@ -582,8 +582,20 @@ namespace FileCabinetApp
                 return;
             }
 
-            var fileFormat = paramsArray[0];
-            var path = paramsArray[1];
+            string fileFormat;
+            string path;
+
+            try
+            {
+                fileFormat = paramsArray[0];
+                path = paramsArray[1];
+            }
+            catch
+            {
+                Console.WriteLine($"Invalid parameters. <param1> - {parameterExplanations[0]}. <param2> - {parameterExplanations[1]}");
+                return;
+            }
+
             var file = new FileInfo(path);
             if (file.Exists)
             {
