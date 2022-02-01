@@ -50,10 +50,10 @@ namespace FileCabinetApp
         public int CreateRecord(RecordArgs recordToCreate)
         {
             this.validator.ValidateParameters(recordToCreate);
-
+            var lastRecordId = this.GetIdOfLastRecord();
             var record = new FileCabinetRecord
             {
-                Id = this.RecordsCount + 1,
+                Id = (recordToCreate.Id == 0) ? lastRecordId + 1 : recordToCreate.Id,
                 FirstName = recordToCreate.FirstName,
                 LastName = recordToCreate.LastName,
                 DateOfBirth = recordToCreate.DateOfBirth,
@@ -122,20 +122,15 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
-            throw new NotImplementedException();
+            var records = new List<FileCabinetRecord>(this.GetRecords());
+            return new FileCabinetServiceSnapshot(records);
         }
 
         /// <inheritdoc/>
         public int Restore(FileCabinetServiceSnapshot snapshot)
         {
-            if (snapshot == null)
-            {
-                throw new ArgumentNullException(nameof(snapshot));
-            }
-
             var loadedRecords = snapshot.Records;
             var importedRecordsCount = 0;
-
             foreach (var importedRecord in loadedRecords)
             {
                 var recordArgs = new RecordArgs()
@@ -224,6 +219,24 @@ namespace FileCabinetApp
 
             var records = new ReadOnlyCollection<FileCabinetRecord>(recorecordsFound);
             return records;
+        }
+
+        /// <summary>
+        /// Gets id of last record.
+        /// </summary>
+        /// <returns>Id of last record.</returns>
+        public int GetIdOfLastRecord()
+        {
+            var recordBuffer = new byte[RecordSize];
+            if (this.RecordsCount > 1)
+            {
+                var offsetOfLastRecord = (this.RecordsCount - 1) * RecordSize;
+                this.fileStream.Seek(offsetOfLastRecord, SeekOrigin.Begin);
+                this.fileStream.Read(recordBuffer, 0, RecordSize);
+                return BytesToFileCabinetRecord(recordBuffer).Id;
+            }
+
+            return 0;
         }
 
         /// <inheritdoc/>

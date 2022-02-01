@@ -152,6 +152,12 @@
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByDateOfBirth(System.String)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetIdOfLastRecord">
+            <summary>
+            Gets id of last record.
+            </summary>
+            <returns>Id of last record.</returns>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.GetRecordById(System.Int32)">
             <inheritdoc/>
         </member>
