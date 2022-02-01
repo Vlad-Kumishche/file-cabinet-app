@@ -1,16 +1,20 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Globalization;
 
 namespace FileCabinetGenerator
 {
-    class Program
+    /// <summary>
+    /// Class provides user interaction.
+    /// </summary>
+    public static class Program
     {
-        private static string OutputType = "csv";
-        private static string OutputFileName = "records." + OutputType;
-        private static int RecordsAmount = 250;
-        private static int StartId = 15;
+        private static string outputType = "csv";
+        private static string outputFileName = "records." + outputType;
+        private static int recordsAmount = 250;
+        private static int startId = 15;
 
-        private static readonly Dictionary<string, SetRule> ChangeSettings = new Dictionary<string, SetRule>
+        private static IRecordGenerator generator = new DefaultRecordGenerator();
+
+        private static Dictionary<string, SetRule> changeSettings = new Dictionary<string, SetRule>
         {
             ["--output-type"] = new SetRule(SetOutputType),
             ["-t"] = new SetRule(SetOutputType),
@@ -24,14 +28,18 @@ namespace FileCabinetGenerator
 
         private delegate void SetRule(string args);
 
-        static void Main(string[] args)
+        /// <summary>
+        /// Processes user input and calls the appropriate functions.
+        /// </summary>
+        /// <param name="args">Сommand line arguments.</param>
+        public static void Main(string[] args)
         {
             ParseCommandLineParams(args);
 
-            Console.WriteLine($"{nameof(OutputType)} = {OutputType}");
-            Console.WriteLine($"{nameof(OutputFileName)} = {OutputFileName}");
-            Console.WriteLine($"{nameof(RecordsAmount)} = {RecordsAmount}");
-            Console.WriteLine($"{nameof(StartId)} = {StartId}");
+            Console.WriteLine($"{nameof(outputType)} = {outputType}");
+            Console.WriteLine($"{nameof(outputFileName)} = {outputFileName}");
+            Console.WriteLine($"{nameof(recordsAmount)} = {recordsAmount}");
+            Console.WriteLine($"{nameof(startId)} = {startId}");
         }
 
         private static void ParseCommandLineParams(string[] args)
@@ -73,14 +81,13 @@ namespace FileCabinetGenerator
                 {
                     operation = args[0].Substring(0, index);
                     parameter = args[0].Substring(index + 1);
-                    if (ChangeSettings.ContainsKey(operation.ToLower()))
+                    if (changeSettings.ContainsKey(operation.ToLower(CultureInfo.InvariantCulture)))
                     {
-                        changeRule = ChangeSettings[operation.ToLower()];
+                        changeRule = changeSettings[operation.ToLower(CultureInfo.InvariantCulture)];
                         parsedSetting = 1;
                     }
                 }
             }
-
             else if (args[0].StartsWith("-", StringComparison.InvariantCulture))
             {
                 operation = args[0];
@@ -89,16 +96,16 @@ namespace FileCabinetGenerator
                     parameter = args[1];
                 }
 
-                if (ChangeSettings.ContainsKey(operation.ToLower()))
+                if (changeSettings.ContainsKey(operation.ToLower(CultureInfo.InvariantCulture)))
                 {
-                    changeRule = ChangeSettings[operation.ToLower()];
+                    changeRule = changeSettings[operation.ToLower(CultureInfo.InvariantCulture)];
                     parsedSetting = 2;
                 }
             }
 
             if (!string.IsNullOrEmpty(operation) && !string.IsNullOrEmpty(parameter) && changeRule != null)
             {
-                changeRule.Invoke(parameter.ToLower());
+                changeRule.Invoke(parameter.ToLower(CultureInfo.InvariantCulture));
             }
 
             return parsedSetting;
@@ -108,7 +115,7 @@ namespace FileCabinetGenerator
         {
             if (outputType == "csv" || outputType == "xml")
             {
-                OutputType = outputType;
+                Program.outputType = outputType;
             }
             else
             {
@@ -118,15 +125,15 @@ namespace FileCabinetGenerator
 
         private static void SetOutput(string fileName)
         {
-            if (OutputFileName == null)
+            if (outputFileName == null)
             {
                 Console.WriteLine("Set output type before output filename.");
                 return;
             }
 
-            if (fileName.EndsWith("." + OutputType))
+            if (fileName.EndsWith("." + outputType, StringComparison.InvariantCultureIgnoreCase))
             {
-                OutputFileName = fileName;
+                outputFileName = fileName;
             }
             else
             {
@@ -140,7 +147,7 @@ namespace FileCabinetGenerator
             {
                 if (amount > 0)
                 {
-                    RecordsAmount = amount;
+                    Program.recordsAmount = amount;
                 }
                 else
                 {
@@ -159,7 +166,7 @@ namespace FileCabinetGenerator
             {
                 if (amount >= 0)
                 {
-                    StartId = amount;
+                    Program.startId = amount;
                 }
                 else
                 {

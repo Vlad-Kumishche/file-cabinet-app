@@ -403,7 +403,7 @@
         </member>
         <member name="M:FileCabinetApp.Program.Main(System.String[])">
             <summary>
-            Function that processes user input and calls the appropriate functions.
+            Processes user input and calls the appropriate functions.
             </summary>
             <param name="args">Сommand line arguments.</param>
         </member>

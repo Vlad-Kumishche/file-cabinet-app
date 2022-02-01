@@ -42,7 +42,7 @@ namespace FileCabinetApp
             new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
             new string[] { "list", "prints all records", "The 'list' command prints all records." },
             new string[] { "edit", "edits an existing record", "The 'edit' command edits an existing record where id = <param1>. <param1> - id to search for." },
-            new string[] { "find", "finds a list of records matching the search text", "The 'edit' command finds a list of records where <param1> = <param2>. <param1> - property name, <param2> - search text in quotes." },
+            new string[] { "find", "finds a list of records matching the search text", "The 'find' command finds a list of records where <param1> = <param2>. <param1> - property name, <param2> - search text in quotes." },
             new string[] { "export", "exports data to the file", "The 'export' command exports the data to the <param1> file format located in the <param2> folder." },
         };
 
@@ -57,7 +57,7 @@ namespace FileCabinetApp
         private delegate void SetRule(string args);
 
         /// <summary>
-        /// Function that processes user input and calls the appropriate functions.
+        /// Processes user input and calls the appropriate functions.
         /// </summary>
         /// <param name="args">Сommand line arguments.</param>
         public static void Main(string[] args)
@@ -82,7 +82,7 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                var index = Array.FindIndex(commands, 0, commands.Length, i => i.Item1.Equals(command, StringComparison.InvariantCultureIgnoreCase));
+                var index = Array.FindIndex(commands, 0, commands.Length, i => i.Item1.Equals(command, StringComparison.OrdinalIgnoreCase));
                 if (index >= 0)
                 {
                     const int parametersIndex = 1;
@@ -188,7 +188,7 @@ namespace FileCabinetApp
         {
             if (!string.IsNullOrEmpty(parameters))
             {
-                var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[Program.CommandHelpIndex], parameters, StringComparison.InvariantCultureIgnoreCase));
+                var index = Array.FindIndex(helpMessages, 0, helpMessages.Length, i => string.Equals(i[Program.CommandHelpIndex], parameters, StringComparison.OrdinalIgnoreCase));
                 if (index >= 0)
                 {
                     Console.WriteLine(helpMessages[index][Program.ExplanationHelpIndex]);
