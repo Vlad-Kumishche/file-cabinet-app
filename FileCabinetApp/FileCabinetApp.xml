@@ -299,6 +299,23 @@
             </summary>
             <param name="record">Record to write.</param>
         </member>
+        <member name="T:FileCabinetApp.FileCabinetRecordXmlReader">
+            <summary>
+            Loads information from xml file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlReader.#ctor(System.Xml.XmlReader)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.FileCabinetRecordXmlReader"/> class.
+            </summary>
+            <param name="reader">Xml reader.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetRecordXmlReader.ReadAll">
+            <summary>
+            Reads records from csv file.
+            </summary>
+            <returns>List of records.</returns>
+        </member>
         <member name="T:FileCabinetApp.FileCabinetRecordXmlWriter">
             <summary>
             Class provides serialization of FileCabinetRecord to XML.
@@ -353,7 +370,7 @@
         </member>
         <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromCsv(System.IO.StreamReader)">
             <summary>
-            Loads records from file to snapshot.
+            Loads records from CSV file to snapshot.
             </summary>
             <param name="reader">Reader to file.</param>
         </member>
@@ -368,6 +385,12 @@
             Writes snapshot of FileCabinetService to the XML file via XmlSerializer.
             </summary>
             <param name="writer">Writer to file.</param>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.LoadFromXmlWithXmlSerializer(System.Xml.XmlReader)">
+            <summary>
+            Loads records from XML file to snapshot.
+            </summary>
+            <param name="reader">Reader to file.</param>
         </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>

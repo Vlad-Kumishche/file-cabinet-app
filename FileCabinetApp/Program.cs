@@ -681,13 +681,13 @@ namespace FileCabinetApp
             try
             {
                 string message = string.Empty;
+                var snapshot = fileCabinetService.MakeSnapshot();
+                Console.WriteLine("Import started.");
                 switch (fileFormat)
                 {
                     case "csv":
-                        var snapshot = fileCabinetService.MakeSnapshot();
                         using (var reader = new StreamReader(path))
                         {
-                            Console.WriteLine("Import started.");
                             snapshot.LoadFromCsv(reader);
                             int countOfRestoredrecords = fileCabinetService.Restore(snapshot);
                             message = $"{countOfRestoredrecords} records were imported from {path}";
@@ -696,7 +696,18 @@ namespace FileCabinetApp
                         break;
 
                     case "xml":
-                        //message = $"{countOfRestoredrecords} records were imported from {path}";
+                        XmlWriterSettings settings = new XmlWriterSettings();
+                        settings.Indent = true;
+                        settings.IndentChars = "\t";
+                        settings.OmitXmlDeclaration = true;
+
+                        using (var xmlReader = XmlReader.Create(path))
+                        {
+                            snapshot.LoadFromXmlWithXmlSerializer(xmlReader);
+                            int countOfRestoredrecords = fileCabinetService.Restore(snapshot);
+                            message = $"{countOfRestoredrecords} records were imported from {path}";
+                        }
+
                         break;
 
                     default:
@@ -706,9 +717,9 @@ namespace FileCabinetApp
 
                 Console.WriteLine(message);
             }
-            catch (DirectoryNotFoundException)
+            catch
             {
-                Console.WriteLine($"Export failed: can't open file {path}");
+                Console.WriteLine($"Import failed: can't open file {path}");
             }
         }
     }

@@ -49,7 +49,7 @@ namespace FileCabinetApp
         }
 
         /// <summary>
-        /// Loads records from file to snapshot.
+        /// Loads records from CSV file to snapshot.
         /// </summary>
         /// <param name="reader">Reader to file.</param>
         public void LoadFromCsv(StreamReader reader)
@@ -90,6 +90,18 @@ namespace FileCabinetApp
             XmlSerializer ser = new XmlSerializer(typeof(List<FileCabinetRecord>));
 
             ser.Serialize(writer, new List<FileCabinetRecord>(this.records));
+        }
+
+        /// <summary>
+        /// Loads records from XML file to snapshot.
+        /// </summary>
+        /// <param name="reader">Reader to file.</param>
+        public void LoadFromXmlWithXmlSerializer(XmlReader reader)
+        {
+            FileCabinetRecordXmlReader fileXmlReader = new FileCabinetRecordXmlReader(reader);
+            IList<FileCabinetRecord> loadedRecords = fileXmlReader.ReadAll();
+
+            this.records = loadedRecords.ToArray();
         }
     }
 }
