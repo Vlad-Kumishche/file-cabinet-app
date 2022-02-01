@@ -32,6 +32,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("edit", Edit),
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
+            new Tuple<string, Action<string>>("import", Import),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -44,6 +45,7 @@ namespace FileCabinetApp
             new string[] { "edit", "edits an existing record", "The 'edit' command edits an existing record where id = <param1>. <param1> - id to search for." },
             new string[] { "find", "finds a list of records matching the search text", "The 'find' command finds a list of records where <param1> = <param2>. <param1> - property name, <param2> - search text in quotes." },
             new string[] { "export", "exports data to the file", "The 'export' command exports the data to the <param1> file format located in the <param2> folder." },
+            new string[] { "import", "imports data from the file", "The 'import' command imports the data from the <param1> path." },
         };
 
         private static Dictionary<string, SetRule> paramsList = new Dictionary<string, SetRule>
@@ -639,6 +641,59 @@ namespace FileCabinetApp
                 }
 
                 Console.WriteLine(messageToUser);
+            }
+            catch (DirectoryNotFoundException)
+            {
+                Console.WriteLine($"Export failed: can't open file {path}");
+            }
+        }
+
+        private static void Import(string parameters)
+        {
+            const int paramsNumber = 2;
+            string[] parameterExplanations = new string[] { "file format", "path" };
+            if (!GetParameters(paramsNumber, parameters, parameterExplanations, out var paramsArray))
+            {
+                return;
+            }
+
+            string fileFormat;
+            string path;
+
+            try
+            {
+                fileFormat = paramsArray[0];
+                path = paramsArray[1];
+            }
+            catch
+            {
+                Console.WriteLine($"Invalid parameters. <param1> - {parameterExplanations[0]}. <param2> - {parameterExplanations[1]}");
+                return;
+            }
+
+            var file = new FileInfo(path);
+            if (!file.Exists)
+            {
+                Console.Write($"File does not exist.");
+                return;
+            }
+
+            try
+            {
+                switch (fileFormat)
+                {
+                    case "csv":
+                        
+                        break;
+
+                    case "xml":
+                        
+                        break;
+
+                    default:
+                        Console.WriteLine($"<param1> - unsuppurted file format.");
+                        break;
+                }
             }
             catch (DirectoryNotFoundException)
             {
