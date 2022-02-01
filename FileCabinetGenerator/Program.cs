@@ -1,5 +1,7 @@
 ﻿using System.Globalization;
 using System.Text;
+using System.Xml;
+using System.Xml.Serialization;
 using FileCabinetApp;
 
 namespace FileCabinetGenerator
@@ -48,7 +50,6 @@ namespace FileCabinetGenerator
 
         private static void Export()
         {
-            var file = new FileInfo(outputFileName);
             try
             {
                 string messageToUser;
@@ -56,26 +57,30 @@ namespace FileCabinetGenerator
                 switch (outputType)
                 {
                     case "csv":
-                        var csvWriter = new StreamWriter(outputFileName, false, Encoding.UTF8);
-                        snapshot.SaveToCsv(csvWriter);
-                        csvWriter.Close();
+                        using (var csvWriter = new StreamWriter(outputFileName, false, Encoding.UTF8))
+                        {
+                            snapshot.SaveToCsv(csvWriter);
+                        }
+
                         messageToUser = $"All records are exported to file {outputFileName}";
                         break;
 
                     case "xml":
-                        /*XmlWriterSettings settings = new XmlWriterSettings();
+                        XmlWriterSettings settings = new XmlWriterSettings();
                         settings.Indent = true;
                         settings.IndentChars = "\t";
                         settings.OmitXmlDeclaration = true;
 
-                        var xmlWriter = XmlWriter.Create(outputFileName, settings);
-                        snapshot.SaveToXml(xmlWriter);
-                        xmlWriter.Close();
+                        using (var xmlWriter = XmlWriter.Create(outputFileName, settings))
+                        {
+                            snapshot.SaveToXmlWithXmlSerializer(xmlWriter);
+                        }
+
                         messageToUser = $"All records are exported to file {outputFileName}";
-                        break;*/
+                        break;
 
                     default:
-                        messageToUser = $"<param1> - unsuppurted file format.";
+                        messageToUser = $"Unsuppurted file format.";
                         break;
                 }
 

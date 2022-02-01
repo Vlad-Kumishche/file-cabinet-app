@@ -320,6 +320,12 @@
             </summary>
             <param name="writer">Writer to file.</param>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetServiceSnapshot.SaveToXmlWithXmlSerializer(System.Xml.XmlWriter)">
+            <summary>
+            Writes snapshot of FileCabinetService to the XML file via XmlSerializer.
+            </summary>
+            <param name="writer">Writer to file.</param>
+        </member>
         <member name="T:FileCabinetApp.IFileCabinetService">
             <summary>
             Interface provides a service for storing file cabinet records and operations on them.

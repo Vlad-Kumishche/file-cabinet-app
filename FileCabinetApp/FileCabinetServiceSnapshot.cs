@@ -4,6 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Xml;
+using System.Xml.Serialization;
 
 namespace FileCabinetApp
 {
@@ -51,6 +52,17 @@ namespace FileCabinetApp
             }
 
             xmlWriter.WriteEndLine();
+        }
+
+        /// <summary>
+        /// Writes snapshot of FileCabinetService to the XML file via XmlSerializer.
+        /// </summary>
+        /// <param name="writer">Writer to file.</param>
+        public void SaveToXmlWithXmlSerializer(XmlWriter writer)
+        {
+            XmlSerializer ser = new XmlSerializer(typeof(List<FileCabinetRecord>));
+
+            ser.Serialize(writer, new List<FileCabinetRecord>(this.records));
         }
     }
 }
