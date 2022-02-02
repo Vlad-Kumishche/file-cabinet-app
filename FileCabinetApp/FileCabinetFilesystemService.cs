@@ -14,6 +14,7 @@ namespace FileCabinetApp
         private const byte OffsetIsDelitedFlag = 2;
         private static readonly ReadOnlyCollection<FileCabinetRecord> EmptyRecordReadOnlyCollection = new List<FileCabinetRecord>().AsReadOnly();
         private readonly IRecordValidator validator;
+        private int deletedRecordsCount;
 
         /// <summary>
         /// File stream to file.
@@ -194,7 +195,7 @@ namespace FileCabinetApp
                 byte firstPartOfStatus = 0;
                 firstPartOfStatus ^= (byte)((-1 ^ firstPartOfStatus) & (1 << OffsetIsDelitedFlag));
                 this.fileStream.WriteByte(firstPartOfStatus);
-
+                this.deletedRecordsCount++;
                 return true;
             }
 
@@ -216,7 +217,7 @@ namespace FileCabinetApp
 
             this.fileStream.Flush();
             this.fileStream.SetLength(this.fileStream.Position);
-
+            this.deletedRecordsCount = 0;
             Console.WriteLine($"Data file processing is completed: {countOfRecordsBeforePurge - this.RecordsCount} of {countOfRecordsBeforePurge} records were purged.");
         }
 
@@ -368,9 +369,10 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public int GetStat()
+        public (int, int) GetStat()
         {
-            return (int)(this.fileStream.Length / RecordSize);
+            int recordsCount = (int)(this.fileStream.Length / RecordSize);
+            return (recordsCount, this.deletedRecordsCount);
         }
 
         /// <summary>

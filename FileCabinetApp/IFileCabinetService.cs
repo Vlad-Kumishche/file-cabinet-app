@@ -64,8 +64,8 @@ namespace FileCabinetApp
         /// <summary>
         /// Gets the number of records.
         /// </summary>
-        /// <returns>Number of records.</returns>
-        int GetStat();
+        /// <returns>Number of active and deleted records.</returns>
+        (int, int) GetStat();
 
         /// <summary>
         /// Restores file cabinet records from snapshot.
