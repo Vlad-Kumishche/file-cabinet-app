@@ -145,6 +145,34 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
+        public bool Remove(int recordId)
+        {
+            if (recordId < 1)
+            {
+                throw new ArgumentException($"The {nameof(recordId)} cannot be less than one.");
+            }
+
+            FileCabinetRecord recordToRemove;
+            try
+            {
+                recordToRemove = this.GetRecordById(recordId);
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+
+            this.list.Remove(recordToRemove);
+            recordToRemove.FirstName ??= string.Empty;
+            recordToRemove.LastName ??= string.Empty;
+            this.firstNameDictionary[recordToRemove.FirstName].Remove(recordToRemove);
+            this.lastNameDictionary[recordToRemove.LastName].Remove(recordToRemove);
+            this.dateOfBirthDictionary[recordToRemove.DateOfBirth].Remove(recordToRemove);
+
+            return true;
+        }
+
+        /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
             if (this.firstNameDictionary.ContainsKey(firstName))
@@ -205,9 +233,15 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
-        public int GetStat()
+        public (int, int) GetStat()
         {
-            return this.list.Count;
+            return (this.list.Count, 0);
+        }
+
+        /// <inheritdoc/>
+        public void Purge()
+        {
+            Console.WriteLine("The memory service does not need to be defragmented.");
         }
     }
 }

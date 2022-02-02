@@ -64,8 +64,8 @@ namespace FileCabinetApp
         /// <summary>
         /// Gets the number of records.
         /// </summary>
-        /// <returns>Number of records.</returns>
-        int GetStat();
+        /// <returns>Number of active and deleted records.</returns>
+        (int, int) GetStat();
 
         /// <summary>
         /// Restores file cabinet records from snapshot.
@@ -73,5 +73,17 @@ namespace FileCabinetApp
         /// <param name="snapshot">snapshot.</param>
         /// <returns>Number of restores records.</returns>
         public int Restore(FileCabinetServiceSnapshot snapshot);
+
+        /// <summary>
+        /// Removes the record.
+        /// </summary>
+        /// <param name="recordId">Id of record for remove.</param>
+        /// <returns>Whether the removal was successful.</returns>
+        public bool Remove(int recordId);
+
+        /// <summary>
+        /// Defragments the data file.
+        /// </summary>
+        public void Purge();
     }
 }
