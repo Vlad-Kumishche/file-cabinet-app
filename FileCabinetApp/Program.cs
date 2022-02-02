@@ -17,6 +17,7 @@ namespace FileCabinetApp
         private const int ExplanationHelpIndex = 2;
         private const string FileName = "cabinet-records.db";
         private static string currentValidationRules = "default";
+        private static string currentStorageRules = "memory";
         private static IRecordValidator validator = new DefaultValidator();
         private static bool isRunning = true;
 
@@ -33,6 +34,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("find", Find),
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
+            new Tuple<string, Action<string>>("remove", Remove),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -46,6 +48,7 @@ namespace FileCabinetApp
             new string[] { "find", "finds a list of records matching the search text", "The 'find' command finds a list of records where <param1> = <param2>. <param1> - property name, <param2> - search text in quotes." },
             new string[] { "export", "exports data to the file", "The 'export' command exports the data to the <param1> file format located in the <param2> folder." },
             new string[] { "import", "imports data from the file", "The 'import' command imports the data from the <param1> path." },
+            new string[] { "remove", "removes the record by id", "The 'remove' command removes the record by id." },
         };
 
         private static Dictionary<string, SetRule> paramsList = new Dictionary<string, SetRule>
@@ -67,6 +70,7 @@ namespace FileCabinetApp
             ParseCommandLineParams(args);
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine($"Using {currentValidationRules} validation rules.");
+            Console.WriteLine($"Using {currentStorageRules} to store records");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
@@ -156,11 +160,15 @@ namespace FileCabinetApp
 
         private static void SetValidationRules(string validationRules)
         {
-            validator = validationRules switch
+            switch (validationRules)
             {
-                "custom" => new CustomValidator(),
-                _ => new DefaultValidator(),
-            };
+                case "custom":
+                    validator = new CustomValidator();
+                    break;
+
+                default:
+                    break;
+            }
 
             currentValidationRules = validationRules;
         }
@@ -175,9 +183,10 @@ namespace FileCabinetApp
                     break;
 
                 default:
-                    fileCabinetService = new FileCabinetMemoryService(validator);
                     break;
             }
+
+            currentStorageRules = storageRules;
         }
 
         private static void PrintMissedCommandInfo(string command)
@@ -721,6 +730,23 @@ namespace FileCabinetApp
             {
                 Console.WriteLine($"Import failed: can't open file {path}");
             }
+        }
+
+        private static void Remove(string parameters)
+        {
+            if (parameters.Length == 0 || !int.TryParse(parameters, out var recordId))
+            {
+                Console.WriteLine("Invalid parameter. <param1> - record id.");
+                return;
+            }
+
+            if (fileCabinetService.Remove(recordId))
+            {
+                Console.WriteLine($"Record #{recordId} is removed.");
+                return;
+            }
+
+            Console.WriteLine($"Record #{recordId} doesn't exists.");
         }
     }
 }

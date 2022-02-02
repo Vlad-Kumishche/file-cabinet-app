@@ -73,5 +73,12 @@ namespace FileCabinetApp
         /// <param name="snapshot">snapshot.</param>
         /// <returns>Number of restores records.</returns>
         public int Restore(FileCabinetServiceSnapshot snapshot);
+
+        /// <summary>
+        /// Removes the record.
+        /// </summary>
+        /// <param name="recordId">Id of record for remove.</param>
+        /// <returns>Whether the removal was successful.</returns>
+        public bool Remove(int recordId);
     }
 }
