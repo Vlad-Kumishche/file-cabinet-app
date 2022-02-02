@@ -237,5 +237,11 @@ namespace FileCabinetApp
         {
             return this.list.Count;
         }
+
+        /// <inheritdoc/>
+        public void Purge()
+        {
+            Console.WriteLine("The memory service does not need to be defragmented.");
+        }
     }
 }

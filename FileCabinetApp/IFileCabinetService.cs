@@ -80,5 +80,10 @@ namespace FileCabinetApp
         /// <param name="recordId">Id of record for remove.</param>
         /// <returns>Whether the removal was successful.</returns>
         public bool Remove(int recordId);
+
+        /// <summary>
+        /// Defragments the data file.
+        /// </summary>
+        public void Purge();
     }
 }

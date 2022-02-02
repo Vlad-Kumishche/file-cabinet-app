@@ -146,6 +146,9 @@
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.Remove(System.Int32)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.FileCabinetFilesystemService.Purge">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.FileCabinetFilesystemService.FindByFirstName(System.String)">
             <inheritdoc/>
         </member>
@@ -217,6 +220,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.FileCabinetMemoryService.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.FileCabinetMemoryService.Purge">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecord">
@@ -476,6 +482,11 @@
             </summary>
             <param name="recordId">Id of record for remove.</param>
             <returns>Whether the removal was successful.</returns>
+        </member>
+        <member name="M:FileCabinetApp.IFileCabinetService.Purge">
+            <summary>
+            Defragments the data file.
+            </summary>
         </member>
         <member name="T:FileCabinetApp.IRecordValidator">
             <summary>

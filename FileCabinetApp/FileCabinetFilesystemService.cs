@@ -202,6 +202,25 @@ namespace FileCabinetApp
         }
 
         /// <inheritdoc/>
+        public void Purge()
+        {
+            var countOfRecordsBeforePurge = (int)(this.fileStream.Length / RecordSize);
+            var records = this.GetRecords();
+
+            this.fileStream.Seek(0, SeekOrigin.Begin);
+            foreach (var record in records)
+            {
+                var recordAsBytes = FileCabinetRecordToBytes(record);
+                this.fileStream.Write(recordAsBytes, 0, recordAsBytes.Length);
+            }
+
+            this.fileStream.Flush();
+            this.fileStream.SetLength(this.fileStream.Position);
+
+            Console.WriteLine($"Data file processing is completed: {countOfRecordsBeforePurge - this.RecordsCount} of {countOfRecordsBeforePurge} records were purged.");
+        }
+
+        /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
             List<FileCabinetRecord> recordsFound = new List<FileCabinetRecord>();

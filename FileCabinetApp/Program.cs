@@ -35,6 +35,7 @@ namespace FileCabinetApp
             new Tuple<string, Action<string>>("export", Export),
             new Tuple<string, Action<string>>("import", Import),
             new Tuple<string, Action<string>>("remove", Remove),
+            new Tuple<string, Action<string>>("purge", Purge),
         };
 
         private static string[][] helpMessages = new string[][]
@@ -49,6 +50,7 @@ namespace FileCabinetApp
             new string[] { "export", "exports data to the file", "The 'export' command exports the data to the <param1> file format located in the <param2> folder." },
             new string[] { "import", "imports data from the file", "The 'import' command imports the data from the <param1> path." },
             new string[] { "remove", "removes the record by id", "The 'remove' command removes the record by id." },
+            new string[] { "purge", "defragments the data file", "The 'purge' command defragments the data file." },
         };
 
         private static Dictionary<string, SetRule> paramsList = new Dictionary<string, SetRule>
@@ -747,6 +749,14 @@ namespace FileCabinetApp
             }
 
             Console.WriteLine($"Record #{recordId} doesn't exists.");
+        }
+
+        private static void Purge(string parameters)
+        {
+            if (fileCabinetService is FileCabinetFilesystemService)
+            {
+                fileCabinetService.Purge();
+            }
         }
     }
 }
