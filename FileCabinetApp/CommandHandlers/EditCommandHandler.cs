@@ -3,18 +3,16 @@
     /// <summary>
     /// Handler for edit command.
     /// </summary>
-    public class EditCommandHandler : CommandHandlerBase
+    public class EditCommandHandler : ServiceCommandHandlerBase
     {
-        private IFileCabinetService fileCabinetService;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="EditCommandHandler"/> class.
         /// </summary>
         /// <param name="fileCabinetService">Used service.</param>
         public EditCommandHandler(IFileCabinetService fileCabinetService)
+            : base(fileCabinetService)
         {
             this.CommandName = "create";
-            this.fileCabinetService = fileCabinetService;
         }
 
         /// <inheritdoc/>

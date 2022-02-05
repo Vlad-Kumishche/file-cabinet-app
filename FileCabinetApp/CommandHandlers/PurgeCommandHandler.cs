@@ -3,17 +3,16 @@
     /// <summary>
     /// Handler for purge command.
     /// </summary>
-    public class PurgeCommandHandler : CommandHandlerBase
+    public class PurgeCommandHandler : ServiceCommandHandlerBase
     {
-        private IFileCabinetService fileCabinetService;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="PurgeCommandHandler"/> class.
         /// </summary>
+        /// <param name="fileCabinetService">Used service.</param>
         public PurgeCommandHandler(IFileCabinetService fileCabinetService)
+            : base(fileCabinetService)
         {
             this.CommandName = "purge";
-            this.fileCabinetService = fileCabinetService;
         }
 
         /// <inheritdoc/>

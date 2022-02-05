@@ -3,17 +3,16 @@
     /// <summary>
     /// Handler for find command.
     /// </summary>
-    public class FindCommandHandler : CommandHandlerBase
+    public class FindCommandHandler : ServiceCommandHandlerBase
     {
-        private IFileCabinetService fileCabinetService;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="FindCommandHandler"/> class.
         /// </summary>
+        /// <param name="fileCabinetService">Used service.</param>
         public FindCommandHandler(IFileCabinetService fileCabinetService)
+            : base(fileCabinetService)
         {
             this.CommandName = "find";
-            this.fileCabinetService = fileCabinetService;
         }
 
         /// <inheritdoc/>

@@ -5,17 +5,16 @@ namespace FileCabinetApp.CommandHandlers
     /// <summary>
     /// Handler for import command.
     /// </summary>
-    public class ImportCommandHandler : CommandHandlerBase
+    public class ImportCommandHandler : ServiceCommandHandlerBase
     {
-        private IFileCabinetService fileCabinetService;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="ImportCommandHandler"/> class.
         /// </summary>
+        /// <param name="fileCabinetService">Used service.</param>
         public ImportCommandHandler(IFileCabinetService fileCabinetService)
+            : base(fileCabinetService)
         {
             this.CommandName = "import";
-            this.fileCabinetService = fileCabinetService;
         }
 
         /// <inheritdoc/>

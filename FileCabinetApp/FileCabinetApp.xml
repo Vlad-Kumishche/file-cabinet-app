@@ -113,6 +113,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ExportCommandHandler"/> class.
             </summary>
+            <param name="fileCabinetService">Used service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ExportCommandHandler.Command(System.String)">
             <inheritdoc/>
@@ -126,6 +127,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.FindCommandHandler"/> class.
             </summary>
+            <param name="fileCabinetService">Used service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.FindCommandHandler.Command(System.String)">
             <inheritdoc/>
@@ -169,6 +171,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ImportCommandHandler"/> class.
             </summary>
+            <param name="fileCabinetService">Used service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ImportCommandHandler.Command(System.String)">
             <inheritdoc/>
@@ -182,6 +185,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ListCommandHandler"/> class.
             </summary>
+            <param name="fileCabinetService">Used service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.Command(System.String)">
             <inheritdoc/>
@@ -195,6 +199,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.PurgeCommandHandler"/> class.
             </summary>
+            <param name="fileCabinetService">Used service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.PurgeCommandHandler.Command(System.String)">
             <inheritdoc/>
@@ -208,9 +213,16 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.RemoveCommandHandler"/> class.
             </summary>
+            <param name="fileCabinetService">Used service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.RemoveCommandHandler.Command(System.String)">
             <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.#ctor(FileCabinetApp.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase"/> class.
+            </summary>
+            <param name="fileCabinetService">Used service.</param>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.StatCommandHandler">
             <summary>
@@ -221,6 +233,7 @@
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.StatCommandHandler"/> class.
             </summary>
+            <param name="fileCabinetService">Used service.</param>
         </member>
         <member name="M:FileCabinetApp.CommandHandlers.StatCommandHandler.Command(System.String)">
             <inheritdoc/>

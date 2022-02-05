@@ -5,18 +5,16 @@ namespace FileCabinetApp.CommandHandlers
     /// <summary>
     /// Handler for create command.
     /// </summary>
-    public class CreateCommandHandler : CommandHandlerBase
+    public class CreateCommandHandler : ServiceCommandHandlerBase
     {
-        private IFileCabinetService fileCabinetService;
-
         /// <summary>
         /// Initializes a new instance of the <see cref="CreateCommandHandler"/> class.
         /// </summary>
         /// <param name="fileCabinetService">Used service.</param>
         public CreateCommandHandler(IFileCabinetService fileCabinetService)
+            : base(fileCabinetService)
         {
             this.CommandName = "create";
-            this.fileCabinetService = fileCabinetService;
         }
 
         /// <inheritdoc/>
