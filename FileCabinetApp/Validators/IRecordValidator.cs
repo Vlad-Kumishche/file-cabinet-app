@@ -1,4 +1,6 @@
-﻿namespace FileCabinetApp
+﻿using FileCabinetApp.Data;
+
+namespace FileCabinetApp.Validators
 {
     /// <summary>
     /// Interface for validation strategy.

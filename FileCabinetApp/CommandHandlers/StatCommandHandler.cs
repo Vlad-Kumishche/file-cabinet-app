@@ -1,4 +1,6 @@
-﻿namespace FileCabinetApp.CommandHandlers
+﻿using FileCabinetApp.Service;
+
+namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
     /// Handler for stat command.

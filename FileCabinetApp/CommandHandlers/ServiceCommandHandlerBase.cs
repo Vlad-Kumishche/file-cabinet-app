@@ -1,5 +1,10 @@
-﻿namespace FileCabinetApp.CommandHandlers
+﻿using FileCabinetApp.Service;
+
+namespace FileCabinetApp.CommandHandlers
 {
+    /// <summary>
+    /// Handler for commands using file cabinet service.
+    /// </summary>
     public abstract class ServiceCommandHandlerBase : CommandHandlerBase
     {
         protected IFileCabinetService fileCabinetService;

@@ -1,11 +1,12 @@
 ﻿using System.Globalization;
+using FileCabinetApp.Data;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Validators
 {
     /// <summary>
-    /// Class for custom validation strategy.
+    /// Class for default validation strategy.
     /// </summary>
-    public class CustomValidator : IRecordValidator
+    public class DefaultValidator : IRecordValidator
     {
         /// <summary>
         /// Validates the file cabinet record.
@@ -29,8 +30,8 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">Thrown when the length of the string does not match the given range.</exception>
         private static void ValidateName(string? line)
         {
-            const int minLength = 4;
-            const int maxLength = 20;
+            const int minLength = 2;
+            const int maxLength = 60;
             if (string.IsNullOrEmpty(line))
             {
                 throw new ArgumentNullException(nameof(line));
@@ -55,12 +56,10 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">Thrown when the length of the string does not match the specified range.</exception>
         private static void ValidateDateOfBirth(DateTime dateOfBirth)
         {
-            DateTime minDate = new DateTime(1940, 1, 1);
-            const int ageOfMajority = 18;
-            DateTime maxDate = DateTime.Now.AddYears(-ageOfMajority);
-            if (dateOfBirth < minDate || dateOfBirth >= maxDate)
+            DateTime minDate = new DateTime(1950, 1, 1);
+            if (dateOfBirth < minDate || dateOfBirth >= DateTime.Now)
             {
-                throw new ArgumentException($"Invalid {nameof(dateOfBirth)}. Min date: {minDate.ToString("MM / dd / yyyy", CultureInfo.InvariantCulture)}, max date: {maxDate.ToString("MM / dd / yyyy", CultureInfo.InvariantCulture)}.", nameof(dateOfBirth));
+                throw new ArgumentException($"Invalid {nameof(dateOfBirth)}. Min date: {minDate.ToString("MM / dd / yyyy", CultureInfo.InvariantCulture)}, max date: today.", nameof(dateOfBirth));
             }
         }
 
@@ -71,8 +70,8 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">Thrown when the height does not match the specified range.</exception>
         private static void ValidateHeight(short height)
         {
-            const short minHeight = 120;
-            const short maxHeight = 250;
+            const short minHeight = 40;
+            const short maxHeight = 300;
             if (height < minHeight || height > maxHeight)
             {
                 throw new ArgumentException($"The {nameof(height)} is not within the allowed range.", nameof(height));
@@ -86,8 +85,8 @@ namespace FileCabinetApp
         /// <exception cref="ArgumentException">Thrown when the cash savings does not match the specified range.</exception>
         private static void ValidateCashSavings(decimal cashSavings)
         {
-            const decimal minCashSavings = 100M;
-            const decimal maxCashSavings = 100_000_000M;
+            const decimal minCashSavings = 0M;
+            const decimal maxCashSavings = 10_000_000M;
             if (cashSavings < minCashSavings || cashSavings > maxCashSavings)
             {
                 throw new ArgumentException($"The {nameof(cashSavings)} is not within the allowed range.", nameof(cashSavings));

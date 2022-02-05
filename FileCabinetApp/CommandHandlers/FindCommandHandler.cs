@@ -1,18 +1,25 @@
-﻿namespace FileCabinetApp.CommandHandlers
+﻿using FileCabinetApp.Printers;
+using FileCabinetApp.Service;
+
+namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
     /// Handler for find command.
     /// </summary>
     public class FindCommandHandler : ServiceCommandHandlerBase
     {
+        private IRecordPrinter printer;
+
         /// <summary>
         /// Initializes a new instance of the <see cref="FindCommandHandler"/> class.
         /// </summary>
         /// <param name="fileCabinetService">Used service.</param>
-        public FindCommandHandler(IFileCabinetService fileCabinetService)
+        /// <param name="printer">Used printer.</param>
+        public FindCommandHandler(IFileCabinetService fileCabinetService, IRecordPrinter printer)
             : base(fileCabinetService)
         {
             this.CommandName = "find";
+            this.printer = printer;
         }
 
         /// <inheritdoc/>
@@ -67,7 +74,7 @@
                 return;
             }
 
-            ShowRecords(records);
+            this.printer.Print(records);
         }
     }
 }

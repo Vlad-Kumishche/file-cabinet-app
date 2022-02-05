@@ -1,4 +1,7 @@
-﻿namespace FileCabinetApp.CommandHandlers
+﻿using FileCabinetApp.Data;
+using FileCabinetApp.Service;
+
+namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
     /// Handler for edit command.

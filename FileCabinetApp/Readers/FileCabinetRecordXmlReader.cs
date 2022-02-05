@@ -1,8 +1,8 @@
-﻿using System.Globalization;
-using System.Xml;
+﻿using System.Xml;
 using System.Xml.Serialization;
+using FileCabinetApp.Data;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Readers
 {
     /// <summary>
     /// Loads information from xml file.

@@ -1,5 +1,5 @@
-﻿using System.Collections.ObjectModel;
-using System.Globalization;
+﻿using System.Globalization;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -75,15 +75,6 @@ namespace FileCabinetApp.CommandHandlers
             }
 
             return true;
-        }
-
-        protected static void ShowRecords(ReadOnlyCollection<FileCabinetRecord> records)
-        {
-            foreach (var record in records)
-            {
-                string date = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
-                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {date}, {record.Height} cm, {record.CashSavings}$, {record.FavoriteLetter}");
-            }
         }
 
         protected static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
@@ -287,6 +278,5 @@ namespace FileCabinetApp.CommandHandlers
             Console.WriteLine($"There is no '{command}' command.");
             Console.WriteLine();
         }
-
     }
 }

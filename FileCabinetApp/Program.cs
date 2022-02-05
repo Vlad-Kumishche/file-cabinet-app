@@ -1,5 +1,8 @@
 ﻿using System.Globalization;
 using FileCabinetApp.CommandHandlers;
+using FileCabinetApp.Printers;
+using FileCabinetApp.Service;
+using FileCabinetApp.Validators;
 
 namespace FileCabinetApp
 {
@@ -69,9 +72,9 @@ namespace FileCabinetApp
             var exitCommandHandler = new ExitCommandHandler(x => isRunning = x);
             var statCommandHandler = new StatCommandHandler(fileCabinetService);
             var createCommandHandler = new CreateCommandHandler(fileCabinetService);
-            var listCommandHandler = new ListCommandHandler(fileCabinetService);
+            var listCommandHandler = new ListCommandHandler(fileCabinetService, new DefaultRecordPrinter());
             var editCommandHandler = new EditCommandHandler(fileCabinetService);
-            var findCommandHandler = new FindCommandHandler(fileCabinetService);
+            var findCommandHandler = new FindCommandHandler(fileCabinetService, new DefaultRecordPrinter());
             var exportCommandHandler = new ExportCommandHandler(fileCabinetService);
             var importCommandHandler = new ImportCommandHandler(fileCabinetService);
             var removeCommandHandler = new RemoveCommandHandler(fileCabinetService);
