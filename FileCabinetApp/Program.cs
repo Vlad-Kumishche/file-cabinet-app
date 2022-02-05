@@ -1,7 +1,4 @@
-﻿using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Text;
-using System.Xml;
+﻿using System.Globalization;
 using FileCabinetApp.CommandHandlers;
 
 namespace FileCabinetApp
@@ -19,7 +16,7 @@ namespace FileCabinetApp
         public static IRecordValidator validator = new DefaultValidator();
         public static bool IsRunning = true;
 
-        public static IFileCabinetService FileCabinetService = new FileCabinetMemoryService(validator);
+        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(validator);
 
         private static Dictionary<string, SetRule> paramsList = new Dictionary<string, SetRule>
         {
@@ -44,6 +41,7 @@ namespace FileCabinetApp
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
 
+            var commandHandler = CreateCommandHandlers();
             do
             {
                 Console.Write("> ");
@@ -60,7 +58,6 @@ namespace FileCabinetApp
                     continue;
                 }
 
-                var commandHandler = CreateCommandHandlers();
                 commandHandler.Handle(new AppCommandRequest(command, parameters));
             }
             while (IsRunning);
@@ -68,7 +65,30 @@ namespace FileCabinetApp
 
         private static ICommandHandler CreateCommandHandlers()
         {
-            return new CommandHandler();
+            var helpCommandHandler = new HelpCommandHandler();
+            var exitCommandHandler = new ExitCommandHandler();
+            var statCommandHandler = new StatCommandHandler(fileCabinetService);
+            var createCommandHandler = new CreateCommandHandler(fileCabinetService);
+            var listCommandHandler = new ListCommandHandler(fileCabinetService);
+            var editCommandHandler = new EditCommandHandler(fileCabinetService);
+            var findCommandHandler = new FindCommandHandler(fileCabinetService);
+            var exportCommandHandler = new ExportCommandHandler(fileCabinetService);
+            var importCommandHandler = new ImportCommandHandler(fileCabinetService);
+            var removeCommandHandler = new RemoveCommandHandler(fileCabinetService);
+            var purgeCommandHandler = new PurgeCommandHandler(fileCabinetService);
+
+            helpCommandHandler.SetNext(exitCommandHandler);
+            exitCommandHandler.SetNext(statCommandHandler);
+            statCommandHandler.SetNext(createCommandHandler);
+            createCommandHandler.SetNext(listCommandHandler);
+            listCommandHandler.SetNext(editCommandHandler);
+            editCommandHandler.SetNext(findCommandHandler);
+            findCommandHandler.SetNext(exportCommandHandler);
+            exportCommandHandler.SetNext(importCommandHandler);
+            importCommandHandler.SetNext(removeCommandHandler);
+            removeCommandHandler.SetNext(purgeCommandHandler);
+
+            return helpCommandHandler;
         }
 
         private static void ParseCommandLineParams(string[] args)
@@ -147,7 +167,7 @@ namespace FileCabinetApp
             {
                 case "file":
                     FileStream fileStream = new FileStream(FileName, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
-                    FileCabinetService = new FileCabinetFilesystemService(fileStream, validator);
+                    fileCabinetService = new FileCabinetFilesystemService(fileStream, validator);
                     break;
 
                 default:
