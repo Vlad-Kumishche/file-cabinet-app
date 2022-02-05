@@ -1,5 +1,6 @@
 ﻿using System.Globalization;
 using FileCabinetApp.CommandHandlers;
+using FileCabinetApp.Data;
 using FileCabinetApp.Printers;
 using FileCabinetApp.Service;
 using FileCabinetApp.Validators;
@@ -72,9 +73,9 @@ namespace FileCabinetApp
             var exitCommandHandler = new ExitCommandHandler(x => isRunning = x);
             var statCommandHandler = new StatCommandHandler(fileCabinetService);
             var createCommandHandler = new CreateCommandHandler(fileCabinetService);
-            var listCommandHandler = new ListCommandHandler(fileCabinetService, new DefaultRecordPrinter());
+            var listCommandHandler = new ListCommandHandler(fileCabinetService, DefaultRecordPrint);
             var editCommandHandler = new EditCommandHandler(fileCabinetService);
-            var findCommandHandler = new FindCommandHandler(fileCabinetService, new DefaultRecordPrinter());
+            var findCommandHandler = new FindCommandHandler(fileCabinetService, DefaultRecordPrint);
             var exportCommandHandler = new ExportCommandHandler(fileCabinetService);
             var importCommandHandler = new ImportCommandHandler(fileCabinetService);
             var removeCommandHandler = new RemoveCommandHandler(fileCabinetService);
@@ -178,6 +179,20 @@ namespace FileCabinetApp
             }
 
             currentStorageRules = storageRules;
+        }
+
+        private static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)
+        {
+            if (records == null)
+            {
+                throw new ArgumentNullException(nameof(records));
+            }
+
+            foreach (var record in records)
+            {
+                string date = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
+                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {date}, {record.Height} cm, {record.CashSavings}$, {record.FavoriteLetter}");
+            }
         }
     }
 }
