@@ -14,7 +14,7 @@ namespace FileCabinetApp
         private static string currentValidationRules = "default";
         private static string currentStorageRules = "memory";
         public static IRecordValidator validator = new DefaultValidator();
-        public static bool IsRunning = true;
+        private static bool isRunning = true;
 
         private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(validator);
 
@@ -60,13 +60,13 @@ namespace FileCabinetApp
 
                 commandHandler.Handle(new AppCommandRequest(command, parameters));
             }
-            while (IsRunning);
+            while (isRunning);
         }
 
         private static ICommandHandler CreateCommandHandlers()
         {
             var helpCommandHandler = new HelpCommandHandler();
-            var exitCommandHandler = new ExitCommandHandler();
+            var exitCommandHandler = new ExitCommandHandler(x => isRunning = x);
             var statCommandHandler = new StatCommandHandler(fileCabinetService);
             var createCommandHandler = new CreateCommandHandler(fileCabinetService);
             var listCommandHandler = new ListCommandHandler(fileCabinetService);
