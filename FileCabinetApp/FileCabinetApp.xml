@@ -664,51 +664,148 @@
             Defragments the data file.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.Validators.CustomCashSavingsValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
+            <summary>
+            Checks if the cash savings is within a specified range.
+            </summary>
+            <param name="recordToValidate">Record to validate.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the cash savings does not match the specified range.</exception>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomDateOfBirthValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
+            <summary>
+            Checks if the date is within a specified range.
+            </summary>
+            <param name="recordToValidate">Record to validate.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the length of the string does not match the specified range.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.CustomFirstNameValidator">
+            <summary>
+            Custom first name validator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomFirstNameValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
+            <summary>
+            Сhecks if a string contains only English characters.
+            </summary>
+            <param name="recordToValidate">Record to validate.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when string to validate is null or empty.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when the length of the string does not match the given range.</exception>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomFirstNameValidator.ValidateLetter(System.Char)">
+            <summary>
+            Checks if the character is an English letter.
+            </summary>
+            <param name="c">Character to validate.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the character is not an English letter.</exception>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomHeightValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
+            <summary>
+            Checks if the height is within a specified range.
+            </summary>
+            <param name="recordToValidate">Record to validate.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the height does not match the specified range.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.CustomLastNameValidator">
+            <summary>
+            Custom last name validator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomLastNameValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
+            <summary>
+            Сhecks if a string contains only English characters.
+            </summary>
+            <param name="recordToValidate">Record to validate.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when string to validate is null or empty.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when the length of the string does not match the given range.</exception>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomLastNameValidator.ValidateLetter(System.Char)">
+            <summary>
+            Checks if the character is an English letter.
+            </summary>
+            <param name="c">Character to validate.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the character is not an English letter.</exception>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CustomLetterValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
+            <summary>
+            Checks if the character is an English letter.
+            </summary>
+            <param name="recordToValidate">Record to validate.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the character is not an English letter.</exception>
+        </member>
         <member name="T:FileCabinetApp.Validators.CustomValidator">
             <summary>
             Class for custom validation strategy.
             </summary>
         </member>
         <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
-            <summary>
-            Validates the file cabinet record.
-            </summary>
-            <param name="recordToValidate">Record to validate.</param>
+            <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateName(System.String)">
-            <summary>
-            Сhecks if a string contains only English characters.
-            </summary>
-            <param name="line">String to validate.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown when string to validate is null or empty.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when the length of the string does not match the given range.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateDateOfBirth(System.DateTime)">
-            <summary>
-            Checks if the date is within a specified range.
-            </summary>
-            <param name="dateOfBirth">Date to validate.</param>
-            <exception cref="T:System.ArgumentException">Thrown when the length of the string does not match the specified range.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateHeight(System.Int16)">
-            <summary>
-            Checks if the height is within a specified range.
-            </summary>
-            <param name="height">Height to validate.</param>
-            <exception cref="T:System.ArgumentException">Thrown when the height does not match the specified range.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateCashSavings(System.Decimal)">
+        <member name="M:FileCabinetApp.Validators.DefaultCashSavingsValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
             <summary>
             Checks if the cash savings is within a specified range.
             </summary>
-            <param name="cashSavings">Cash savings to validate.</param>
+            <param name="recordToValidate">Record to validate.</param>
             <exception cref="T:System.ArgumentException">Thrown when the cash savings does not match the specified range.</exception>
         </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateLetter(System.Char)">
+        <member name="M:FileCabinetApp.Validators.DefaultDateOfBirthValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
+            <summary>
+            Checks if the date is within a specified range.
+            </summary>
+            <param name="recordToValidate">Record to validate.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the length of the string does not match the specified range.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.DefaultFirstNameValidator">
+            <summary>
+            Default first name validator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultFirstNameValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
+            <summary>
+            Сhecks if a string contains only English characters.
+            </summary>
+            <param name="recordToValidate">Record to validate.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when string to validate is null or empty.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when the length of the string does not match the given range.</exception>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultFirstNameValidator.ValidateLetter(System.Char)">
             <summary>
             Checks if the character is an English letter.
             </summary>
             <param name="c">Character to validate.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the character is not an English letter.</exception>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultHeightValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
+            <summary>
+            Checks if the height is within a specified range.
+            </summary>
+            <param name="recordToValidate">Record to validate.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the height does not match the specified range.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.DefaultLastNameValidator">
+            <summary>
+            Default last name validator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultLastNameValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
+            <summary>
+            Сhecks if a string contains only English characters.
+            </summary>
+            <param name="recordToValidate">Record to validate.</param>
+            <exception cref="T:System.ArgumentNullException">Thrown when string to validate is null or empty.</exception>
+            <exception cref="T:System.ArgumentException">Thrown when the length of the string does not match the given range.</exception>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultLastNameValidator.ValidateLetter(System.Char)">
+            <summary>
+            Checks if the character is an English letter.
+            </summary>
+            <param name="c">Character to validate.</param>
+            <exception cref="T:System.ArgumentException">Thrown when the character is not an English letter.</exception>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DefaultLetterValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
+            <summary>
+            Checks if the character is an English letter.
+            </summary>
+            <param name="recordToValidate">Record to validate.</param>
             <exception cref="T:System.ArgumentException">Thrown when the character is not an English letter.</exception>
         </member>
         <member name="T:FileCabinetApp.Validators.DefaultValidator">
@@ -717,46 +814,7 @@
             </summary>
         </member>
         <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
-            <summary>
-            Validates the file cabinet record.
-            </summary>
-            <param name="recordToValidate">Record to validate.</param>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateName(System.String)">
-            <summary>
-            Сhecks if a string contains only English characters.
-            </summary>
-            <param name="line">String to validate.</param>
-            <exception cref="T:System.ArgumentNullException">Thrown when string to validate is null or empty.</exception>
-            <exception cref="T:System.ArgumentException">Thrown when the length of the string does not match the given range.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateDateOfBirth(System.DateTime)">
-            <summary>
-            Checks if the date is within a specified range.
-            </summary>
-            <param name="dateOfBirth">Date to validate.</param>
-            <exception cref="T:System.ArgumentException">Thrown when the length of the string does not match the specified range.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateHeight(System.Int16)">
-            <summary>
-            Checks if the height is within a specified range.
-            </summary>
-            <param name="height">Height to validate.</param>
-            <exception cref="T:System.ArgumentException">Thrown when the height does not match the specified range.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateCashSavings(System.Decimal)">
-            <summary>
-            Checks if the cash savings is within a specified range.
-            </summary>
-            <param name="cashSavings">Cash savings to validate.</param>
-            <exception cref="T:System.ArgumentException">Thrown when the cash savings does not match the specified range.</exception>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateLetter(System.Char)">
-            <summary>
-            Checks if the character is an English letter.
-            </summary>
-            <param name="c">Character to validate.</param>
-            <exception cref="T:System.ArgumentException">Thrown when the character is not an English letter.</exception>
+            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Validators.IRecordValidator">
             <summary>
