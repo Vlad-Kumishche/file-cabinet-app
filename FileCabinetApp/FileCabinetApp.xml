@@ -676,9 +676,6 @@
             Class for custom validation strategy.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Validators.CustomValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
-            <inheritdoc/>
-        </member>
         <member name="M:FileCabinetApp.Validators.DateOfBirthValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
             <summary>
             Checks if the date is within a specified range.
@@ -690,9 +687,6 @@
             <summary>
             Class for default validation strategy.
             </summary>
-        </member>
-        <member name="M:FileCabinetApp.Validators.DefaultValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
-            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Validators.FirstNameValidator">
             <summary>
