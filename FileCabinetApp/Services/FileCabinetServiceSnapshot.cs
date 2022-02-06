@@ -1,8 +1,10 @@
 ﻿using System.Collections.ObjectModel;
 using System.Xml;
 using System.Xml.Serialization;
+using FileCabinetApp.Data;
+using FileCabinetApp.Readers;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.Service
 {
     /// <summary>
     /// Class for snapshot of FileCabinetService.

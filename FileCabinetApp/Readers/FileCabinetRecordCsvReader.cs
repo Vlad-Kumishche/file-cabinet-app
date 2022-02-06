@@ -1,4 +1,6 @@
-﻿namespace FileCabinetApp
+﻿using FileCabinetApp.Data;
+
+namespace FileCabinetApp.Readers
 {
     /// <summary>
     /// Read records from csv file.

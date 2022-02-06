@@ -1,4 +1,4 @@
-﻿using FileCabinetApp;
+﻿using FileCabinetApp.Data;
 
 namespace FileCabinetGenerator
 {
