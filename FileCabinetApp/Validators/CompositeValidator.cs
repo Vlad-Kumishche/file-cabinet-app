@@ -2,11 +2,11 @@
 
 namespace FileCabinetApp.Validators
 {
-    public abstract class CompositeValidator : IRecordValidator
+    public class CompositeValidator : IRecordValidator
     {
         private List<IRecordValidator> validators;
 
-        protected CompositeValidator(List<IRecordValidator> validators)
+        public CompositeValidator(List<IRecordValidator> validators)
         {
             this.validators = validators;
         }
