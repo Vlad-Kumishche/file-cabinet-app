@@ -3,8 +3,17 @@ using FileCabinetApp.Data;
 
 namespace FileCabinetApp.Validators
 {
-    public class DefaultDateOfBirthValidator : IRecordValidator
+    public class DateOfBirthValidator : IRecordValidator
     {
+        private DateTime from;
+        private DateTime to;
+
+        public DateOfBirthValidator(DateTime from, DateTime to)
+        {
+            this.from = from;
+            this.to = to;
+        }
+
         /// <summary>
         /// Checks if the date is within a specified range.
         /// </summary>
@@ -13,10 +22,9 @@ namespace FileCabinetApp.Validators
         public void ValidateParameters(RecordArgs recordToValidate)
         {
             DateTime dateOfBirth = recordToValidate.DateOfBirth;
-            DateTime minDate = new DateTime(1950, 1, 1);
-            if (dateOfBirth < minDate || dateOfBirth >= DateTime.Now)
+            if (dateOfBirth < this.from || dateOfBirth >= this.to)
             {
-                throw new ArgumentException($"Invalid {nameof(dateOfBirth)}. Min date: {minDate.ToString("MM / dd / yyyy", CultureInfo.InvariantCulture)}, max date: today.", nameof(recordToValidate));
+                throw new ArgumentException($"Invalid {nameof(dateOfBirth)}. Min date: {this.from.ToString("MM / dd / yyyy", CultureInfo.InvariantCulture)}, max date: {this.to.ToString("MM / dd / yyyy", CultureInfo.InvariantCulture)}.", nameof(recordToValidate));
             }
         }
     }

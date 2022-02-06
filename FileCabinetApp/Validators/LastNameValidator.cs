@@ -5,8 +5,17 @@ namespace FileCabinetApp.Validators
     /// <summary>
     /// Custom last name validator.
     /// </summary>
-    public class CustomLastNameValidator : IRecordValidator
+    public class LastNameValidator : IRecordValidator
     {
+        private int minLength;
+        private int maxLength;
+
+        public LastNameValidator(int minLength, int maxLength)
+        {
+            this.minLength = minLength;
+            this.maxLength = maxLength;
+        }
+
         /// <summary>
         /// Сhecks if a string contains only English characters.
         /// </summary>
@@ -16,35 +25,17 @@ namespace FileCabinetApp.Validators
         public void ValidateParameters(RecordArgs recordToValidate)
         {
             string? line = recordToValidate.FirstName;
-            const int minLength = 4;
-            const int maxLength = 20;
             if (string.IsNullOrEmpty(line))
             {
                 throw new ArgumentNullException(nameof(recordToValidate));
             }
-            else if (line.Length < minLength || line.Length > maxLength)
+            else if (line.Length < this.minLength || line.Length > this.maxLength)
             {
                 throw new ArgumentException($"{nameof(line)}.Length does not meet the requirements.", nameof(recordToValidate));
             }
             else
             {
-                foreach (char c in line)
-                {
-                    ValidateLetter(c);
-                }
-            }
-        }
-
-        /// <summary>
-        /// Checks if the character is an English letter.
-        /// </summary>
-        /// <param name="c">Character to validate.</param>
-        /// <exception cref="ArgumentException">Thrown when the character is not an English letter.</exception>
-        private static void ValidateLetter(char c)
-        {
-            if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
-            {
-                throw new ArgumentException($"'{c}' is not an English letter.", nameof(c));
+                new LetterValidator().ValidateParameters(recordToValidate);
             }
         }
     }

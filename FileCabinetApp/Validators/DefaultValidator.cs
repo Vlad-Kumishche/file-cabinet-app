@@ -10,12 +10,12 @@ namespace FileCabinetApp.Validators
         /// <inheritdoc/>
         public void ValidateParameters(RecordArgs recordToValidate)
         {
-            new DefaultFirstNameValidator().ValidateParameters(recordToValidate);
-            new DefaultLastNameValidator().ValidateParameters(recordToValidate);
-            new DefaultDateOfBirthValidator().ValidateParameters(recordToValidate);
-            new DefaultHeightValidator().ValidateParameters(recordToValidate);
-            new DefaultCashSavingsValidator().ValidateParameters(recordToValidate);
-            new DefaultLetterValidator().ValidateParameters(recordToValidate);
+            new FirstNameValidator(2, 60).ValidateParameters(recordToValidate);
+            new LastNameValidator(2, 60).ValidateParameters(recordToValidate);
+            new DateOfBirthValidator(new DateTime(1950, 1, 1), DateTime.Now).ValidateParameters(recordToValidate);
+            new HeightValidator(40, 300).ValidateParameters(recordToValidate);
+            new CashSavingsValidator(0M, 10_000_000M).ValidateParameters(recordToValidate);
+            new LetterValidator().ValidateParameters(recordToValidate);
         }
     }
 }

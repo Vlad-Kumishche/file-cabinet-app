@@ -2,7 +2,7 @@
 
 namespace FileCabinetApp.Validators
 {
-    public class CustomLetterValidator : IRecordValidator
+    public class LetterValidator : IRecordValidator
     {
         /// <summary>
         /// Checks if the character is an English letter.

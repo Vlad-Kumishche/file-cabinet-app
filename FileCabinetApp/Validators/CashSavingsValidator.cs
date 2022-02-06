@@ -2,8 +2,17 @@
 
 namespace FileCabinetApp.Validators
 {
-    public class DefaultCashSavingsValidator : IRecordValidator
+    public class CashSavingsValidator : IRecordValidator
     {
+        private decimal minCashSavings;
+        private decimal maxCashSavings;
+
+        public CashSavingsValidator(decimal minCashSavings, decimal maxCashSavings)
+        {
+            this.minCashSavings = minCashSavings;
+            this.maxCashSavings = maxCashSavings;
+        }
+
         /// <summary>
         /// Checks if the cash savings is within a specified range.
         /// </summary>
@@ -12,9 +21,7 @@ namespace FileCabinetApp.Validators
         public void ValidateParameters(RecordArgs recordToValidate)
         {
             decimal cashSavings = recordToValidate.CashSavings;
-            const decimal minCashSavings = 0M;
-            const decimal maxCashSavings = 10_000_000M;
-            if (cashSavings < minCashSavings || cashSavings > maxCashSavings)
+            if (cashSavings < this.minCashSavings || cashSavings > this.maxCashSavings)
             {
                 throw new ArgumentException($"The {nameof(cashSavings)} is not within the allowed range.", nameof(recordToValidate));
             }
