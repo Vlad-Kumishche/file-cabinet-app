@@ -56,9 +56,9 @@ namespace FileCabinetApp.CommandHandlers
 
             var records = propertyName switch
             {
-                "firstname" => this.fileCabinetService.FindByFirstName(searchText),
-                "lastname" => this.fileCabinetService.FindByLastName(searchText),
-                "dateofbirth" => this.fileCabinetService.FindByDateOfBirth(searchText),
+                "firstname" => this.FileCabinetService.FindByFirstName(searchText),
+                "lastname" => this.FileCabinetService.FindByLastName(searchText),
+                "dateofbirth" => this.FileCabinetService.FindByDateOfBirth(searchText),
                 _ => null,
             };
 

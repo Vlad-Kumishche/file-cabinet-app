@@ -20,9 +20,9 @@ namespace FileCabinetApp.CommandHandlers
         /// <inheritdoc/>
         protected override void Command(string parameters)
         {
-            if (this.fileCabinetService is FileCabinetFilesystemService)
+            if (this.FileCabinetService is FileCabinetFilesystemService)
             {
-                this.fileCabinetService.Purge();
+                this.FileCabinetService.Purge();
             }
         }
     }

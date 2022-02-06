@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Text;
 using System.Xml;
-using FileCabinetApp;
+using FileCabinetApp.Service;
 
 namespace FileCabinetGenerator
 {

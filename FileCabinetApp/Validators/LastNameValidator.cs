@@ -10,6 +10,11 @@ namespace FileCabinetApp.Validators
         private int minLength;
         private int maxLength;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="LastNameValidator"/> class.
+        /// </summary>
+        /// <param name="minLength">Min length.</param>
+        /// <param name="maxLength">Max length.</param>
         public LastNameValidator(int minLength, int maxLength)
         {
             this.minLength = minLength;

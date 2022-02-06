@@ -3,11 +3,19 @@ using FileCabinetApp.Data;
 
 namespace FileCabinetApp.Validators
 {
+    /// <summary>
+    /// Date of birth validator.
+    /// </summary>
     public class DateOfBirthValidator : IRecordValidator
     {
         private DateTime from;
         private DateTime to;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DateOfBirthValidator"/> class.
+        /// </summary>
+        /// <param name="from">Min value.</param>
+        /// <param name="to">Max value.</param>
         public DateOfBirthValidator(DateTime from, DateTime to)
         {
             this.from = from;

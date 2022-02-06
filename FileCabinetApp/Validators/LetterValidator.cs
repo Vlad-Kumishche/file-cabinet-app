@@ -2,6 +2,9 @@
 
 namespace FileCabinetApp.Validators
 {
+    /// <summary>
+    /// Letter validator.
+    /// </summary>
     public class LetterValidator : IRecordValidator
     {
         /// <summary>

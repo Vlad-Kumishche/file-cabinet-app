@@ -25,7 +25,7 @@ namespace FileCabinetApp.CommandHandlers
         /// <inheritdoc/>
         protected override void Command(string parameters)
         {
-            var records = this.fileCabinetService.GetRecords();
+            var records = this.FileCabinetService.GetRecords();
             this.printer(records);
         }
     }

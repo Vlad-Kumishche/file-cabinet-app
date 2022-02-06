@@ -51,6 +51,95 @@
         <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.SetNext(FileCabinetApp.CommandHandlers.ICommandHandler)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.GetParameters(System.Int32,System.String,System.String[],System.String[]@)">
+            <summary>
+            Parses sourceString into paramsArray.
+            </summary>
+            <param name="count">Number of parameters to parse.</param>
+            <param name="sourceString">Source string.</param>
+            <param name="parameterExplanations">Parameter explanations.</param>
+            <param name="paramsArray">Array of params.</param>
+            <returns>Is parsing was successful.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.ReadInput``1(System.Func{System.String,System.Tuple{System.Boolean,System.String,``0}},System.Func{``0,System.Tuple{System.Boolean,System.String}})">
+            <summary>
+            Reades user induput and returns converted and validated data.
+            </summary>
+            <typeparam name="T">Final data format.</typeparam>
+            <param name="converter">The converter.</param>
+            <param name="validator">The validator.</param>
+            <returns>Converted and validated data.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.StringConverter(System.String)">
+            <summary>
+            Converter for string type.
+            </summary>
+            <param name="stringToConvert">source string.</param>
+            <returns>Result of conversion.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.DateConverter(System.String)">
+            <summary>
+            Converter for DateTime type.
+            </summary>
+            <param name="stringToConvert">source string.</param>
+            <returns>Result of conversion.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.ShortConverter(System.String)">
+            <summary>
+            Converter for short type.
+            </summary>
+            <param name="stringToConvert">source string.</param>
+            <returns>Result of conversion.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.DecimalConverter(System.String)">
+            <summary>
+            Converter for decimal type.
+            </summary>
+            <param name="stringToConvert">source string.</param>
+            <returns>Result of conversion.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.CharConverter(System.String)">
+            <summary>
+            Converter for char type.
+            </summary>
+            <param name="stringToConvert">source string.</param>
+            <returns>Result of conversion.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.NameValidator(System.String)">
+            <summary>
+            Validator for name.
+            </summary>
+            <param name="nameToValidate">The name.</param>
+            <returns>Result of validation.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.DateValidator(System.DateTime)">
+            <summary>
+            Validator for date.
+            </summary>
+            <param name="dateToValidate">The date.</param>
+            <returns>Result of validation.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.HeightValidator(System.Int16)">
+            <summary>
+            Validator for height.
+            </summary>
+            <param name="heightToValidate">The height.</param>
+            <returns>Result of validation.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.CashSavingsValidator(System.Decimal)">
+            <summary>
+            Validator for cash savings.
+            </summary>
+            <param name="heightToValidate">The cash savings.</param>
+            <returns>Result of validation.</returns>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.LetterValidator(System.Char)">
+            <summary>
+            Validator for letter.
+            </summary>
+            <param name="c">The letter.</param>
+            <returns>Result of validation.</returns>
+        </member>
         <member name="M:FileCabinetApp.CommandHandlers.CommandHandlerBase.Command(System.String)">
             <summary>
             The command itself.
@@ -217,6 +306,14 @@
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase"/> class.
             </summary>
             <param name="fileCabinetService">Used service.</param>
+        </member>
+        <member name="P:FileCabinetApp.CommandHandlers.ServiceCommandHandlerBase.FileCabinetService">
+            <summary>
+            Gets used file cabinet service.
+            </summary>
+            <value>
+            Used file cabinet service.
+            </value>
         </member>
         <member name="T:FileCabinetApp.CommandHandlers.StatCommandHandler">
             <summary>
@@ -707,6 +804,35 @@
             <param name="recordToValidate">Record to validate.</param>
             <exception cref="T:System.ArgumentException">Thrown when the cash savings does not match the specified range.</exception>
         </member>
+        <member name="T:FileCabinetApp.Validators.CompositeValidator">
+            <summary>
+            Composite validator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CompositeValidator.#ctor(System.Collections.Generic.List{FileCabinetApp.Validators.IRecordValidator})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.CompositeValidator"/> class.
+            </summary>
+            <param name="validators">List of validators.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CompositeValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
+            <summary>
+            Validates the parameters.
+            </summary>
+            <param name="recordToValidate">The parameters.</param>
+        </member>
+        <member name="T:FileCabinetApp.Validators.DateOfBirthValidator">
+            <summary>
+            Date of birth validator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.DateOfBirthValidator.#ctor(System.DateTime,System.DateTime)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.DateOfBirthValidator"/> class.
+            </summary>
+            <param name="from">Min value.</param>
+            <param name="to">Max value.</param>
+        </member>
         <member name="M:FileCabinetApp.Validators.DateOfBirthValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
             <summary>
             Checks if the date is within a specified range.
@@ -719,6 +845,13 @@
             First name validator.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.Validators.FirstNameValidator.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.FirstNameValidator"/> class.
+            </summary>
+            <param name="minLength">Min length.</param>
+            <param name="maxLength">Max length.</param>
+        </member>
         <member name="M:FileCabinetApp.Validators.FirstNameValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
             <summary>
             Сhecks if a string contains only English characters.
@@ -726,6 +859,18 @@
             <param name="recordToValidate">Record to validate.</param>
             <exception cref="T:System.ArgumentNullException">Thrown when string to validate is null or empty.</exception>
             <exception cref="T:System.ArgumentException">Thrown when the length of the string does not match the given range.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.HeightValidator">
+            <summary>
+            Height validator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.HeightValidator.#ctor(System.Int16,System.Int16)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.HeightValidator"/> class.
+            </summary>
+            <param name="minHeight">Min value.</param>
+            <param name="maxHeight">Max value.</param>
         </member>
         <member name="M:FileCabinetApp.Validators.HeightValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
             <summary>
@@ -750,6 +895,13 @@
             Custom last name validator.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.Validators.LastNameValidator.#ctor(System.Int32,System.Int32)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.LastNameValidator"/> class.
+            </summary>
+            <param name="minLength">Min length.</param>
+            <param name="maxLength">Max length.</param>
+        </member>
         <member name="M:FileCabinetApp.Validators.LastNameValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
             <summary>
             Сhecks if a string contains only English characters.
@@ -758,12 +910,74 @@
             <exception cref="T:System.ArgumentNullException">Thrown when string to validate is null or empty.</exception>
             <exception cref="T:System.ArgumentException">Thrown when the length of the string does not match the given range.</exception>
         </member>
+        <member name="T:FileCabinetApp.Validators.LetterValidator">
+            <summary>
+            Letter validator.
+            </summary>
+        </member>
         <member name="M:FileCabinetApp.Validators.LetterValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
             <summary>
             Checks if the character is an English letter.
             </summary>
             <param name="recordToValidate">Record to validate.</param>
             <exception cref="T:System.ArgumentException">Thrown when the character is not an English letter.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.ValidatorBuilder">
+            <summary>
+            Validator builder.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.Create">
+            <summary>
+            Creates the validator.
+            </summary>
+            <returns>The validator.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateFirstName(System.Int32,System.Int32)">
+            <summary>
+            Adds first name validator to builder.
+            </summary>
+            <param name="minLength">Min length.</param>
+            <param name="maxLength">Max length.</param>
+            <returns>The validator.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateLastName(System.Int32,System.Int32)">
+            <summary>
+            Adds last name validator to builder.
+            </summary>
+            <param name="minLength">Min length.</param>
+            <param name="maxLength">Max length.</param>
+            <returns>The validator.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateDateOfBirth(System.DateTime,System.DateTime)">
+            <summary>
+            Adds date of birth validator to builder.
+            </summary>
+            <param name="from">Min value.</param>
+            <param name="to">Max value.</param>
+            <returns>The validator.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateHeight(System.Int16,System.Int16)">
+            <summary>
+            Adds height validator to builder.
+            </summary>
+            <param name="minHeight">Min value.</param>
+            <param name="maxHeight">Max value.</param>
+            <returns>The validator.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateCashSavings(System.Decimal,System.Decimal)">
+            <summary>
+            Adds cash savings validator to builder.
+            </summary>
+            <param name="minCashSavings">Min value.</param>
+            <param name="maxCashSavings">Max value.</param>
+            <returns>The validator.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilder.ValidateLetter">
+            <summary>
+            Adds letter validator to builder.
+            </summary>
+            <returns>The validator.</returns>
         </member>
         <member name="T:FileCabinetApp.Validators.ValidatorBuilderExtensions">
             <summary>

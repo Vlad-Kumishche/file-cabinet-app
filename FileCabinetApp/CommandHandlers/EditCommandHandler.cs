@@ -29,7 +29,7 @@ namespace FileCabinetApp.CommandHandlers
 
             try
             {
-                this.fileCabinetService.GetRecordById(id);
+                this.FileCabinetService.GetRecordById(id);
             }
             catch
             {
@@ -57,7 +57,7 @@ namespace FileCabinetApp.CommandHandlers
             recordToEdit.FavoriteLetter = ReadInput(CharConverter, LetterValidator);
 
             recordToEdit.Id = id;
-            this.fileCabinetService.EditRecord(recordToEdit);
+            this.FileCabinetService.EditRecord(recordToEdit);
             Console.WriteLine($"Record #{id} edited.");
         }
     }

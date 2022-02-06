@@ -52,7 +52,7 @@ namespace FileCabinetApp.CommandHandlers
             try
             {
                 string message = string.Empty;
-                var snapshot = this.fileCabinetService.MakeSnapshot();
+                var snapshot = this.FileCabinetService.MakeSnapshot();
                 Console.WriteLine("Import started.");
                 switch (fileFormat)
                 {
@@ -60,7 +60,7 @@ namespace FileCabinetApp.CommandHandlers
                         using (var reader = new StreamReader(path))
                         {
                             snapshot.LoadFromCsv(reader);
-                            int countOfRestoredrecords = this.fileCabinetService.Restore(snapshot);
+                            int countOfRestoredrecords = this.FileCabinetService.Restore(snapshot);
                             message = $"{countOfRestoredrecords} records were imported from {path}";
                         }
 
@@ -75,7 +75,7 @@ namespace FileCabinetApp.CommandHandlers
                         using (var xmlReader = XmlReader.Create(path))
                         {
                             snapshot.LoadFromXmlWithXmlSerializer(xmlReader);
-                            int countOfRestoredrecords = this.fileCabinetService.Restore(snapshot);
+                            int countOfRestoredrecords = this.FileCabinetService.Restore(snapshot);
                             message = $"{countOfRestoredrecords} records were imported from {path}";
                         }
 

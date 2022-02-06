@@ -57,7 +57,7 @@ namespace FileCabinetApp.CommandHandlers
 
             try
             {
-                var snapshot = this.fileCabinetService.MakeSnapshot();
+                var snapshot = this.FileCabinetService.MakeSnapshot();
                 string messageToUser;
                 switch (fileFormat)
                 {

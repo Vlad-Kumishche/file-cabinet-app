@@ -51,11 +51,13 @@ namespace FileCabinetApp.CommandHandlers
         }
 
         /// <summary>
-        /// The command itself.
+        /// Parses sourceString into paramsArray.
         /// </summary>
-        /// <param name="parameters">Parameters of the command.</param>
-        protected abstract void Command(string parameters);
-
+        /// <param name="count">Number of parameters to parse.</param>
+        /// <param name="sourceString">Source string.</param>
+        /// <param name="parameterExplanations">Parameter explanations.</param>
+        /// <param name="paramsArray">Array of params.</param>
+        /// <returns>Is parsing was successful.</returns>
         protected static bool GetParameters(int count, string sourceString, string[] parameterExplanations, out string[] paramsArray)
         {
             paramsArray = sourceString.Split(' ', count, StringSplitOptions.RemoveEmptyEntries);
@@ -77,6 +79,13 @@ namespace FileCabinetApp.CommandHandlers
             return true;
         }
 
+        /// <summary>
+        /// Reades user induput and returns converted and validated data.
+        /// </summary>
+        /// <typeparam name="T">Final data format.</typeparam>
+        /// <param name="converter">The converter.</param>
+        /// <param name="validator">The validator.</param>
+        /// <returns>Converted and validated data.</returns>
         protected static T ReadInput<T>(Func<string, Tuple<bool, string, T>> converter, Func<T, Tuple<bool, string>> validator)
         {
             do
@@ -106,11 +115,21 @@ namespace FileCabinetApp.CommandHandlers
             while (true);
         }
 
+        /// <summary>
+        /// Converter for string type.
+        /// </summary>
+        /// <param name="stringToConvert">source string.</param>
+        /// <returns>Result of conversion.</returns>
         protected static Tuple<bool, string, string> StringConverter(string stringToConvert)
         {
             return Tuple.Create(true, string.Empty, stringToConvert);
         }
 
+        /// <summary>
+        /// Converter for DateTime type.
+        /// </summary>
+        /// <param name="stringToConvert">source string.</param>
+        /// <returns>Result of conversion.</returns>
         protected static Tuple<bool, string, DateTime> DateConverter(string stringToConvert)
         {
             const string requiredDateFormat = "MM/DD/YYYY";
@@ -127,6 +146,11 @@ namespace FileCabinetApp.CommandHandlers
             return Tuple.Create(false, $"{stringToConvert} is not a date", birthday);
         }
 
+        /// <summary>
+        /// Converter for short type.
+        /// </summary>
+        /// <param name="stringToConvert">source string.</param>
+        /// <returns>Result of conversion.</returns>
         protected static Tuple<bool, string, short> ShortConverter(string stringToConvert)
         {
             if (short.TryParse(stringToConvert, out var number))
@@ -137,6 +161,11 @@ namespace FileCabinetApp.CommandHandlers
             return Tuple.Create(false, $"{stringToConvert} is not short number", number);
         }
 
+        /// <summary>
+        /// Converter for decimal type.
+        /// </summary>
+        /// <param name="stringToConvert">source string.</param>
+        /// <returns>Result of conversion.</returns>
         protected static Tuple<bool, string, decimal> DecimalConverter(string stringToConvert)
         {
             if (decimal.TryParse(stringToConvert, out var number))
@@ -147,6 +176,11 @@ namespace FileCabinetApp.CommandHandlers
             return Tuple.Create(false, $"{stringToConvert} is not decimal number", number);
         }
 
+        /// <summary>
+        /// Converter for char type.
+        /// </summary>
+        /// <param name="stringToConvert">source string.</param>
+        /// <returns>Result of conversion.</returns>
         protected static Tuple<bool, string, char> CharConverter(string stringToConvert)
         {
             if (char.TryParse(stringToConvert, out var c))
@@ -157,6 +191,11 @@ namespace FileCabinetApp.CommandHandlers
             return Tuple.Create(false, $"{stringToConvert} is not character", c);
         }
 
+        /// <summary>
+        /// Validator for name.
+        /// </summary>
+        /// <param name="nameToValidate">The name.</param>
+        /// <returns>Result of validation.</returns>
         protected static Tuple<bool, string> NameValidator(string nameToValidate)
         {
             int minLength;
@@ -189,6 +228,11 @@ namespace FileCabinetApp.CommandHandlers
             return Tuple.Create(true, string.Empty);
         }
 
+        /// <summary>
+        /// Validator for date.
+        /// </summary>
+        /// <param name="dateToValidate">The date.</param>
+        /// <returns>Result of validation.</returns>
         protected static Tuple<bool, string> DateValidator(DateTime dateToValidate)
         {
             DateTime minDate;
@@ -213,6 +257,11 @@ namespace FileCabinetApp.CommandHandlers
             return Tuple.Create(true, string.Empty);
         }
 
+        /// <summary>
+        /// Validator for height.
+        /// </summary>
+        /// <param name="heightToValidate">The height.</param>
+        /// <returns>Result of validation.</returns>
         protected static Tuple<bool, string> HeightValidator(short heightToValidate)
         {
             short minHeight;
@@ -236,6 +285,11 @@ namespace FileCabinetApp.CommandHandlers
             return Tuple.Create(true, string.Empty);
         }
 
+        /// <summary>
+        /// Validator for cash savings.
+        /// </summary>
+        /// <param name="heightToValidate">The cash savings.</param>
+        /// <returns>Result of validation.</returns>
         protected static Tuple<bool, string> CashSavingsValidator(decimal heightToValidate)
         {
             decimal minCashSavings;
@@ -259,6 +313,11 @@ namespace FileCabinetApp.CommandHandlers
             return Tuple.Create(true, string.Empty);
         }
 
+        /// <summary>
+        /// Validator for letter.
+        /// </summary>
+        /// <param name="c">The letter.</param>
+        /// <returns>Result of validation.</returns>
         protected static Tuple<bool, string> LetterValidator(char c)
         {
             if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))
@@ -268,6 +327,12 @@ namespace FileCabinetApp.CommandHandlers
 
             return Tuple.Create(true, string.Empty);
         }
+
+        /// <summary>
+        /// The command itself.
+        /// </summary>
+        /// <param name="parameters">Parameters of the command.</param>
+        protected abstract void Command(string parameters);
 
         /// <summary>
         /// Prints message about unknown command.

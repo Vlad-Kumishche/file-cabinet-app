@@ -42,7 +42,7 @@ namespace FileCabinetApp
             Console.Write("Favorite char: ");
             recordToCreate.FavoriteLetter = ReadInput(CharConverter, LetterValidator);
 
-            int recordId = this.fileCabinetService.CreateRecord(recordToCreate);
+            int recordId = this.FileCabinetService.CreateRecord(recordToCreate);
             Console.WriteLine($"Record #{recordId} created.");
         }
     }

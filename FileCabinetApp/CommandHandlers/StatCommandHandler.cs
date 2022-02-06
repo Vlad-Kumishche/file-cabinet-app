@@ -20,7 +20,7 @@ namespace FileCabinetApp.CommandHandlers
         /// <inheritdoc/>
         protected override void Command(string parameters)
         {
-            var recordsCount = this.fileCabinetService.GetStat();
+            var recordsCount = this.FileCabinetService.GetStat();
             Console.WriteLine($"{recordsCount.Item1} record(s) including {recordsCount.Item2} deleted records.");
         }
     }

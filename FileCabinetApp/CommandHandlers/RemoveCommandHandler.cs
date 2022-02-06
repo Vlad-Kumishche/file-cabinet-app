@@ -26,7 +26,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            if (this.fileCabinetService.Remove(recordId))
+            if (this.FileCabinetService.Remove(recordId))
             {
                 Console.WriteLine($"Record #{recordId} is removed.");
                 return;

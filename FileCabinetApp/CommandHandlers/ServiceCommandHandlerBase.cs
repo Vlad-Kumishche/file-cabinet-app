@@ -7,7 +7,7 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public abstract class ServiceCommandHandlerBase : CommandHandlerBase
     {
-        protected IFileCabinetService fileCabinetService;
+        private IFileCabinetService fileCabinetService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceCommandHandlerBase"/> class.
@@ -17,5 +17,13 @@ namespace FileCabinetApp.CommandHandlers
         {
             this.fileCabinetService = fileCabinetService;
         }
+
+        /// <summary>
+        /// Gets used file cabinet service.
+        /// </summary>
+        /// <value>
+        /// Used file cabinet service.
+        /// </value>
+        protected IFileCabinetService FileCabinetService => this.fileCabinetService;
     }
 }
