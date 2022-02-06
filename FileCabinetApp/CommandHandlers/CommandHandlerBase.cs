@@ -161,7 +161,7 @@ namespace FileCabinetApp.CommandHandlers
         {
             int minLength;
             int maxLength;
-            if (Program.validator is DefaultValidator)
+            if (Program.CurrentValidationRules == Program.DefaultValidationRules)
             {
                 minLength = 2;
                 maxLength = 60;
@@ -193,7 +193,7 @@ namespace FileCabinetApp.CommandHandlers
         {
             DateTime minDate;
             DateTime maxDate;
-            if (Program.validator is DefaultValidator)
+            if (Program.CurrentValidationRules == Program.DefaultValidationRules)
             {
                 minDate = new DateTime(1950, 1, 1);
                 maxDate = DateTime.Now;
@@ -217,7 +217,7 @@ namespace FileCabinetApp.CommandHandlers
         {
             short minHeight;
             short maxHeight;
-            if (Program.validator is DefaultValidator)
+            if (Program.CurrentValidationRules == Program.DefaultValidationRules)
             {
                 minHeight = 40;
                 maxHeight = 300;
@@ -240,7 +240,7 @@ namespace FileCabinetApp.CommandHandlers
         {
             decimal minCashSavings;
             decimal maxCashSavings;
-            if (Program.validator is DefaultValidator)
+            if (Program.CurrentValidationRules == Program.DefaultValidationRules)
             {
                 minCashSavings = 0M;
                 maxCashSavings = 10_000_000M;

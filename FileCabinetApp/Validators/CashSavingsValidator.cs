@@ -2,11 +2,19 @@
 
 namespace FileCabinetApp.Validators
 {
+    /// <summary>
+    /// Cash savings validator.
+    /// </summary>
     public class CashSavingsValidator : IRecordValidator
     {
         private decimal minCashSavings;
         private decimal maxCashSavings;
 
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CashSavingsValidator"/> class.
+        /// </summary>
+        /// <param name="minCashSavings">Min value.</param>
+        /// <param name="maxCashSavings">Max valie.</param>
         public CashSavingsValidator(decimal minCashSavings, decimal maxCashSavings)
         {
             this.minCashSavings = minCashSavings;

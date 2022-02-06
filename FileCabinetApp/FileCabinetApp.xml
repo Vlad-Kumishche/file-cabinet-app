@@ -364,6 +364,30 @@
             Class provides user interaction.
             </summary>
         </member>
+        <member name="P:FileCabinetApp.Program.CurrentValidationRules">
+            <summary>
+            Gets name of current validation rules.
+            </summary>
+            <value>
+            Name of current validation rules.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Program.DefaultValidationRules">
+            <summary>
+            Gets name of default validation rules.
+            </summary>
+            <value>
+            Name of default validation rules.
+            </value>
+        </member>
+        <member name="P:FileCabinetApp.Program.CustomValidationRules">
+            <summary>
+            Gets name of custom validation rules.
+            </summary>
+            <value>
+            Name of custom validation rules.
+            </value>
+        </member>
         <member name="M:FileCabinetApp.Program.Main(System.String[])">
             <summary>
             Processes user input and calls the appropriate functions.
@@ -664,6 +688,18 @@
             Defragments the data file.
             </summary>
         </member>
+        <member name="T:FileCabinetApp.Validators.CashSavingsValidator">
+            <summary>
+            Cash savings validator.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.CashSavingsValidator.#ctor(System.Decimal,System.Decimal)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.CashSavingsValidator"/> class.
+            </summary>
+            <param name="minCashSavings">Min value.</param>
+            <param name="maxCashSavings">Max valie.</param>
+        </member>
         <member name="M:FileCabinetApp.Validators.CashSavingsValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
             <summary>
             Checks if the cash savings is within a specified range.
@@ -671,22 +707,12 @@
             <param name="recordToValidate">Record to validate.</param>
             <exception cref="T:System.ArgumentException">Thrown when the cash savings does not match the specified range.</exception>
         </member>
-        <member name="T:FileCabinetApp.Validators.CustomValidator">
-            <summary>
-            Class for custom validation strategy.
-            </summary>
-        </member>
         <member name="M:FileCabinetApp.Validators.DateOfBirthValidator.ValidateParameters(FileCabinetApp.Data.RecordArgs)">
             <summary>
             Checks if the date is within a specified range.
             </summary>
             <param name="recordToValidate">Record to validate.</param>
             <exception cref="T:System.ArgumentException">Thrown when the length of the string does not match the specified range.</exception>
-        </member>
-        <member name="T:FileCabinetApp.Validators.DefaultValidator">
-            <summary>
-            Class for default validation strategy.
-            </summary>
         </member>
         <member name="T:FileCabinetApp.Validators.FirstNameValidator">
             <summary>
@@ -738,6 +764,25 @@
             </summary>
             <param name="recordToValidate">Record to validate.</param>
             <exception cref="T:System.ArgumentException">Thrown when the character is not an English letter.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.ValidatorBuilderExtensions">
+            <summary>
+            Provides extension methods for ValidatorBuilder.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilderExtensions.CreateDefault(FileCabinetApp.Validators.ValidatorBuilder)">
+            <summary>
+            Extension method for create default record validator.
+            </summary>
+            <param name="validatorBuilder">Validator builder.</param>
+            <returns>Default record validator.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidatorBuilderExtensions.CreateCustom(FileCabinetApp.Validators.ValidatorBuilder)">
+            <summary>
+            Extension method for create custom record validator.
+            </summary>
+            <param name="validatorBuilder">Validator builder.</param>
+            <returns>Custom record validator.</returns>
         </member>
         <member name="T:FileCabinetApp.FileCabinetRecordCsvWriter">
             <summary>

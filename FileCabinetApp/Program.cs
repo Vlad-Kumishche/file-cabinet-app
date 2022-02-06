@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.Data;
-using FileCabinetApp.Printers;
 using FileCabinetApp.Service;
 using FileCabinetApp.Validators;
 
@@ -15,13 +14,14 @@ namespace FileCabinetApp
         private const string DeveloperName = "Uladzislau Kumishcha";
         private const string HintMessage = "Enter your command, or enter 'help' to get help.";
         private const string FileName = "cabinet-records.db";
+        private const string DefaultValidationRulesValue = "default";
+        private const string CustomValidationRulesValue = "custom";
         private static string currentValidationRules = "default";
         private static string currentStorageRules = "memory";
-        public static IRecordValidator validator = new DefaultValidator();
+        private static IRecordValidator validator = new ValidatorBuilder().CreateDefault();
         private static bool isRunning = true;
 
         private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(validator);
-
         private static Dictionary<string, SetRule> paramsList = new Dictionary<string, SetRule>
         {
             ["--storage"] = new SetRule(SetStorageRules),
@@ -33,6 +33,30 @@ namespace FileCabinetApp
         private delegate void SetRule(string args);
 
         /// <summary>
+        /// Gets name of current validation rules.
+        /// </summary>
+        /// <value>
+        /// Name of current validation rules.
+        /// </value>
+        public static string CurrentValidationRules => currentValidationRules;
+
+        /// <summary>
+        /// Gets name of default validation rules.
+        /// </summary>
+        /// <value>
+        /// Name of default validation rules.
+        /// </value>
+        public static string DefaultValidationRules => DefaultValidationRulesValue;
+
+        /// <summary>
+        /// Gets name of custom validation rules.
+        /// </summary>
+        /// <value>
+        /// Name of custom validation rules.
+        /// </value>
+        public static string CustomValidationRules => CustomValidationRulesValue;
+
+        /// <summary>
         /// Processes user input and calls the appropriate functions.
         /// </summary>
         /// <param name="args">Сommand line arguments.</param>
@@ -40,7 +64,7 @@ namespace FileCabinetApp
         {
             ParseCommandLineParams(args);
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
-            Console.WriteLine($"Using {currentValidationRules} validation rules.");
+            Console.WriteLine($"Using {CurrentValidationRules} validation rules.");
             Console.WriteLine($"Using {currentStorageRules} to store records");
             Console.WriteLine(Program.HintMessage);
             Console.WriteLine();
@@ -154,8 +178,8 @@ namespace FileCabinetApp
         {
             switch (validationRules)
             {
-                case "custom":
-                    validator = new CustomValidator();
+                case CustomValidationRulesValue:
+                    validator = new ValidatorBuilder().CreateCustom();
                     break;
 
                 default:
