@@ -14,8 +14,8 @@ namespace FileCabinetApp.Validators
         /// <param name="recordToValidate">Record to validate.</param>
         public void ValidateParameters(RecordArgs recordToValidate)
         {
-            ValidateName(recordToValidate.FirstName);
-            ValidateName(recordToValidate.LastName);
+            ValidateFirstName(recordToValidate.FirstName);
+            ValidateLastName(recordToValidate.LastName);
             ValidateDateOfBirth(recordToValidate.DateOfBirth);
             ValidateHeight(recordToValidate.Height);
             ValidateCashSavings(recordToValidate.CashSavings);
@@ -28,7 +28,34 @@ namespace FileCabinetApp.Validators
         /// <param name="line">String to validate.</param>
         /// <exception cref="ArgumentNullException">Thrown when string to validate is null or empty.</exception>
         /// <exception cref="ArgumentException">Thrown when the length of the string does not match the given range.</exception>
-        private static void ValidateName(string? line)
+        private static void ValidateFirstName(string? line)
+        {
+            const int minLength = 4;
+            const int maxLength = 20;
+            if (string.IsNullOrEmpty(line))
+            {
+                throw new ArgumentNullException(nameof(line));
+            }
+            else if (line.Length < minLength || line.Length > maxLength)
+            {
+                throw new ArgumentException($"{nameof(line)}.Length does not meet the requirements.", nameof(line));
+            }
+            else
+            {
+                foreach (char c in line)
+                {
+                    ValidateLetter(c);
+                }
+            }
+        }
+
+        /// <summary>
+        /// Сhecks if a string contains only English characters.
+        /// </summary>
+        /// <param name="line">String to validate.</param>
+        /// <exception cref="ArgumentNullException">Thrown when string to validate is null or empty.</exception>
+        /// <exception cref="ArgumentException">Thrown when the length of the string does not match the given range.</exception>
+        private static void ValidateLastName(string? line)
         {
             const int minLength = 4;
             const int maxLength = 20;
