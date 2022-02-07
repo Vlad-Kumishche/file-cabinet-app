@@ -1,0 +1,46 @@
+{
+  "default": {
+    "firstName": {
+      "min": 2,
+      "max": 60
+    },
+    "lastName": {
+      "min": 2,
+      "max": 60
+    },
+    "dateOfBirth": {
+      "from": "1/1/1950",
+      "to": "07/02/2021"
+    },
+    "height": {
+      "min": 40,
+      "max": 300
+    },
+    "cashSavings": {
+      "min": 0,
+      "max": 10000000
+    }
+  },
+  "custom": {
+    "firstName": {
+      "min": 4,
+      "max": 20
+    },
+    "lastName": {
+      "min": 4,
+      "max": 20
+    },
+    "dateOfBirth": {
+      "from": "1/1/1940",
+      "to": "1/1/2005"
+    },
+    "height": {
+      "min": 120,
+      "max": 250
+    },
+    "cashSavings": {
+      "min": 100,
+      "max": 100000000
+    }
+  }
+}
