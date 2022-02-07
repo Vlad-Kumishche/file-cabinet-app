@@ -10,31 +10,30 @@
         /// </summary>
         /// <param name="validatorBuilder">Validator builder.</param>
         /// <returns>Default record validator.</returns>
-        public static IRecordValidator CreateDefault(this ValidatorBuilder validatorBuilder)
-        {
-            return validatorBuilder
-                .ValidateFirstName(2, 60)
-                .ValidateLastName(2, 60)
-                .ValidateDateOfBirth(new DateTime(1950, 1, 1), DateTime.Today)
-                .ValidateHeight(40, 300)
-                .ValidateCashSavings(0M, 10_000_000M)
-                .ValidateLetter()
-                .Create();
-        }
+        public static IRecordValidator CreateDefault(this ValidatorBuilder validatorBuilder) => CreateValidator("default");
 
         /// <summary>
         /// Extension method for create custom record validator.
         /// </summary>
         /// <param name="validatorBuilder">Validator builder.</param>
         /// <returns>Custom record validator.</returns>
-        public static IRecordValidator CreateCustom(this ValidatorBuilder validatorBuilder)
+        public static IRecordValidator CreateCustom(this ValidatorBuilder validatorBuilder) => CreateValidator("custom");
+
+        private static IRecordValidator CreateValidator(string validationType)
         {
-            return validatorBuilder
-                .ValidateFirstName(4, 20)
-                .ValidateLastName(4, 20)
-                .ValidateDateOfBirth(new DateTime(1990, 1, 1), DateTime.Today)
-                .ValidateHeight(120, 250)
-                .ValidateCashSavings(100M, 100_000_000M)
+            var configuration = new ValidationRulesConfigurationReader(validationType);
+            (var minLenghtOfFirstName, var maxLengthOfFirstName) = configuration.ReadFirstNameValidationCriteria();
+            (var minLenghtOfLastName, var maxLengthOfLastName) = configuration.ReadLastNameValidationCriteria();
+            (var minDateOfBirth, var maxDateOfBirth) = configuration.ReadDateOfBirthValidationCriteria();
+            (var minHeight, var maxHeight) = configuration.ReadHeightValidationCriteria();
+            (var minCashSavings, var maxCashSavings) = configuration.ReadCashSavingsValidationCriteria();
+
+            return new ValidatorBuilder()
+                .ValidateFirstName(minLenghtOfFirstName, maxLengthOfFirstName)
+                .ValidateLastName(minLenghtOfLastName, maxLengthOfLastName)
+                .ValidateDateOfBirth(minDateOfBirth, maxDateOfBirth)
+                .ValidateHeight(minHeight, maxHeight)
+                .ValidateCashSavings(minCashSavings, maxCashSavings)
                 .ValidateLetter()
                 .Create();
         }
