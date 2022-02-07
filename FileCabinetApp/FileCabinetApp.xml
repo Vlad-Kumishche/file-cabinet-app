@@ -785,6 +785,53 @@
             Defragments the data file.
             </summary>
         </member>
+        <member name="T:FileCabinetApp.Service.ServiceLogger">
+            <summary>
+            File cabinet service that logs information about service method calls and parameters.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Service.ServiceLogger"/> class.
+            </summary>
+            <param name="fileCabinetService">FileCabinetService.</param>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.CreateRecord(FileCabinetApp.Data.RecordArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.EditRecord(FileCabinetApp.Data.RecordArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.FindByDateOfBirth(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.GetRecordById(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.Restore(FileCabinetApp.Service.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Service.ServiceMeter">
             <summary>
             File cabinet service which displays information about the execution time of the operation.

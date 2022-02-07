@@ -32,7 +32,7 @@ namespace FileCabinetApp.Service
 
             this.watch.Stop();
 
-            Console.WriteLine($"Create method execution duration is {this.watch.ElapsedTicks} ticks.");
+            Console.WriteLine($"{nameof(this.service.CreateRecord)} method execution duration is {this.watch.ElapsedTicks} ticks.");
             Console.WriteLine();
             return recordId;
         }
@@ -47,7 +47,7 @@ namespace FileCabinetApp.Service
 
             this.watch.Stop();
 
-            Console.WriteLine($"{this.EditRecord} method execution duration is {this.watch.ElapsedTicks} ticks.");
+            Console.WriteLine($"{nameof(this.service.EditRecord)} method execution duration is {this.watch.ElapsedTicks} ticks.");
             Console.WriteLine();
         }
 
@@ -61,7 +61,7 @@ namespace FileCabinetApp.Service
 
             this.watch.Stop();
 
-            Console.WriteLine($"FindByDateOfBirth method execution duration is {this.watch.ElapsedTicks} ticks.");
+            Console.WriteLine($"{nameof(this.service.FindByDateOfBirth)} method execution duration is {this.watch.ElapsedTicks} ticks.");
             Console.WriteLine();
             return records;
         }
@@ -76,7 +76,7 @@ namespace FileCabinetApp.Service
 
             this.watch.Stop();
 
-            Console.WriteLine($"FindByFirstName method execution duration is {this.watch.ElapsedTicks} ticks.");
+            Console.WriteLine($"{nameof(this.service.FindByFirstName)} method execution duration is {this.watch.ElapsedTicks} ticks.");
             Console.WriteLine();
             return records;
         }
@@ -91,7 +91,7 @@ namespace FileCabinetApp.Service
 
             this.watch.Stop();
 
-            Console.WriteLine($"FindByLastName method execution duration is {this.watch.ElapsedTicks} ticks.");
+            Console.WriteLine($"{nameof(this.service.FindByLastName)} method execution duration is {this.watch.ElapsedTicks} ticks.");
             Console.WriteLine();
             return records;
         }
@@ -106,7 +106,7 @@ namespace FileCabinetApp.Service
 
             this.watch.Stop();
 
-            Console.WriteLine($"GetRecordById method execution duration is {this.watch.ElapsedTicks} ticks.");
+            Console.WriteLine($"{nameof(this.service.GetRecordById)} method execution duration is {this.watch.ElapsedTicks} ticks.");
             Console.WriteLine();
             return record;
         }
@@ -121,7 +121,7 @@ namespace FileCabinetApp.Service
 
             this.watch.Stop();
 
-            Console.WriteLine($"GetRecords method execution duration is {this.watch.ElapsedTicks} ticks.");
+            Console.WriteLine($"{nameof(this.service.GetRecords)} method execution duration is {this.watch.ElapsedTicks} ticks.");
             Console.WriteLine();
             return records;
         }
@@ -136,7 +136,7 @@ namespace FileCabinetApp.Service
 
             this.watch.Stop();
 
-            Console.WriteLine($"GetStat method execution duration is {this.watch.ElapsedTicks} ticks.");
+            Console.WriteLine($"{nameof(this.service.GetStat)} method execution duration is {this.watch.ElapsedTicks} ticks.");
             Console.WriteLine();
             return stat;
         }
@@ -151,7 +151,7 @@ namespace FileCabinetApp.Service
 
             this.watch.Stop();
 
-            Console.WriteLine($"MakeSnapshot method execution duration is {this.watch.ElapsedTicks} ticks.");
+            Console.WriteLine($"{nameof(this.service.MakeSnapshot)} method execution duration is {this.watch.ElapsedTicks} ticks.");
             Console.WriteLine();
             return snapshot;
         }
@@ -166,7 +166,7 @@ namespace FileCabinetApp.Service
 
             this.watch.Stop();
 
-            Console.WriteLine($"Purge method execution duration is {this.watch.ElapsedTicks} ticks.");
+            Console.WriteLine($"{nameof(this.service.Purge)} method execution duration is {this.watch.ElapsedTicks} ticks.");
             Console.WriteLine();
         }
 
@@ -180,7 +180,7 @@ namespace FileCabinetApp.Service
 
             this.watch.Stop();
 
-            Console.WriteLine($"Remove method execution duration is {this.watch.ElapsedTicks} ticks.");
+            Console.WriteLine($"{nameof(this.service.Remove)} method execution duration is {this.watch.ElapsedTicks} ticks.");
             Console.WriteLine();
             return isSuccessful;
         }
@@ -195,7 +195,7 @@ namespace FileCabinetApp.Service
 
             this.watch.Stop();
 
-            Console.WriteLine($"Restore method execution duration is {this.watch.ElapsedTicks} ticks.");
+            Console.WriteLine($"{nameof(this.service.Restore)} method execution duration is {this.watch.ElapsedTicks} ticks.");
             Console.WriteLine();
             return amountOfRestoredRecords;
         }

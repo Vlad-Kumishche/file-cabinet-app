@@ -21,6 +21,7 @@ namespace FileCabinetApp
         private static IRecordValidator validator = new ValidatorBuilder().CreateDefault();
         private static bool isRunning = true;
         private static bool isServiceMeterEnable;
+        private static bool isServiceLoggerEnable;
         private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(validator);
         private static Dictionary<string, SetRule> paramsList = new Dictionary<string, SetRule>
         {
@@ -68,6 +69,11 @@ namespace FileCabinetApp
             if (isServiceMeterEnable)
             {
                 fileCabinetService = new ServiceMeter(fileCabinetService);
+            }
+
+            if (isServiceLoggerEnable)
+            {
+                fileCabinetService = new ServiceLogger(fileCabinetService);
             }
 
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
@@ -203,6 +209,7 @@ namespace FileCabinetApp
                     break;
 
                 default:
+                    validator = new ValidatorBuilder().CreateDefault();
                     break;
             }
 
@@ -219,6 +226,7 @@ namespace FileCabinetApp
                     break;
 
                 default:
+                    fileCabinetService = new FileCabinetMemoryService(validator);
                     break;
             }
 
@@ -231,6 +239,10 @@ namespace FileCabinetApp
             {
                 case "stopwatch":
                     isServiceMeterEnable = true;
+                    break;
+
+                case "logger":
+                    isServiceLoggerEnable = true;
                     break;
 
                 default:
