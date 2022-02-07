@@ -20,7 +20,8 @@ namespace FileCabinetApp
         private static string currentStorageRules = "memory";
         private static IRecordValidator validator = new ValidatorBuilder().CreateDefault();
         private static bool isRunning = true;
-
+        private static bool isServiceMeterEnable;
+        private static bool isServiceLoggerEnable;
         private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(validator);
         private static Dictionary<string, SetRule> paramsList = new Dictionary<string, SetRule>
         {
@@ -28,6 +29,8 @@ namespace FileCabinetApp
             ["-s"] = new SetRule(SetStorageRules),
             ["--validation-rules"] = new SetRule(SetValidationRules),
             ["-v"] = new SetRule(SetValidationRules),
+            ["--use"] = new SetRule(SetUseRules),
+            ["-u"] = new SetRule(SetUseRules),
         };
 
         private delegate void SetRule(string args);
@@ -63,6 +66,16 @@ namespace FileCabinetApp
         public static void Main(string[] args)
         {
             ParseCommandLineParams(args);
+            if (isServiceMeterEnable)
+            {
+                fileCabinetService = new ServiceMeter(fileCabinetService);
+            }
+
+            if (isServiceLoggerEnable)
+            {
+                fileCabinetService = new ServiceLogger(fileCabinetService);
+            }
+
             Console.WriteLine($"File Cabinet Application, developed by {Program.DeveloperName}");
             Console.WriteLine($"Using {CurrentValidationRules} validation rules.");
             Console.WriteLine($"Using {currentStorageRules} to store records");
@@ -167,6 +180,19 @@ namespace FileCabinetApp
                     changeRule = paramsList[operation.ToLower(CultureInfo.InvariantCulture)];
                 }
             }
+            else if (args[second].StartsWith("--", StringComparison.InvariantCulture))
+            {
+                int index = args[second].IndexOf("=", StringComparison.InvariantCulture);
+                if (index != -1)
+                {
+                    operation = args[second].Substring(0, index);
+                    parameter = args[second].Substring(index + 1);
+                    if (paramsList.ContainsKey(operation.ToLower(CultureInfo.InvariantCulture)))
+                    {
+                        changeRule = paramsList[operation.ToLower(CultureInfo.InvariantCulture)];
+                    }
+                }
+            }
 
             if (changeRule != null && !string.IsNullOrEmpty(operation) && !string.IsNullOrEmpty(parameter))
             {
@@ -183,6 +209,7 @@ namespace FileCabinetApp
                     break;
 
                 default:
+                    validator = new ValidatorBuilder().CreateDefault();
                     break;
             }
 
@@ -199,10 +226,28 @@ namespace FileCabinetApp
                     break;
 
                 default:
+                    fileCabinetService = new FileCabinetMemoryService(validator);
                     break;
             }
 
             currentStorageRules = storageRules;
+        }
+
+        private static void SetUseRules(string useStopwatchRules)
+        {
+            switch (useStopwatchRules)
+            {
+                case "stopwatch":
+                    isServiceMeterEnable = true;
+                    break;
+
+                case "logger":
+                    isServiceLoggerEnable = true;
+                    break;
+
+                default:
+                    break;
+            }
         }
 
         private static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)

@@ -785,6 +785,100 @@
             Defragments the data file.
             </summary>
         </member>
+        <member name="T:FileCabinetApp.Service.ServiceLogger">
+            <summary>
+            File cabinet service that logs information about service method calls and parameters.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Service.ServiceLogger"/> class.
+            </summary>
+            <param name="fileCabinetService">FileCabinetService.</param>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.CreateRecord(FileCabinetApp.Data.RecordArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.EditRecord(FileCabinetApp.Data.RecordArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.FindByDateOfBirth(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.GetRecordById(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceLogger.Restore(FileCabinetApp.Service.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.Service.ServiceMeter">
+            <summary>
+            File cabinet service which displays information about the execution time of the operation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Service.ServiceMeter"/> class.
+            </summary>
+            <param name="fileCabinetService">FileCabinetService.</param>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.CreateRecord(FileCabinetApp.Data.RecordArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.EditRecord(FileCabinetApp.Data.RecordArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.FindByDateOfBirth(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.GetRecordById(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.Restore(FileCabinetApp.Service.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Validators.CashSavingsValidator">
             <summary>
             Cash savings validator.
@@ -921,6 +1015,47 @@
             </summary>
             <param name="recordToValidate">Record to validate.</param>
             <exception cref="T:System.ArgumentException">Thrown when the character is not an English letter.</exception>
+        </member>
+        <member name="T:FileCabinetApp.Validators.ValidationRulesConfigurationReader">
+            <summary>
+            Gets information about validation rules from json configuration file.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidationRulesConfigurationReader.#ctor(System.String)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Validators.ValidationRulesConfigurationReader"/> class.
+            </summary>
+            <param name="validationType">Validation type.</param>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidationRulesConfigurationReader.ReadFirstNameValidationCriteria">
+            <summary>
+            Returns the criteria for checking the first name.
+            </summary>
+            <returns>A tuple of minimum and maximum first name lengths.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidationRulesConfigurationReader.ReadLastNameValidationCriteria">
+            <summary>
+            Returns the criteria for checking the last name.
+            </summary>
+            <returns>A tuple of minimum and maximum last name lengths.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidationRulesConfigurationReader.ReadDateOfBirthValidationCriteria">
+            <summary>
+            Returns the criteria for checking the date of birth.
+            </summary>
+            <returns>A tuple of the minimum and maximum birthday dates.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidationRulesConfigurationReader.ReadHeightValidationCriteria">
+            <summary>
+            Returns the criteria for checking the height.
+            </summary>
+            <returns>A tuple of the minimum and maximum height.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Validators.ValidationRulesConfigurationReader.ReadCashSavingsValidationCriteria">
+            <summary>
+            Returns the criteria for checking the cash savings.
+            </summary>
+            <returns>A tuple of the minimum and maximum cash savings amount.</returns>
         </member>
         <member name="T:FileCabinetApp.Validators.ValidatorBuilder">
             <summary>
