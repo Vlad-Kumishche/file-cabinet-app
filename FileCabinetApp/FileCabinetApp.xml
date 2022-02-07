@@ -785,6 +785,53 @@
             Defragments the data file.
             </summary>
         </member>
+        <member name="T:FileCabinetApp.Service.ServiceMeter">
+            <summary>
+            File cabinet service which displays information about the execution time of the operation.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.#ctor(FileCabinetApp.Service.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Service.ServiceMeter"/> class.
+            </summary>
+            <param name="fileCabinetService">FileCabinetService.</param>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.CreateRecord(FileCabinetApp.Data.RecordArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.EditRecord(FileCabinetApp.Data.RecordArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.FindByDateOfBirth(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.FindByFirstName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.FindByLastName(System.String)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.GetRecordById(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.GetRecords">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.GetStat">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.MakeSnapshot">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.Purge">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Service.ServiceMeter.Restore(FileCabinetApp.Service.FileCabinetServiceSnapshot)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Validators.CashSavingsValidator">
             <summary>
             Cash savings validator.
