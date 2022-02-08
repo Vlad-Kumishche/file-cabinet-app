@@ -4,7 +4,7 @@ using System.Xml.Serialization;
 using FileCabinetApp.Data;
 using FileCabinetApp.Readers;
 
-namespace FileCabinetApp.Service
+namespace FileCabinetApp.Services
 {
     /// <summary>
     /// Class for snapshot of FileCabinetService.

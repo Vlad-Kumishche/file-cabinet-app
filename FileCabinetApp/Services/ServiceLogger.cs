@@ -2,7 +2,7 @@
 using System.Globalization;
 using FileCabinetApp.Data;
 
-namespace FileCabinetApp.Service
+namespace FileCabinetApp.Services
 {
     /// <summary>
     /// File cabinet service that logs information about service method calls and parameters.

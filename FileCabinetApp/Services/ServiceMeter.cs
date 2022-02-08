@@ -2,7 +2,7 @@
 using System.Diagnostics;
 using FileCabinetApp.Data;
 
-namespace FileCabinetApp.Service
+namespace FileCabinetApp.Services
 {
     /// <summary>
     /// File cabinet service which displays information about the execution time of the operation.

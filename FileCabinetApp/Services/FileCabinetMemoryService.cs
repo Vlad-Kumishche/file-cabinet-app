@@ -2,7 +2,7 @@
 using FileCabinetApp.Data;
 using FileCabinetApp.Validators;
 
-namespace FileCabinetApp.Service
+namespace FileCabinetApp.Services
 {
     /// <summary>
     /// Сlass provides a service for storing file cabinet records in memory and operations on them.
@@ -42,37 +42,7 @@ namespace FileCabinetApp.Service
             };
 
             this.list.Add(record);
-
-            // to avoid CS8604
-            record.FirstName ??= string.Empty;
-            record.LastName ??= string.Empty;
-
-            if (this.firstNameDictionary.ContainsKey(record.FirstName))
-            {
-                this.firstNameDictionary[record.FirstName].Add(record);
-            }
-            else
-            {
-                this.firstNameDictionary[record.FirstName] = new List<FileCabinetRecord>() { record };
-            }
-
-            if (this.lastNameDictionary.ContainsKey(record.LastName))
-            {
-                this.lastNameDictionary[record.LastName].Add(record);
-            }
-            else
-            {
-                this.lastNameDictionary[record.LastName] = new List<FileCabinetRecord>() { record };
-            }
-
-            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))
-            {
-                this.dateOfBirthDictionary[record.DateOfBirth].Add(record);
-            }
-            else
-            {
-                this.dateOfBirthDictionary[record.DateOfBirth] = new List<FileCabinetRecord>() { record };
-            }
+            this.AddRecordToDictionaries(record);
 
             return record.Id;
         }
@@ -82,8 +52,16 @@ namespace FileCabinetApp.Service
         {
             this.validator.ValidateParameters(recordToEdit);
             var record = this.GetRecordById(recordToEdit.Id);
-            this.RemoveLinksToRecord(record);
-            this.CreateRecord(recordToEdit);
+            this.RemoveRecordFromDictionaries(record);
+
+            record.FirstName = recordToEdit.FirstName;
+            record.LastName = recordToEdit.LastName;
+            record.DateOfBirth = recordToEdit.DateOfBirth;
+            record.Height = recordToEdit.Height;
+            record.CashSavings = recordToEdit.CashSavings;
+            record.FavoriteLetter = recordToEdit.FavoriteLetter;
+
+            this.AddRecordToDictionaries(record);
         }
 
         /// <inheritdoc/>
@@ -158,7 +136,8 @@ namespace FileCabinetApp.Service
                 return false;
             }
 
-            this.RemoveLinksToRecord(recordToRemove);
+            this.list.Remove(recordToRemove);
+            this.RemoveRecordFromDictionaries(recordToRemove);
             return true;
         }
 
@@ -234,14 +213,46 @@ namespace FileCabinetApp.Service
             Console.WriteLine("The memory service does not need to be defragmented.");
         }
 
-        private void RemoveLinksToRecord(FileCabinetRecord recordToRemove)
+        private void RemoveRecordFromDictionaries(FileCabinetRecord recordToRemove)
         {
-            this.list.Remove(recordToRemove);
             recordToRemove.FirstName ??= string.Empty;
             recordToRemove.LastName ??= string.Empty;
             this.firstNameDictionary[recordToRemove.FirstName].Remove(recordToRemove);
             this.lastNameDictionary[recordToRemove.LastName].Remove(recordToRemove);
             this.dateOfBirthDictionary[recordToRemove.DateOfBirth].Remove(recordToRemove);
+        }
+
+        private void AddRecordToDictionaries(FileCabinetRecord record)
+        {
+            record.FirstName ??= string.Empty;
+            record.LastName ??= string.Empty;
+
+            if (this.firstNameDictionary.ContainsKey(record.FirstName))
+            {
+                this.firstNameDictionary[record.FirstName].Add(record);
+            }
+            else
+            {
+                this.firstNameDictionary[record.FirstName] = new () { record };
+            }
+
+            if (this.lastNameDictionary.ContainsKey(record.LastName))
+            {
+                this.lastNameDictionary[record.LastName].Add(record);
+            }
+            else
+            {
+                this.lastNameDictionary[record.LastName] = new () { record };
+            }
+
+            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))
+            {
+                this.dateOfBirthDictionary[record.DateOfBirth].Add(record);
+            }
+            else
+            {
+                this.dateOfBirthDictionary[record.DateOfBirth] = new () { record };
+            }
         }
     }
 }

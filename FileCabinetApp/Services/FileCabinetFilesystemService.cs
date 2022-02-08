@@ -2,7 +2,7 @@
 using FileCabinetApp.Data;
 using FileCabinetApp.Validators;
 
-namespace FileCabinetApp.Service
+namespace FileCabinetApp.Services
 {
     /// <summary>
     /// Сlass provides a service for storing file cabinet records in filesystem and operations on them.
@@ -13,6 +13,9 @@ namespace FileCabinetApp.Service
         private const int MaxNameLength = 120;
         private const byte OffsetIsDelitedFlag = 2;
         private static readonly ReadOnlyCollection<FileCabinetRecord> EmptyRecordReadOnlyCollection = new List<FileCabinetRecord>().AsReadOnly();
+        private readonly Dictionary<string, List<long>> firstNameDictionary = new (StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<string, List<long>> lastNameDictionary = new (StringComparer.OrdinalIgnoreCase);
+        private readonly Dictionary<DateTime, List<long>> dateOfBirthDictionary = new ();
         private readonly IRecordValidator validator;
         private int deletedRecordsCount;
 
@@ -71,13 +74,13 @@ namespace FileCabinetApp.Service
                 FavoriteLetter = recordToCreate.FavoriteLetter,
             };
 
-            // to avoid CS8604
-            record.FirstName ??= string.Empty;
-            record.LastName ??= string.Empty;
-
-            var recordToFile = RecordToBytes(record);
             this.fileStream.Seek(0, SeekOrigin.End);
-            this.fileStream.Write(recordToFile, 0, recordToFile.Length);
+            var offset = this.fileStream.Position;
+
+            this.AddRecordToDictionaries(record, offset);
+
+            var bytesOfRecord = RecordToBytes(record);
+            this.fileStream.Write(bytesOfRecord, 0, bytesOfRecord.Length);
             this.fileStream.Flush();
 
             return record.Id;
@@ -99,31 +102,14 @@ namespace FileCabinetApp.Service
                 FavoriteLetter = recordToEdit.FavoriteLetter,
             };
 
-            var recordIndexToChange = -1;
-            var recordBuffer = new byte[RecordSize];
-
-            this.fileStream.Seek(0, SeekOrigin.Begin);
-            for (int offset = 0, recordIndex = 0; offset < this.fileStream.Length; offset += RecordSize, recordIndex++)
+            if (this.TryGetOffsetOfRecordWithId(record.Id, out var offset))
             {
-                this.fileStream.Read(recordBuffer, 0, RecordSize);
-                BytesToFileCabinetRecord(recordBuffer, out var currendRecord, out var status);
-                int isDeleted = (status >> OffsetIsDelitedFlag) & 1;
-                if (currendRecord.Id == record.Id)
-                {
-                    if (isDeleted == 0)
-                    {
-                        recordIndexToChange = recordIndex;
-                    }
+                this.RemoveRecordFromDictionaries(this.GetRecordById(record.Id), offset);
+                this.AddRecordToDictionaries(record, offset);
 
-                    break;
-                }
-            }
-
-            if (recordIndexToChange >= 0)
-            {
-                var bytesOfRecordParameters = FileCabinetRecordToBytes(record);
-                this.fileStream.Seek(recordIndexToChange * RecordSize, SeekOrigin.Begin);
-                this.fileStream.Write(bytesOfRecordParameters, 0, bytesOfRecordParameters.Length);
+                var bytesOfRecord = RecordToBytes(record);
+                this.fileStream.Seek(offset, SeekOrigin.Begin);
+                this.fileStream.Write(bytesOfRecord, 0, bytesOfRecord.Length);
                 this.fileStream.Flush();
             }
             else
@@ -189,11 +175,13 @@ namespace FileCabinetApp.Service
                 throw new ArgumentException($"The {nameof(recordId)} cannot be less than one.");
             }
 
-            if (this.TryGetIndexOfRecordWithId(recordId, out var indexOfRecordForRemove))
+            if (this.TryGetOffsetOfRecordWithId(recordId, out var offset))
             {
-                this.fileStream.Seek(indexOfRecordForRemove * RecordSize, SeekOrigin.Begin);
+                this.RemoveRecordFromDictionaries(this.GetRecordById(recordId), offset);
+
                 byte firstPartOfStatus = 0;
                 firstPartOfStatus ^= (byte)((-1 ^ firstPartOfStatus) & (1 << OffsetIsDelitedFlag));
+                this.fileStream.Seek(offset, SeekOrigin.Begin);
                 this.fileStream.WriteByte(firstPartOfStatus);
                 this.deletedRecordsCount++;
                 return true;
@@ -211,7 +199,7 @@ namespace FileCabinetApp.Service
             this.fileStream.Seek(0, SeekOrigin.Begin);
             foreach (var record in records)
             {
-                var recordAsBytes = FileCabinetRecordToBytes(record);
+                var recordAsBytes = RecordToBytes(record);
                 this.fileStream.Write(recordAsBytes, 0, recordAsBytes.Length);
             }
 
@@ -224,33 +212,43 @@ namespace FileCabinetApp.Service
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            List<FileCabinetRecord> recordsFound = new List<FileCabinetRecord>();
-            foreach (var record in this.GetRecords())
+            if (this.firstNameDictionary.ContainsKey(firstName))
             {
-                if (string.Equals(record.FirstName, firstName, StringComparison.OrdinalIgnoreCase))
+                var offsets = this.firstNameDictionary[firstName];
+                var foundRecords = new List<FileCabinetRecord>();
+                foreach (var offset in offsets)
                 {
-                    recordsFound.Add(record);
+                    if (this.TryGetRecordByOffset(offset, out var record))
+                    {
+                        foundRecords.Add(record);
+                    }
                 }
+
+                return new ReadOnlyCollection<FileCabinetRecord>(foundRecords);
             }
 
-            var records = new ReadOnlyCollection<FileCabinetRecord>(recordsFound);
-            return records;
+            return EmptyRecordReadOnlyCollection;
         }
 
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
         {
-            List<FileCabinetRecord> recordsFound = new List<FileCabinetRecord>();
-            foreach (var record in this.GetRecords())
+            if (this.lastNameDictionary.ContainsKey(lastName))
             {
-                if (string.Equals(record.LastName, lastName, StringComparison.OrdinalIgnoreCase))
+                var offsets = this.lastNameDictionary[lastName];
+                var foundRecords = new List<FileCabinetRecord>();
+                foreach (var offset in offsets)
                 {
-                    recordsFound.Add(record);
+                    if (this.TryGetRecordByOffset(offset, out var record))
+                    {
+                        foundRecords.Add(record);
+                    }
                 }
+
+                return new ReadOnlyCollection<FileCabinetRecord>(foundRecords);
             }
 
-            var records = new ReadOnlyCollection<FileCabinetRecord>(recordsFound);
-            return records;
+            return EmptyRecordReadOnlyCollection;
         }
 
         /// <inheritdoc/>
@@ -261,17 +259,22 @@ namespace FileCabinetApp.Service
                 return EmptyRecordReadOnlyCollection;
             }
 
-            List<FileCabinetRecord> recordsFound = new List<FileCabinetRecord>();
-            foreach (var record in this.GetRecords())
+            if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
             {
-                if (record.DateOfBirth == dateOfBirth)
+                var offsets = this.dateOfBirthDictionary[dateOfBirth];
+                var foundRecords = new List<FileCabinetRecord>();
+                foreach (var offset in offsets)
                 {
-                    recordsFound.Add(record);
+                    if (this.TryGetRecordByOffset(offset, out var record))
+                    {
+                        foundRecords.Add(record);
+                    }
                 }
+
+                return new ReadOnlyCollection<FileCabinetRecord>(foundRecords);
             }
 
-            var records = new ReadOnlyCollection<FileCabinetRecord>(recordsFound);
-            return records;
+            return EmptyRecordReadOnlyCollection;
         }
 
         /// <summary>
@@ -281,11 +284,11 @@ namespace FileCabinetApp.Service
         public int GetIdOfLastRecord()
         {
             var recordBuffer = new byte[RecordSize];
-            if (this.RecordsCount > 1)
+            if (this.RecordsCount > 0)
             {
                 var offsetOfLastRecord = (this.RecordsCount - 1) * RecordSize;
 
-                while (offsetOfLastRecord > 0)
+                while (offsetOfLastRecord >= 0)
                 {
                     try
                     {
@@ -445,46 +448,14 @@ namespace FileCabinetApp.Service
             }
         }
 
-        private static byte[] FileCabinetRecordToBytes(FileCabinetRecord fileCabinetRecord)
+        private bool TryGetOffsetOfRecordWithId(int id, out long offset)
         {
-            if (fileCabinetRecord == null)
-            {
-                throw new ArgumentNullException(nameof(fileCabinetRecord));
-            }
-
-            var bytes = new byte[RecordSize];
-            using (var memoryStream = new MemoryStream(bytes))
-            using (var binaryWriter = new BinaryWriter(memoryStream))
-            {
-                short status = 0;
-                binaryWriter.Write(status);
-                binaryWriter.Write(fileCabinetRecord.Id);
-
-                // to avoid CS8604
-                fileCabinetRecord.FirstName ??= string.Empty;
-                fileCabinetRecord.LastName ??= string.Empty;
-
-                binaryWriter.Write(fileCabinetRecord.FirstName.PadRight(MaxNameLength));
-                binaryWriter.Write(fileCabinetRecord.LastName.PadRight(MaxNameLength));
-                binaryWriter.Write(fileCabinetRecord.DateOfBirth.Year);
-                binaryWriter.Write(fileCabinetRecord.DateOfBirth.Month);
-                binaryWriter.Write(fileCabinetRecord.DateOfBirth.Day);
-                binaryWriter.Write(fileCabinetRecord.Height);
-                binaryWriter.Write(fileCabinetRecord.CashSavings);
-                binaryWriter.Write(fileCabinetRecord.FavoriteLetter);
-            }
-
-            return bytes;
-        }
-
-        private bool TryGetIndexOfRecordWithId(int id, out int index)
-        {
-            index = -1;
+            offset = -1;
             this.fileStream.Seek(0, SeekOrigin.Begin);
 
             var recordBuffer = new byte[RecordSize];
 
-            for (int position = 0, i = 0; position < this.fileStream.Length; position += RecordSize, i++)
+            for (long currentOffset = 0; currentOffset < this.fileStream.Length; currentOffset += RecordSize)
             {
                 this.fileStream.Read(recordBuffer, 0, RecordSize);
                 FileCabinetRecord temporaryRecord;
@@ -495,7 +466,7 @@ namespace FileCabinetApp.Service
                 {
                     if (isDeleted == 0)
                     {
-                        index = i;
+                        offset = currentOffset;
                         return true;
                     }
 
@@ -504,6 +475,64 @@ namespace FileCabinetApp.Service
             }
 
             return false;
+        }
+
+        private bool TryGetRecordByOffset(long offset, out FileCabinetRecord record)
+        {
+            var recordBuffer = new byte[RecordSize];
+            this.fileStream.Seek(offset, SeekOrigin.Begin);
+            this.fileStream.Read(recordBuffer, 0, RecordSize);
+            BytesToFileCabinetRecord(recordBuffer, out record, out var status);
+            int isDeleted = (status >> OffsetIsDelitedFlag) & 1;
+            if (isDeleted == 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private void RemoveRecordFromDictionaries(FileCabinetRecord recordToRemove, long offset)
+        {
+            recordToRemove.FirstName ??= string.Empty;
+            recordToRemove.LastName ??= string.Empty;
+            this.firstNameDictionary[recordToRemove.FirstName].Remove(offset);
+            this.lastNameDictionary[recordToRemove.LastName].Remove(offset);
+            this.dateOfBirthDictionary[recordToRemove.DateOfBirth].Remove(offset);
+        }
+
+        private void AddRecordToDictionaries(FileCabinetRecord record, long offset)
+        {
+            // to avoid CS8604
+            record.FirstName ??= string.Empty;
+            record.LastName ??= string.Empty;
+
+            if (this.firstNameDictionary.ContainsKey(record.FirstName))
+            {
+                this.firstNameDictionary[record.FirstName].Add(offset);
+            }
+            else
+            {
+                this.firstNameDictionary[record.FirstName] = new () { offset };
+            }
+
+            if (this.lastNameDictionary.ContainsKey(record.LastName))
+            {
+                this.lastNameDictionary[record.LastName].Add(offset);
+            }
+            else
+            {
+                this.lastNameDictionary[record.LastName] = new () { offset };
+            }
+
+            if (this.dateOfBirthDictionary.ContainsKey(record.DateOfBirth))
+            {
+                this.dateOfBirthDictionary[record.DateOfBirth].Add(offset);
+            }
+            else
+            {
+                this.dateOfBirthDictionary[record.DateOfBirth] = new () { offset };
+            }
         }
     }
 }

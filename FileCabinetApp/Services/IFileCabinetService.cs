@@ -1,7 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using FileCabinetApp.Data;
 
-namespace FileCabinetApp.Service
+namespace FileCabinetApp.Services
 {
     /// <summary>
     /// Interface provides a service for storing file cabinet records and operations on them.
