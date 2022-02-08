@@ -142,44 +142,44 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             if (this.firstNameDictionary.ContainsKey(firstName))
             {
                 var records = new ReadOnlyCollection<FileCabinetRecord>(this.firstNameDictionary[firstName]);
-                return new MemoryIterator(records);
+                return new RecordsCollection(records);
             }
 
-            return new MemoryIterator();
+            return new RecordsCollection();
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             if (this.lastNameDictionary.ContainsKey(lastName))
             {
                 var records = new ReadOnlyCollection<FileCabinetRecord>(this.lastNameDictionary[lastName]);
-                return new MemoryIterator(records);
+                return new RecordsCollection(records);
             }
 
-            return new MemoryIterator();
+            return new RecordsCollection();
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByDateOfBirth(string sourceDate)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
         {
             if (!DateTime.TryParse(sourceDate, out var dateOfBirth))
             {
-                return new MemoryIterator();
+                return new RecordsCollection();
             }
 
             if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
             {
                 var records = new ReadOnlyCollection<FileCabinetRecord>(this.dateOfBirthDictionary[dateOfBirth]);
-                return new MemoryIterator(records);
+                return new RecordsCollection(records);
             }
 
-            return new MemoryIterator();
+            return new RecordsCollection();
         }
 
         /// <inheritdoc/>

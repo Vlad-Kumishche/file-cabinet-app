@@ -9,14 +9,14 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class ListCommandHandler : ServiceCommandHandlerBase
     {
-        private readonly Action<IRecordIterator> printer;
+        private readonly Action<IEnumerator<FileCabinetRecord>> printer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ListCommandHandler"/> class.
         /// </summary>
         /// <param name="fileCabinetService">Used service.</param>
         /// <param name="printer">Used printer.</param>
-        public ListCommandHandler(IFileCabinetService fileCabinetService, Action<IRecordIterator> printer)
+        public ListCommandHandler(IFileCabinetService fileCabinetService, Action<IEnumerator<FileCabinetRecord>> printer)
             : base(fileCabinetService)
         {
             this.CommandName = "list";

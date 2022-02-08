@@ -211,44 +211,44 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             if (this.firstNameDictionary.ContainsKey(firstName))
             {
                 var offsets = this.firstNameDictionary[firstName];
-                return new FilesystemIterator(this, offsets);
+                return new OffsetsCollection(this, offsets);
             }
 
-            return new FilesystemIterator();
+            return new OffsetsCollection();
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             if (this.lastNameDictionary.ContainsKey(lastName))
             {
                 var offsets = this.lastNameDictionary[lastName];
-                return new FilesystemIterator(this, offsets);
+                return new OffsetsCollection(this, offsets);
             }
 
-            return new FilesystemIterator();
+            return new OffsetsCollection();
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByDateOfBirth(string sourceDate)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
         {
             if (!DateTime.TryParse(sourceDate, out var dateOfBirth))
             {
-                return new FilesystemIterator();
+                return new OffsetsCollection();
             }
 
             if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
             {
                 var offsets = this.dateOfBirthDictionary[dateOfBirth];
-                return new FilesystemIterator(this, offsets);
+                return new OffsetsCollection(this, offsets);
             }
 
-            return new FilesystemIterator();
+            return new OffsetsCollection();
         }
 
         /// <summary>

@@ -199,7 +199,7 @@
             Handler for find command.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.FindCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService,System.Action{FileCabinetApp.Iterators.IRecordIterator})">
+        <member name="M:FileCabinetApp.CommandHandlers.FindCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService,System.Action{System.Collections.Generic.IEnumerator{FileCabinetApp.Data.FileCabinetRecord}})">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.FindCommandHandler"/> class.
             </summary>
@@ -258,7 +258,7 @@
             Handler for list command.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService,System.Action{FileCabinetApp.Iterators.IRecordIterator})">
+        <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService,System.Action{System.Collections.Generic.IEnumerator{FileCabinetApp.Data.FileCabinetRecord}})">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ListCommandHandler"/> class.
             </summary>
@@ -390,6 +390,29 @@
             </summary>
             <value>The favorite letter of the person.</value>
         </member>
+        <member name="T:FileCabinetApp.Data.OffsetsCollection">
+            <summary>
+            Offsets collection.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Data.OffsetsCollection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Data.OffsetsCollection"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Data.OffsetsCollection.#ctor(FileCabinetApp.Services.FileCabinetFilesystemService,System.Collections.Generic.IEnumerable{System.Int64})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Data.OffsetsCollection"/> class.
+            </summary>
+            <param name="service">Service.</param>
+            <param name="offsets">Offsets.</param>
+        </member>
+        <member name="M:FileCabinetApp.Data.OffsetsCollection.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Data.OffsetsCollection.System#Collections#Generic#IEnumerable{FileCabinetApp#Data#FileCabinetRecord}#GetEnumerator">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Data.RecordArgs">
             <summary>
             Class for introducing parameters for file cabinet record.
@@ -437,6 +460,28 @@
             </summary>
             <value>The favorite letter of the person.</value>
         </member>
+        <member name="T:FileCabinetApp.Data.RecordsCollection">
+            <summary>
+            Offsets collection.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Data.RecordsCollection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Data.RecordsCollection"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Data.RecordsCollection.#ctor(System.Collections.Generic.IEnumerable{FileCabinetApp.Data.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Data.RecordsCollection"/> class.
+            </summary>
+            <param name="records">Offsets.</param>
+        </member>
+        <member name="M:FileCabinetApp.Data.RecordsCollection.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Data.RecordsCollection.System#Collections#Generic#IEnumerable{FileCabinetApp#Data#FileCabinetRecord}#GetEnumerator">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Iterators.FilesystemIterator">
             <summary>
             Iterator for records in <see cref="T:FileCabinetApp.Services.FileCabinetFilesystemService"/>.
@@ -454,28 +499,26 @@
             <param name="service">Service.</param>
             <param name="offsets">Offsets.</param>
         </member>
-        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.GetNext">
+        <member name="P:FileCabinetApp.Iterators.FilesystemIterator.Current">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.HasMore">
+        <member name="P:FileCabinetApp.Iterators.FilesystemIterator.System#Collections#IEnumerator#Current">
             <inheritdoc/>
         </member>
-        <member name="T:FileCabinetApp.Iterators.IRecordIterator">
-            <summary>
-            Record iterator interface.
-            </summary>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.MoveNext">
+            <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Iterators.IRecordIterator.GetNext">
-            <summary>
-            Gets the next item.
-            </summary>
-            <returns>The next item.</returns>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.Reset">
+            <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Iterators.IRecordIterator.HasMore">
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.Dispose(System.Boolean)">
             <summary>
-            Displays the presence of the next item.
+            Releasing resources.
             </summary>
-            <returns>Returns true if there is another item.</returns>
+            <param name="disposing">Whether the method call comes from a Dispose method (its value is true) or from a finalizer (its value is false).</param>
         </member>
         <member name="T:FileCabinetApp.Iterators.MemoryIterator">
             <summary>
@@ -493,11 +536,26 @@
             </summary>
             <param name="records">Records.</param>
         </member>
-        <member name="M:FileCabinetApp.Iterators.MemoryIterator.GetNext">
+        <member name="P:FileCabinetApp.Iterators.MemoryIterator.Current">
             <inheritdoc/>
         </member>
-        <member name="M:FileCabinetApp.Iterators.MemoryIterator.HasMore">
+        <member name="P:FileCabinetApp.Iterators.MemoryIterator.System#Collections#IEnumerator#Current">
             <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.Dispose">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.MoveNext">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.Reset">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.Dispose(System.Boolean)">
+            <summary>
+            Releasing resources.
+            </summary>
+            <param name="disposing">Whether the method call comes from a Dispose method (its value is true) or from a finalizer (its value is false).</param>
         </member>
         <member name="T:FileCabinetApp.Printers.DefaultRecordPrinter">
             <summary>

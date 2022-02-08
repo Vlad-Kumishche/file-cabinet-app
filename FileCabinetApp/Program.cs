@@ -247,19 +247,26 @@ namespace FileCabinetApp
             }
         }
 
-        private static void DefaultRecordPrint(IRecordIterator records)
+        private static void DefaultRecordPrint(IEnumerator<FileCabinetRecord> records)
         {
             if (records == null)
             {
                 throw new ArgumentNullException(nameof(records));
             }
 
-            while (records.HasMore())
+            if (records.Current.FirstName is null)
             {
-                var record = records.GetNext();
+                Console.WriteLine("Nothing found");
+                return;
+            }
+
+            do
+            {
+                var record = records.Current;
                 string date = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
                 Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {date}, {record.Height} cm, {record.CashSavings}$, {record.FavoriteLetter}");
             }
+            while (records.MoveNext());
         }
     }
 }

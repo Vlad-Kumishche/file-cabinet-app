@@ -53,7 +53,7 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByDateOfBirth(string sourceDate)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
         {
             this.watch.Reset();
             this.watch.Start();
@@ -68,7 +68,7 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             this.watch.Reset();
             this.watch.Start();
@@ -83,7 +83,7 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public IRecordIterator FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             this.watch.Reset();
             this.watch.Start();
