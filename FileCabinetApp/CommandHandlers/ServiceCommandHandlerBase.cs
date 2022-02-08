@@ -7,7 +7,7 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public abstract class ServiceCommandHandlerBase : CommandHandlerBase
     {
-        private IFileCabinetService fileCabinetService;
+        private readonly IFileCabinetService fileCabinetService;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ServiceCommandHandlerBase"/> class.

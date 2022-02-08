@@ -7,8 +7,8 @@ namespace FileCabinetApp.Validators
     /// </summary>
     public class HeightValidator : IRecordValidator
     {
-        private short minHeight;
-        private short maxHeight;
+        private readonly short minHeight;
+        private readonly short maxHeight;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HeightValidator"/> class.

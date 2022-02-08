@@ -7,7 +7,7 @@ namespace FileCabinetApp.Readers
     /// </summary>
     public class FileCabinetRecordCsvReader
     {
-        private StreamReader reader;
+        private readonly StreamReader reader;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetRecordCsvReader"/> class.
@@ -24,7 +24,7 @@ namespace FileCabinetApp.Readers
         /// <returns>List of records to import.</returns>
         public IList<FileCabinetRecord> ReadAll()
         {
-            List<FileCabinetRecord> readRecords = new List<FileCabinetRecord>();
+            List<FileCabinetRecord> readRecords = new ();
 
             this.reader.ReadLine();
             while (!this.reader.EndOfStream)
@@ -33,34 +33,28 @@ namespace FileCabinetApp.Readers
                 currentRecord ??= string.Empty;
                 var recordFields = currentRecord.Split(",");
 
-                int id;
-                DateTime dateOfBirth;
-                short height;
-                decimal cashSavings;
-                char favoriteLetter;
-
-                if (!int.TryParse(recordFields[0], out id))
+                if (!int.TryParse(recordFields[0], out int id))
                 {
                     continue;
                 }
 
                 string dateToParse = recordFields[3][3..6] + recordFields[3][..3] + recordFields[3][6..];
-                if (!DateTime.TryParse(dateToParse, out dateOfBirth))
+                if (!DateTime.TryParse(dateToParse, out DateTime dateOfBirth))
                 {
                     continue;
                 }
 
-                if (!short.TryParse(recordFields[4], out height))
+                if (!short.TryParse(recordFields[4], out short height))
                 {
                     continue;
                 }
 
-                if (!decimal.TryParse(recordFields[5], out cashSavings))
+                if (!decimal.TryParse(recordFields[5], out decimal cashSavings))
                 {
                     continue;
                 }
 
-                if (!char.TryParse(recordFields[6], out favoriteLetter))
+                if (!char.TryParse(recordFields[6], out char favoriteLetter))
                 {
                     continue;
                 }

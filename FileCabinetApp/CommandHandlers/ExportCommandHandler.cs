@@ -69,10 +69,12 @@ namespace FileCabinetApp.CommandHandlers
                         break;
 
                     case "xml":
-                        XmlWriterSettings settings = new XmlWriterSettings();
-                        settings.Indent = true;
-                        settings.IndentChars = "\t";
-                        settings.OmitXmlDeclaration = true;
+                        XmlWriterSettings settings = new ()
+                        {
+                            Indent = true,
+                            IndentChars = "\t",
+                            OmitXmlDeclaration = true,
+                        };
 
                         var xmlWriter = XmlWriter.Create(path, settings);
                         snapshot.SaveToXml(xmlWriter);

@@ -89,7 +89,7 @@ namespace FileCabinetApp.Services
         /// <param name="writer">Writer to file.</param>
         public void SaveToXmlWithXmlSerializer(XmlWriter writer)
         {
-            XmlSerializer ser = new XmlSerializer(typeof(List<FileCabinetRecord>));
+            XmlSerializer ser = new (typeof(List<FileCabinetRecord>));
 
             ser.Serialize(writer, new List<FileCabinetRecord>(this.records));
         }
@@ -100,7 +100,7 @@ namespace FileCabinetApp.Services
         /// <param name="reader">Reader to file.</param>
         public void LoadFromXmlWithXmlSerializer(XmlReader reader)
         {
-            FileCabinetRecordXmlReader fileXmlReader = new FileCabinetRecordXmlReader(reader);
+            FileCabinetRecordXmlReader fileXmlReader = new (reader);
             IList<FileCabinetRecord> loadedRecords = fileXmlReader.ReadAll();
 
             this.records = loadedRecords.ToArray();

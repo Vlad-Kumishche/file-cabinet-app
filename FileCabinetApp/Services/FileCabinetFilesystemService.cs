@@ -17,12 +17,13 @@ namespace FileCabinetApp.Services
         private readonly Dictionary<string, List<long>> lastNameDictionary = new (StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<DateTime, List<long>> dateOfBirthDictionary = new ();
         private readonly IRecordValidator validator;
-        private int deletedRecordsCount;
 
         /// <summary>
         /// File stream to file.
         /// </summary>
-        private FileStream fileStream;
+        private readonly FileStream fileStream;
+
+        private int deletedRecordsCount;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetFilesystemService"/> class.
@@ -294,7 +295,7 @@ namespace FileCabinetApp.Services
         {
             var recordNumberToSearch = -1;
             var recordBuffer = new byte[RecordSize];
-            FileCabinetRecord searchedRecord = new FileCabinetRecord();
+            FileCabinetRecord searchedRecord = new ();
 
             this.fileStream.Seek(0, SeekOrigin.Begin);
             for (int i = 0, recordNumber = 0; i < this.fileStream.Length; i += RecordSize, recordNumber++)
@@ -326,7 +327,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public ReadOnlyCollection<FileCabinetRecord> GetRecords()
         {
-            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+            List<FileCabinetRecord> records = new ();
             var recordBuffer = new byte[RecordSize];
 
             this.fileStream.Seek(0, SeekOrigin.Begin);
@@ -420,25 +421,23 @@ namespace FileCabinetApp.Services
             }
 
             record = new FileCabinetRecord();
-            using (var memoryStream = new MemoryStream(bytes))
-            using (var binaryReader = new BinaryReader(memoryStream))
+            using var memoryStream = new MemoryStream(bytes);
+            using var binaryReader = new BinaryReader(memoryStream);
+            status = binaryReader.ReadInt16();
+            if (status == 0)
             {
-                status = binaryReader.ReadInt16();
-                if (status == 0)
-                {
-                    record.Id = binaryReader.ReadInt32();
-                    record.FirstName = binaryReader.ReadString().Trim(' ');
-                    record.LastName = binaryReader.ReadString().Trim(' ');
+                record.Id = binaryReader.ReadInt32();
+                record.FirstName = binaryReader.ReadString().Trim(' ');
+                record.LastName = binaryReader.ReadString().Trim(' ');
 
-                    int year = binaryReader.ReadInt32();
-                    int month = binaryReader.ReadInt32();
-                    int day = binaryReader.ReadInt32();
-                    record.DateOfBirth = new DateTime(year, month, day);
+                int year = binaryReader.ReadInt32();
+                int month = binaryReader.ReadInt32();
+                int day = binaryReader.ReadInt32();
+                record.DateOfBirth = new DateTime(year, month, day);
 
-                    record.Height = binaryReader.ReadInt16();
-                    record.CashSavings = binaryReader.ReadDecimal();
-                    record.FavoriteLetter = binaryReader.ReadChar();
-                }
+                record.Height = binaryReader.ReadInt16();
+                record.CashSavings = binaryReader.ReadDecimal();
+                record.FavoriteLetter = binaryReader.ReadChar();
             }
         }
 
@@ -452,9 +451,8 @@ namespace FileCabinetApp.Services
             for (long currentOffset = 0; currentOffset < this.fileStream.Length; currentOffset += RecordSize)
             {
                 this.fileStream.Read(recordBuffer, 0, RecordSize);
-                FileCabinetRecord temporaryRecord;
 
-                BytesToFileCabinetRecord(recordBuffer, out temporaryRecord, out var status);
+                BytesToFileCabinetRecord(recordBuffer, out FileCabinetRecord temporaryRecord, out var status);
                 int isDeleted = (status >> OffsetIsDelitedFlag) & 1;
                 if (temporaryRecord.Id == id)
                 {

@@ -173,10 +173,8 @@ namespace FileCabinetApp.Services
                 throw new ArgumentNullException(nameof(message));
             }
 
-            using (TextWriter textWriter = File.AppendText(Path))
-            {
-                textWriter.WriteLine($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture)} - {message}");
-            }
+            using TextWriter textWriter = File.AppendText(Path);
+            textWriter.WriteLine($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture)} - {message}");
         }
     }
 }

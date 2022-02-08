@@ -5,7 +5,7 @@
     /// </summary>
     public class ValidatorBuilder
     {
-        private List<IRecordValidator> validators = new List<IRecordValidator>();
+        private readonly List<IRecordValidator> validators = new ();
 
         /// <summary>
         /// Creates the validator.
