@@ -41,7 +41,7 @@ namespace FileCabinetApp.Service
         /// <inheritdoc/>
         public void EditRecord(RecordArgs recordToEdit)
         {
-            this.service.CreateRecord(recordToEdit);
+            this.service.EditRecord(recordToEdit);
 
             Log($"Calling {nameof(this.service.EditRecord)}() with" +
                 $"{nameof(recordToEdit.FirstName)} = '{recordToEdit.FirstName}', " +

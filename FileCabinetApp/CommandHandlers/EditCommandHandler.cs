@@ -15,7 +15,7 @@ namespace FileCabinetApp.CommandHandlers
         public EditCommandHandler(IFileCabinetService fileCabinetService)
             : base(fileCabinetService)
         {
-            this.CommandName = "create";
+            this.CommandName = "edit";
         }
 
         /// <inheritdoc/>

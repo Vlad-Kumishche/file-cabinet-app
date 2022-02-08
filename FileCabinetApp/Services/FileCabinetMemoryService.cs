@@ -29,10 +29,10 @@ namespace FileCabinetApp.Service
         public int CreateRecord(RecordArgs recordToCreate)
         {
             this.validator.ValidateParameters(recordToCreate);
-            int indexOfLastRecord = this.list.Count - 1;
+            int lastId = this.list.Count == 0 ? 0 : this.list[this.list.Count - 1].Id;
             var record = new FileCabinetRecord
             {
-                Id = (recordToCreate.Id == 0) ? this.list[indexOfLastRecord].Id + 1 : recordToCreate.Id,
+                Id = (recordToCreate.Id == 0) ? lastId + 1 : recordToCreate.Id,
                 FirstName = recordToCreate.FirstName,
                 LastName = recordToCreate.LastName,
                 DateOfBirth = recordToCreate.DateOfBirth,
@@ -81,14 +81,9 @@ namespace FileCabinetApp.Service
         public void EditRecord(RecordArgs recordToEdit)
         {
             this.validator.ValidateParameters(recordToEdit);
-
             var record = this.GetRecordById(recordToEdit.Id);
-            record.FirstName = recordToEdit.FirstName;
-            record.LastName = recordToEdit.LastName;
-            record.DateOfBirth = recordToEdit.DateOfBirth;
-            record.Height = recordToEdit.Height;
-            record.CashSavings = recordToEdit.CashSavings;
-            record.FavoriteLetter = recordToEdit.FavoriteLetter;
+            this.RemoveLinksToRecord(record);
+            this.CreateRecord(recordToEdit);
         }
 
         /// <inheritdoc/>
@@ -163,13 +158,7 @@ namespace FileCabinetApp.Service
                 return false;
             }
 
-            this.list.Remove(recordToRemove);
-            recordToRemove.FirstName ??= string.Empty;
-            recordToRemove.LastName ??= string.Empty;
-            this.firstNameDictionary[recordToRemove.FirstName].Remove(recordToRemove);
-            this.lastNameDictionary[recordToRemove.LastName].Remove(recordToRemove);
-            this.dateOfBirthDictionary[recordToRemove.DateOfBirth].Remove(recordToRemove);
-
+            this.RemoveLinksToRecord(recordToRemove);
             return true;
         }
 
@@ -243,6 +232,16 @@ namespace FileCabinetApp.Service
         public void Purge()
         {
             Console.WriteLine("The memory service does not need to be defragmented.");
+        }
+
+        private void RemoveLinksToRecord(FileCabinetRecord recordToRemove)
+        {
+            this.list.Remove(recordToRemove);
+            recordToRemove.FirstName ??= string.Empty;
+            recordToRemove.LastName ??= string.Empty;
+            this.firstNameDictionary[recordToRemove.FirstName].Remove(recordToRemove);
+            this.lastNameDictionary[recordToRemove.LastName].Remove(recordToRemove);
+            this.dateOfBirthDictionary[recordToRemove.DateOfBirth].Remove(recordToRemove);
         }
     }
 }

@@ -43,7 +43,7 @@ namespace FileCabinetApp.Service
             this.watch.Reset();
             this.watch.Start();
 
-            this.service.CreateRecord(recordToEdit);
+            this.service.EditRecord(recordToEdit);
 
             this.watch.Stop();
 
@@ -72,7 +72,7 @@ namespace FileCabinetApp.Service
             this.watch.Reset();
             this.watch.Start();
 
-            var records = this.service.FindByDateOfBirth(firstName);
+            var records = this.service.FindByFirstName(firstName);
 
             this.watch.Stop();
 
@@ -87,7 +87,7 @@ namespace FileCabinetApp.Service
             this.watch.Reset();
             this.watch.Start();
 
-            var records = this.service.FindByDateOfBirth(lastName);
+            var records = this.service.FindByLastName(lastName);
 
             this.watch.Stop();
 
