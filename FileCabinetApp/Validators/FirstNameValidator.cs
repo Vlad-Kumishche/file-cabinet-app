@@ -7,8 +7,8 @@ namespace FileCabinetApp.Validators
     /// </summary>
     public class FirstNameValidator : IRecordValidator
     {
-        private int minLength;
-        private int maxLength;
+        private readonly int minLength;
+        private readonly int maxLength;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FirstNameValidator"/> class.

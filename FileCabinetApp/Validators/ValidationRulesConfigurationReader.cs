@@ -8,8 +8,8 @@ namespace FileCabinetApp.Validators
     /// </summary>
     public class ValidationRulesConfigurationReader
     {
-        private IConfiguration config;
-        private string validationType;
+        private readonly IConfiguration config;
+        private readonly string validationType;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ValidationRulesConfigurationReader"/> class.

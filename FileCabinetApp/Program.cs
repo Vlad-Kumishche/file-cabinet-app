@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.Data;
-using FileCabinetApp.Service;
+using FileCabinetApp.Services;
 using FileCabinetApp.Validators;
 
 namespace FileCabinetApp
@@ -16,14 +16,7 @@ namespace FileCabinetApp
         private const string FileName = "cabinet-records.db";
         private const string DefaultValidationRulesValue = "default";
         private const string CustomValidationRulesValue = "custom";
-        private static string currentValidationRules = "default";
-        private static string currentStorageRules = "memory";
-        private static IRecordValidator validator = new ValidatorBuilder().CreateDefault();
-        private static bool isRunning = true;
-        private static bool isServiceMeterEnable;
-        private static bool isServiceLoggerEnable;
-        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(validator);
-        private static Dictionary<string, SetRule> paramsList = new Dictionary<string, SetRule>
+        private static readonly Dictionary<string, SetRule> ParamsList = new ()
         {
             ["--storage"] = new SetRule(SetStorageRules),
             ["-s"] = new SetRule(SetStorageRules),
@@ -32,6 +25,14 @@ namespace FileCabinetApp
             ["--use"] = new SetRule(SetUseRules),
             ["-u"] = new SetRule(SetUseRules),
         };
+
+        private static string currentValidationRules = "default";
+        private static string currentStorageRules = "memory";
+        private static IRecordValidator validator = new ValidatorBuilder().CreateDefault();
+        private static bool isRunning = true;
+        private static bool isServiceMeterEnable;
+        private static bool isServiceLoggerEnable;
+        private static IFileCabinetService fileCabinetService = new FileCabinetMemoryService(validator);
 
         private delegate void SetRule(string args);
 
@@ -159,11 +160,11 @@ namespace FileCabinetApp
                 int index = args[first].IndexOf("=", StringComparison.InvariantCulture);
                 if (index != -1)
                 {
-                    operation = args[first].Substring(0, index);
-                    parameter = args[first].Substring(index + 1);
-                    if (paramsList.ContainsKey(operation.ToLower(CultureInfo.InvariantCulture)))
+                    operation = args[first][..index];
+                    parameter = args[first][(index + 1) ..];
+                    if (ParamsList.ContainsKey(operation.ToLower(CultureInfo.InvariantCulture)))
                     {
-                        changeRule = paramsList[operation.ToLower(CultureInfo.InvariantCulture)];
+                        changeRule = ParamsList[operation.ToLower(CultureInfo.InvariantCulture)];
                     }
                 }
             }
@@ -175,9 +176,9 @@ namespace FileCabinetApp
                     parameter = args[second];
                 }
 
-                if (paramsList.ContainsKey(operation.ToLower(CultureInfo.InvariantCulture)))
+                if (ParamsList.ContainsKey(operation.ToLower(CultureInfo.InvariantCulture)))
                 {
-                    changeRule = paramsList[operation.ToLower(CultureInfo.InvariantCulture)];
+                    changeRule = ParamsList[operation.ToLower(CultureInfo.InvariantCulture)];
                 }
             }
             else if (args[second].StartsWith("--", StringComparison.InvariantCulture))
@@ -185,11 +186,11 @@ namespace FileCabinetApp
                 int index = args[second].IndexOf("=", StringComparison.InvariantCulture);
                 if (index != -1)
                 {
-                    operation = args[second].Substring(0, index);
-                    parameter = args[second].Substring(index + 1);
-                    if (paramsList.ContainsKey(operation.ToLower(CultureInfo.InvariantCulture)))
+                    operation = args[second][..index];
+                    parameter = args[second][(index + 1) ..];
+                    if (ParamsList.ContainsKey(operation.ToLower(CultureInfo.InvariantCulture)))
                     {
-                        changeRule = paramsList[operation.ToLower(CultureInfo.InvariantCulture)];
+                        changeRule = ParamsList[operation.ToLower(CultureInfo.InvariantCulture)];
                     }
                 }
             }
@@ -202,16 +203,11 @@ namespace FileCabinetApp
 
         private static void SetValidationRules(string validationRules)
         {
-            switch (validationRules)
+            validator = validationRules switch
             {
-                case CustomValidationRulesValue:
-                    validator = new ValidatorBuilder().CreateCustom();
-                    break;
-
-                default:
-                    validator = new ValidatorBuilder().CreateDefault();
-                    break;
-            }
+                CustomValidationRulesValue => new ValidatorBuilder().CreateCustom(),
+                _ => new ValidatorBuilder().CreateDefault(),
+            };
 
             currentValidationRules = validationRules;
         }
@@ -221,7 +217,7 @@ namespace FileCabinetApp
             switch (storageRules)
             {
                 case "file":
-                    FileStream fileStream = new FileStream(FileName, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
+                    FileStream fileStream = new (FileName, FileMode.Create, FileAccess.ReadWrite, FileShare.ReadWrite);
                     fileCabinetService = new FileCabinetFilesystemService(fileStream, validator);
                     break;
 
@@ -250,18 +246,26 @@ namespace FileCabinetApp
             }
         }
 
-        private static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)
+        private static void DefaultRecordPrint(IEnumerator<FileCabinetRecord> records)
         {
             if (records == null)
             {
                 throw new ArgumentNullException(nameof(records));
             }
 
-            foreach (var record in records)
+            if (!records.MoveNext())
             {
+                Console.WriteLine("Nothing found");
+                return;
+            }
+
+            do
+            {
+                var record = records.Current;
                 string date = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
                 Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {date}, {record.Height} cm, {record.CashSavings}$, {record.FavoriteLetter}");
             }
+            while (records.MoveNext());
         }
     }
 }

@@ -200,15 +200,15 @@ namespace FileCabinetApp.CommandHandlers
         {
             int minLength;
             int maxLength;
-            if (Program.CurrentValidationRules == Program.DefaultValidationRules)
-            {
-                minLength = 2;
-                maxLength = 60;
-            }
-            else
+            if (Program.CurrentValidationRules == Program.CustomValidationRules)
             {
                 minLength = 4;
                 maxLength = 20;
+            }
+            else
+            {
+                minLength = 2;
+                maxLength = 60;
             }
 
             if (string.IsNullOrEmpty(nameToValidate) || nameToValidate.Length < minLength || nameToValidate.Length > maxLength)
@@ -237,16 +237,16 @@ namespace FileCabinetApp.CommandHandlers
         {
             DateTime minDate;
             DateTime maxDate;
-            if (Program.CurrentValidationRules == Program.DefaultValidationRules)
-            {
-                minDate = new DateTime(1950, 1, 1);
-                maxDate = DateTime.Now;
-            }
-            else
+            if (Program.CurrentValidationRules == Program.CustomValidationRules)
             {
                 minDate = new DateTime(1940, 1, 1);
                 const int ageOfMajority = 18;
                 maxDate = DateTime.Now.AddYears(-ageOfMajority);
+            }
+            else
+            {
+                minDate = new DateTime(1950, 1, 1);
+                maxDate = DateTime.Now;
             }
 
             if (dateToValidate < minDate || dateToValidate >= maxDate)
@@ -266,15 +266,15 @@ namespace FileCabinetApp.CommandHandlers
         {
             short minHeight;
             short maxHeight;
-            if (Program.CurrentValidationRules == Program.DefaultValidationRules)
-            {
-                minHeight = 40;
-                maxHeight = 300;
-            }
-            else
+            if (Program.CurrentValidationRules == Program.CustomValidationRules)
             {
                 minHeight = 120;
                 maxHeight = 250;
+            }
+            else
+            {
+                minHeight = 40;
+                maxHeight = 300;
             }
 
             if (heightToValidate < minHeight || heightToValidate > maxHeight)
@@ -294,15 +294,15 @@ namespace FileCabinetApp.CommandHandlers
         {
             decimal minCashSavings;
             decimal maxCashSavings;
-            if (Program.CurrentValidationRules == Program.DefaultValidationRules)
-            {
-                minCashSavings = 0M;
-                maxCashSavings = 10_000_000M;
-            }
-            else
+            if (Program.CurrentValidationRules == Program.CustomValidationRules)
             {
                 minCashSavings = 100M;
                 maxCashSavings = 100_000_000M;
+            }
+            else
+            {
+                minCashSavings = 0M;
+                maxCashSavings = 10_000_000M;
             }
 
             if (heightToValidate < minCashSavings || heightToValidate > maxCashSavings)

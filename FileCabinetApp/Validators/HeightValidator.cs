@@ -7,8 +7,8 @@ namespace FileCabinetApp.Validators
     /// </summary>
     public class HeightValidator : IRecordValidator
     {
-        private short minHeight;
-        private short maxHeight;
+        private readonly short minHeight;
+        private readonly short maxHeight;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="HeightValidator"/> class.
@@ -29,9 +29,7 @@ namespace FileCabinetApp.Validators
         public void ValidateParameters(RecordArgs recordToValidate)
         {
             short height = recordToValidate.Height;
-            const short minHeight = 120;
-            const short maxHeight = 250;
-            if (height < minHeight || height > maxHeight)
+            if (height < this.minHeight || height > this.maxHeight)
             {
                 throw new ArgumentException($"The {nameof(height)} is not within the allowed range.", nameof(recordToValidate));
             }

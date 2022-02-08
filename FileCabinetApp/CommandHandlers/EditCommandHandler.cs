@@ -1,5 +1,5 @@
 ﻿using FileCabinetApp.Data;
-using FileCabinetApp.Service;
+using FileCabinetApp.Services;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -15,7 +15,7 @@ namespace FileCabinetApp.CommandHandlers
         public EditCommandHandler(IFileCabinetService fileCabinetService)
             : base(fileCabinetService)
         {
-            this.CommandName = "create";
+            this.CommandName = "edit";
         }
 
         /// <inheritdoc/>
@@ -44,7 +44,7 @@ namespace FileCabinetApp.CommandHandlers
             Console.Write("Last name: ");
             recordToEdit.LastName = ReadInput(StringConverter, NameValidator);
 
-            Console.Write("Date of birth: ");
+            Console.Write("Date of birth (MM/DD/YYYY):");
             recordToEdit.DateOfBirth = ReadInput(DateConverter, DateValidator);
 
             Console.Write("Height (cm): ");

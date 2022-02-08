@@ -1,7 +1,7 @@
 ﻿using System.Globalization;
 using System.Text;
 using System.Xml;
-using FileCabinetApp.Service;
+using FileCabinetApp.Services;
 
 namespace FileCabinetGenerator
 {
@@ -10,14 +10,8 @@ namespace FileCabinetGenerator
     /// </summary>
     public static class Program
     {
-        private static string outputType = "csv";
-        private static string outputFileName = "records." + outputType;
-        private static int recordsAmount = 250;
-        private static int startId = 15;
-
-        private static IRecordGenerator generator = new DefaultRecordGenerator();
-
-        private static Dictionary<string, SetRule> changeSettings = new Dictionary<string, SetRule>
+        private static readonly IRecordGenerator Generator = new DefaultRecordGenerator();
+        private static readonly Dictionary<string, SetRule> ChangeSettings = new ()
         {
             ["--output-type"] = new SetRule(SetOutputType),
             ["-t"] = new SetRule(SetOutputType),
@@ -28,6 +22,11 @@ namespace FileCabinetGenerator
             ["--start-id"] = new SetRule(SetStartId),
             ["-i"] = new SetRule(SetStartId),
         };
+
+        private static string outputType = "csv";
+        private static string outputFileName = "records." + outputType;
+        private static int recordsAmount = 250;
+        private static int startId = 15;
 
         private delegate void SetRule(string args);
 
@@ -52,7 +51,7 @@ namespace FileCabinetGenerator
             try
             {
                 string messageToUser;
-                var snapshot = new FileCabinetServiceSnapshot(generator.GenerateRecords(startId, recordsAmount));
+                var snapshot = new FileCabinetServiceSnapshot(Generator.GenerateRecords(startId, recordsAmount));
                 switch (outputType)
                 {
                     case "csv":
@@ -65,7 +64,7 @@ namespace FileCabinetGenerator
                         break;
 
                     case "xml":
-                        XmlWriterSettings settings = new XmlWriterSettings();
+                        XmlWriterSettings settings = new ();
                         settings.Indent = true;
                         settings.IndentChars = "\t";
                         settings.OmitXmlDeclaration = true;
@@ -128,11 +127,11 @@ namespace FileCabinetGenerator
                 int index = args[0].IndexOf("=", StringComparison.InvariantCulture);
                 if (index != -1)
                 {
-                    operation = args[0].Substring(0, index);
-                    parameter = args[0].Substring(index + 1);
-                    if (changeSettings.ContainsKey(operation.ToLower(CultureInfo.InvariantCulture)))
+                    operation = args[0][..index];
+                    parameter = args[0][(index + 1) ..];
+                    if (ChangeSettings.ContainsKey(operation.ToLower(CultureInfo.InvariantCulture)))
                     {
-                        changeRule = changeSettings[operation.ToLower(CultureInfo.InvariantCulture)];
+                        changeRule = ChangeSettings[operation.ToLower(CultureInfo.InvariantCulture)];
                         parsedSetting = 1;
                     }
                 }
@@ -145,9 +144,9 @@ namespace FileCabinetGenerator
                     parameter = args[1];
                 }
 
-                if (changeSettings.ContainsKey(operation.ToLower(CultureInfo.InvariantCulture)))
+                if (ChangeSettings.ContainsKey(operation.ToLower(CultureInfo.InvariantCulture)))
                 {
-                    changeRule = changeSettings[operation.ToLower(CultureInfo.InvariantCulture)];
+                    changeRule = ChangeSettings[operation.ToLower(CultureInfo.InvariantCulture)];
                     parsedSetting = 2;
                 }
             }

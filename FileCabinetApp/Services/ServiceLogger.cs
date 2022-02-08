@@ -1,8 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
 using FileCabinetApp.Data;
+using FileCabinetApp.Iterators;
 
-namespace FileCabinetApp.Service
+namespace FileCabinetApp.Services
 {
     /// <summary>
     /// File cabinet service that logs information about service method calls and parameters.
@@ -41,7 +42,7 @@ namespace FileCabinetApp.Service
         /// <inheritdoc/>
         public void EditRecord(RecordArgs recordToEdit)
         {
-            this.service.CreateRecord(recordToEdit);
+            this.service.EditRecord(recordToEdit);
 
             Log($"Calling {nameof(this.service.EditRecord)}() with" +
                 $"{nameof(recordToEdit.FirstName)} = '{recordToEdit.FirstName}', " +
@@ -53,7 +54,7 @@ namespace FileCabinetApp.Service
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
         {
             var records = this.service.FindByDateOfBirth(sourceDate);
 
@@ -65,7 +66,7 @@ namespace FileCabinetApp.Service
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             var records = this.service.FindByFirstName(firstName);
 
@@ -77,7 +78,7 @@ namespace FileCabinetApp.Service
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             var records = this.service.FindByLastName(lastName);
 
@@ -172,10 +173,8 @@ namespace FileCabinetApp.Service
                 throw new ArgumentNullException(nameof(message));
             }
 
-            using (TextWriter textWriter = File.AppendText(Path))
-            {
-                textWriter.WriteLine($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture)} - {message}");
-            }
+            using TextWriter textWriter = File.AppendText(Path);
+            textWriter.WriteLine($"{DateTime.Now.ToString("dd/MM/yyyy HH:mm", CultureInfo.InvariantCulture)} - {message}");
         }
     }
 }

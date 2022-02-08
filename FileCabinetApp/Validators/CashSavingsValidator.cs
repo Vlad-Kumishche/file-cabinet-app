@@ -7,8 +7,8 @@ namespace FileCabinetApp.Validators
     /// </summary>
     public class CashSavingsValidator : IRecordValidator
     {
-        private decimal minCashSavings;
-        private decimal maxCashSavings;
+        private readonly decimal minCashSavings;
+        private readonly decimal maxCashSavings;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="CashSavingsValidator"/> class.

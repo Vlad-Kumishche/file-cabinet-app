@@ -1,8 +1,9 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using FileCabinetApp.Data;
+using FileCabinetApp.Iterators;
 
-namespace FileCabinetApp.Service
+namespace FileCabinetApp.Services
 {
     /// <summary>
     /// File cabinet service which displays information about the execution time of the operation.
@@ -43,7 +44,7 @@ namespace FileCabinetApp.Service
             this.watch.Reset();
             this.watch.Start();
 
-            this.service.CreateRecord(recordToEdit);
+            this.service.EditRecord(recordToEdit);
 
             this.watch.Stop();
 
@@ -52,7 +53,7 @@ namespace FileCabinetApp.Service
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
+        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
         {
             this.watch.Reset();
             this.watch.Start();
@@ -67,12 +68,12 @@ namespace FileCabinetApp.Service
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
             this.watch.Reset();
             this.watch.Start();
 
-            var records = this.service.FindByDateOfBirth(firstName);
+            var records = this.service.FindByFirstName(firstName);
 
             this.watch.Stop();
 
@@ -82,12 +83,12 @@ namespace FileCabinetApp.Service
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
             this.watch.Reset();
             this.watch.Start();
 
-            var records = this.service.FindByDateOfBirth(lastName);
+            var records = this.service.FindByLastName(lastName);
 
             this.watch.Stop();
 
