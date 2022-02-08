@@ -40,6 +40,22 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
+        public int Insert(RecordArgs recordToInsert)
+        {
+            var recordId = this.service.Insert(recordToInsert);
+            Log($"Calling {nameof(this.service.Insert)}() with" +
+                $"{nameof(recordToInsert.FirstName)} = '{recordToInsert.FirstName}', " +
+                $"{nameof(recordToInsert.LastName)} = '{recordToInsert.LastName}', " +
+                $"{nameof(recordToInsert.DateOfBirth)} = '{recordToInsert.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', " +
+                $"{nameof(recordToInsert.Height)} = '{recordToInsert.Height}', " +
+                $"{nameof(recordToInsert.CashSavings)} = '{recordToInsert.CashSavings}', " +
+                $"{nameof(recordToInsert.FavoriteLetter)} = '{recordToInsert.FavoriteLetter}'");
+            Log($"{nameof(this.service.Insert)}() returned '{recordId}'");
+
+            return recordId;
+        }
+
+        /// <inheritdoc/>
         public void EditRecord(RecordArgs recordToEdit)
         {
             this.service.EditRecord(recordToEdit);

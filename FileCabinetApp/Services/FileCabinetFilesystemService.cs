@@ -88,6 +88,27 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
+        public int Insert(RecordArgs recordToInsert)
+        {
+            this.validator.ValidateParameters(recordToInsert);
+            if (recordToInsert.Id != 0)
+            {
+                try
+                {
+                    this.GetRecordById(recordToInsert.Id);
+                }
+                catch
+                {
+                    return this.CreateRecord(recordToInsert);
+                }
+
+                throw new ArgumentException("A record with the given Id already exists.", nameof(recordToInsert));
+            }
+
+            return this.CreateRecord(recordToInsert);
+        }
+
+        /// <inheritdoc/>
         public void EditRecord(RecordArgs recordToEdit)
         {
             this.validator.ValidateParameters(recordToEdit);

@@ -39,6 +39,21 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
+        public int Insert(RecordArgs recordToInsert)
+        {
+            this.watch.Reset();
+            this.watch.Start();
+
+            var recordId = this.service.Insert(recordToInsert);
+
+            this.watch.Stop();
+
+            Console.WriteLine($"{nameof(this.service.Insert)} method execution duration is {this.watch.ElapsedTicks} ticks.");
+            Console.WriteLine();
+            return recordId;
+        }
+
+        /// <inheritdoc/>
         public void EditRecord(RecordArgs recordToEdit)
         {
             this.watch.Reset();

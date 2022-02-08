@@ -343,6 +343,20 @@
         <member name="M:FileCabinetApp.CreateCommandHandler.Command(System.String)">
             <inheritdoc/>
         </member>
+        <member name="T:FileCabinetApp.InsertCommandHandler">
+            <summary>
+            Handler for create command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.InsertCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.InsertCommandHandler"/> class.
+            </summary>
+            <param name="fileCabinetService">Used service.</param>
+        </member>
+        <member name="M:FileCabinetApp.InsertCommandHandler.Command(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Data.FileCabinetRecord">
             <summary>
             Сlass represents the file cabinet record.
@@ -606,6 +620,9 @@
         <member name="M:FileCabinetApp.Services.FileCabinetFilesystemService.CreateRecord(FileCabinetApp.Data.RecordArgs)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFilesystemService.Insert(FileCabinetApp.Data.RecordArgs)">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.Services.FileCabinetFilesystemService.EditRecord(FileCabinetApp.Data.RecordArgs)">
             <inheritdoc/>
         </member>
@@ -670,6 +687,9 @@
             <param name="validator">Specified validation strategy.</param>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.CreateRecord(FileCabinetApp.Data.RecordArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Insert(FileCabinetApp.Data.RecordArgs)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.EditRecord(FileCabinetApp.Data.RecordArgs)">
@@ -766,6 +786,13 @@
             <param name="recordToCreate">Record to create.</param>
             <returns>The id of the record.</returns>
         </member>
+        <member name="M:FileCabinetApp.Services.IFileCabinetService.Insert(FileCabinetApp.Data.RecordArgs)">
+            <summary>
+            Inserts file cabinet record.
+            </summary>
+            <param name="recordToInsert">Record to insert.</param>
+            <returns>The id of the record.</returns>
+        </member>
         <member name="M:FileCabinetApp.Services.IFileCabinetService.EditRecord(FileCabinetApp.Data.RecordArgs)">
             <summary>
             Edits specified file cabinet record.
@@ -852,6 +879,9 @@
         <member name="M:FileCabinetApp.Services.ServiceLogger.CreateRecord(FileCabinetApp.Data.RecordArgs)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.Services.ServiceLogger.Insert(FileCabinetApp.Data.RecordArgs)">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.Services.ServiceLogger.EditRecord(FileCabinetApp.Data.RecordArgs)">
             <inheritdoc/>
         </member>
@@ -897,6 +927,9 @@
             <param name="fileCabinetService">FileCabinetService.</param>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceMeter.CreateRecord(FileCabinetApp.Data.RecordArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.ServiceMeter.Insert(FileCabinetApp.Data.RecordArgs)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceMeter.EditRecord(FileCabinetApp.Data.RecordArgs)">

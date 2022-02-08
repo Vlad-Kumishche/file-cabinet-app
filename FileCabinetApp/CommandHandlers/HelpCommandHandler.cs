@@ -15,6 +15,7 @@
             new string[] { "exit", "exits the application", "The 'exit' command exits the application." },
             new string[] { "stat", "prints statistics on records", "The 'stat' command prints statistics on records." },
             new string[] { "create", "creates a new record", "The 'create' command creates a new record." },
+            new string[] { "insert", "inserts a new record with SQL syntax", "The 'insert' command inserts a new record with SQL syntax. Example 'insert' command: insert (id, firsName, lastName, dateOfBirth, height, cashSavings, favoriteLetter) values (1, Denis, Villeneuve, 10/03/1967, 182, 250000, D)" },
             new string[] { "list", "prints all records", "The 'list' command prints all records." },
             new string[] { "edit", "edits an existing record", "The 'edit' command edits an existing record where id = <param1>. <param1> - id to search for." },
             new string[] { "find", "finds a list of records matching the search text", "The 'find' command finds a list of records where <param1> = <param2>. <param1> - property name, <param2> - search text in quotes." },

@@ -16,6 +16,13 @@ namespace FileCabinetApp.Services
         int CreateRecord(RecordArgs recordToCreate);
 
         /// <summary>
+        /// Inserts file cabinet record.
+        /// </summary>
+        /// <param name="recordToInsert">Record to insert.</param>
+        /// <returns>The id of the record.</returns>
+        public int Insert(RecordArgs recordToInsert);
+
+        /// <summary>
         /// Edits specified file cabinet record.
         /// </summary>
         /// <param name="recordToEdit">Record to edit.</param>
