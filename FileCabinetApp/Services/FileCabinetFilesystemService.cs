@@ -216,10 +216,10 @@ namespace FileCabinetApp.Services
             if (this.firstNameDictionary.ContainsKey(firstName))
             {
                 var offsets = this.firstNameDictionary[firstName];
-                return new OffsetsCollection(this, offsets);
+                return new FilesystemIterator(this, offsets);
             }
 
-            return new OffsetsCollection();
+            return new FilesystemIterator();
         }
 
         /// <inheritdoc/>
@@ -228,10 +228,10 @@ namespace FileCabinetApp.Services
             if (this.lastNameDictionary.ContainsKey(lastName))
             {
                 var offsets = this.lastNameDictionary[lastName];
-                return new OffsetsCollection(this, offsets);
+                return new FilesystemIterator(this, offsets);
             }
 
-            return new OffsetsCollection();
+            return new FilesystemIterator();
         }
 
         /// <inheritdoc/>
@@ -239,16 +239,16 @@ namespace FileCabinetApp.Services
         {
             if (!DateTime.TryParse(sourceDate, out var dateOfBirth))
             {
-                return new OffsetsCollection();
+                return new FilesystemIterator();
             }
 
             if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
             {
                 var offsets = this.dateOfBirthDictionary[dateOfBirth];
-                return new OffsetsCollection(this, offsets);
+                return new FilesystemIterator(this, offsets);
             }
 
-            return new OffsetsCollection();
+            return new FilesystemIterator();
         }
 
         /// <summary>

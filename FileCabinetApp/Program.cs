@@ -1,7 +1,6 @@
 ﻿using System.Globalization;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.Data;
-using FileCabinetApp.Iterators;
 using FileCabinetApp.Services;
 using FileCabinetApp.Validators;
 
@@ -254,7 +253,7 @@ namespace FileCabinetApp
                 throw new ArgumentNullException(nameof(records));
             }
 
-            if (records.Current.FirstName is null)
+            if (!records.MoveNext())
             {
                 Console.WriteLine("Nothing found");
                 return;

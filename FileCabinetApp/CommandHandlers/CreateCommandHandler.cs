@@ -30,7 +30,7 @@ namespace FileCabinetApp
             Console.Write("Last name: ");
             recordToCreate.LastName = ReadInput(StringConverter, NameValidator);
 
-            Console.Write("Date of birth: ");
+            Console.Write("Date of birth (MM/DD/YYYY): ");
             recordToCreate.DateOfBirth = ReadInput(DateConverter, DateValidator);
 
             Console.Write("Height (cm): ");

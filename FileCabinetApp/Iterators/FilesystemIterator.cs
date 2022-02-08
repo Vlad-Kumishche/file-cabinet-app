@@ -7,12 +7,11 @@ namespace FileCabinetApp.Iterators
     /// <summary>
     /// Iterator for records in <see cref="FileCabinetFilesystemService"/>.
     /// </summary>
-    public class FilesystemIterator : IEnumerator<FileCabinetRecord>
+    public class FilesystemIterator : IEnumerable<FileCabinetRecord>
     {
         private readonly FileCabinetFilesystemService? service;
         private readonly IEnumerable<long> offsets;
         private int currentIndex;
-        private bool disposed;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FilesystemIterator"/> class.
@@ -35,58 +34,20 @@ namespace FileCabinetApp.Iterators
         }
 
         /// <inheritdoc/>
-        public FileCabinetRecord Current => this.GetCurrent();
-
-        /// <inheritdoc/>
-        object IEnumerator.Current => this.Current;
-
-        /// <inheritdoc/>
-        public bool MoveNext()
+        public IEnumerator<FileCabinetRecord> GetEnumerator()
         {
-            if (this.HasMore())
+            while (this.HasMore())
             {
-                this.currentIndex++;
-                return true;
+                yield return this.GetCurrent();
             }
-
-            return false;
         }
 
         /// <inheritdoc/>
-        public void Reset()
-        {
-            this.currentIndex = 0;
-        }
-
-        /// <inheritdoc/>
-        public void Dispose()
-        {
-            this.Dispose(true);
-            GC.SuppressFinalize(this);
-        }
-
-        /// <summary>
-        /// Releasing resources.
-        /// </summary>
-        /// <param name="disposing">Whether the method call comes from a Dispose method (its value is true) or from a finalizer (its value is false).</param>
-        protected virtual void Dispose(bool disposing)
-        {
-            if (this.disposed)
-            {
-                return;
-            }
-
-            if (disposing)
-            {
-                this.Reset();
-            }
-
-            this.disposed = true;
-        }
+        IEnumerator IEnumerable.GetEnumerator() => this.GetEnumerator();
 
         private FileCabinetRecord GetCurrent()
         {
-            if (this.currentIndex < this.offsets.Count() && this.service!.TryGetRecordByOffset(this.offsets.ElementAt(this.currentIndex++), out var nextRecord))
+            if (this.HasMore() && this.service!.TryGetRecordByOffset(this.offsets.ElementAt(this.currentIndex++), out var nextRecord))
             {
                 return nextRecord;
             }
@@ -96,7 +57,7 @@ namespace FileCabinetApp.Iterators
 
         private bool HasMore()
         {
-            return this.currentIndex < this.offsets.Count() - 1;
+            return this.currentIndex < this.offsets.Count();
         }
     }
 }

@@ -147,10 +147,10 @@ namespace FileCabinetApp.Services
             if (this.firstNameDictionary.ContainsKey(firstName))
             {
                 var records = new ReadOnlyCollection<FileCabinetRecord>(this.firstNameDictionary[firstName]);
-                return new RecordsCollection(records);
+                return new MemoryIterator(records);
             }
 
-            return new RecordsCollection();
+            return new MemoryIterator();
         }
 
         /// <inheritdoc/>
@@ -159,10 +159,10 @@ namespace FileCabinetApp.Services
             if (this.lastNameDictionary.ContainsKey(lastName))
             {
                 var records = new ReadOnlyCollection<FileCabinetRecord>(this.lastNameDictionary[lastName]);
-                return new RecordsCollection(records);
+                return new MemoryIterator(records);
             }
 
-            return new RecordsCollection();
+            return new MemoryIterator();
         }
 
         /// <inheritdoc/>
@@ -170,16 +170,16 @@ namespace FileCabinetApp.Services
         {
             if (!DateTime.TryParse(sourceDate, out var dateOfBirth))
             {
-                return new RecordsCollection();
+                return new MemoryIterator();
             }
 
             if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
             {
                 var records = new ReadOnlyCollection<FileCabinetRecord>(this.dateOfBirthDictionary[dateOfBirth]);
-                return new RecordsCollection(records);
+                return new MemoryIterator(records);
             }
 
-            return new RecordsCollection();
+            return new MemoryIterator();
         }
 
         /// <inheritdoc/>

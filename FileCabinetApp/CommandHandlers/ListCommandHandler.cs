@@ -27,7 +27,7 @@ namespace FileCabinetApp.CommandHandlers
         protected override void Command(string parameters)
         {
             var records = this.FileCabinetService.GetRecords();
-            var iterator = new MemoryIterator(records);
+            var iterator = records.GetEnumerator();
             this.printer(iterator);
         }
     }

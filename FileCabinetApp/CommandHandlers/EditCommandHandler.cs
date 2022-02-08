@@ -44,7 +44,7 @@ namespace FileCabinetApp.CommandHandlers
             Console.Write("Last name: ");
             recordToEdit.LastName = ReadInput(StringConverter, NameValidator);
 
-            Console.Write("Date of birth: ");
+            Console.Write("Date of birth (MM/DD/YYYY):");
             recordToEdit.DateOfBirth = ReadInput(DateConverter, DateValidator);
 
             Console.Write("Height (cm): ");
