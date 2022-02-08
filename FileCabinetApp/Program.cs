@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.Data;
+using FileCabinetApp.Iterators;
 using FileCabinetApp.Services;
 using FileCabinetApp.Validators;
 
@@ -250,15 +251,16 @@ namespace FileCabinetApp
             }
         }
 
-        private static void DefaultRecordPrint(IEnumerable<FileCabinetRecord> records)
+        private static void DefaultRecordPrint(IRecordIterator records)
         {
             if (records == null)
             {
                 throw new ArgumentNullException(nameof(records));
             }
 
-            foreach (var record in records)
+            while (records.HasMore())
             {
+                var record = records.GetNext();
                 string date = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
                 Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {date}, {record.Height} cm, {record.CashSavings}$, {record.FavoriteLetter}");
             }

@@ -1,6 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using FileCabinetApp.Data;
+using FileCabinetApp.Iterators;
 
 namespace FileCabinetApp.Services
 {
@@ -52,7 +53,7 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
+        public IRecordIterator FindByDateOfBirth(string sourceDate)
         {
             this.watch.Reset();
             this.watch.Start();
@@ -67,7 +68,7 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IRecordIterator FindByFirstName(string firstName)
         {
             this.watch.Reset();
             this.watch.Start();
@@ -82,7 +83,7 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IRecordIterator FindByLastName(string lastName)
         {
             this.watch.Reset();
             this.watch.Start();

@@ -199,7 +199,7 @@
             Handler for find command.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.FindCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService,System.Action{System.Collections.Generic.IEnumerable{FileCabinetApp.Data.FileCabinetRecord}})">
+        <member name="M:FileCabinetApp.CommandHandlers.FindCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService,System.Action{FileCabinetApp.Iterators.IRecordIterator})">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.FindCommandHandler"/> class.
             </summary>
@@ -258,7 +258,7 @@
             Handler for list command.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService,System.Action{System.Collections.Generic.IEnumerable{FileCabinetApp.Data.FileCabinetRecord}})">
+        <member name="M:FileCabinetApp.CommandHandlers.ListCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService,System.Action{FileCabinetApp.Iterators.IRecordIterator})">
             <summary>
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.ListCommandHandler"/> class.
             </summary>
@@ -437,6 +437,68 @@
             </summary>
             <value>The favorite letter of the person.</value>
         </member>
+        <member name="T:FileCabinetApp.Iterators.FilesystemIterator">
+            <summary>
+            Iterator for records in <see cref="T:FileCabinetApp.Services.FileCabinetFilesystemService"/>.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.FilesystemIterator"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.#ctor(FileCabinetApp.Services.FileCabinetFilesystemService,System.Collections.Generic.IEnumerable{System.Int64})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.FilesystemIterator"/> class.
+            </summary>
+            <param name="service">Service.</param>
+            <param name="offsets">Offsets.</param>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.GetNext">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.HasMore">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.Iterators.IRecordIterator">
+            <summary>
+            Record iterator interface.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.IRecordIterator.GetNext">
+            <summary>
+            Gets the next item.
+            </summary>
+            <returns>The next item.</returns>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.IRecordIterator.HasMore">
+            <summary>
+            Displays the presence of the next item.
+            </summary>
+            <returns>Returns true if there is another item.</returns>
+        </member>
+        <member name="T:FileCabinetApp.Iterators.MemoryIterator">
+            <summary>
+            Iterator for records in <see cref="T:FileCabinetApp.Iterators.MemoryIterator"/>.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.MemoryIterator"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.#ctor(System.Collections.Generic.IEnumerable{FileCabinetApp.Data.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.MemoryIterator"/> class.
+            </summary>
+            <param name="records">Records.</param>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.GetNext">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Iterators.MemoryIterator.HasMore">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.Printers.DefaultRecordPrinter">
             <summary>
             Default record printer.
@@ -604,6 +666,14 @@
             <summary>
             Closes the stream.
             </summary>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFilesystemService.TryGetRecordByOffset(System.Int64,FileCabinetApp.Data.FileCabinetRecord@)">
+            <summary>
+            Gets records by offset.
+            </summary>
+            <param name="offset">Offset.</param>
+            <param name="record">Record.</param>
+            <returns>Is successful.</returns>
         </member>
         <member name="T:FileCabinetApp.Services.FileCabinetMemoryService">
             <summary>

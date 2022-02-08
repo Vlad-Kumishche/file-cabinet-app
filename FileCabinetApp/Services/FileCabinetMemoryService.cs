@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using FileCabinetApp.Data;
+using FileCabinetApp.Iterators;
 using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.Services
@@ -142,44 +143,44 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IRecordIterator FindByFirstName(string firstName)
         {
             if (this.firstNameDictionary.ContainsKey(firstName))
             {
                 var records = new ReadOnlyCollection<FileCabinetRecord>(this.firstNameDictionary[firstName]);
-                return records;
+                return new MemoryIterator(records);
             }
 
-            return EmptyRecordReadOnlyCollection;
+            return new MemoryIterator();
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IRecordIterator FindByLastName(string lastName)
         {
             if (this.lastNameDictionary.ContainsKey(lastName))
             {
                 var records = new ReadOnlyCollection<FileCabinetRecord>(this.lastNameDictionary[lastName]);
-                return records;
+                return new MemoryIterator(records);
             }
 
-            return EmptyRecordReadOnlyCollection;
+            return new MemoryIterator();
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
+        public IRecordIterator FindByDateOfBirth(string sourceDate)
         {
             if (!DateTime.TryParse(sourceDate, out var dateOfBirth))
             {
-                return EmptyRecordReadOnlyCollection;
+                return new MemoryIterator();
             }
 
             if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
             {
                 var records = new ReadOnlyCollection<FileCabinetRecord>(this.dateOfBirthDictionary[dateOfBirth]);
-                return records;
+                return new MemoryIterator(records);
             }
 
-            return EmptyRecordReadOnlyCollection;
+            return new MemoryIterator();
         }
 
         /// <inheritdoc/>

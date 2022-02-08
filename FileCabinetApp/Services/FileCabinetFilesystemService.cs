@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using FileCabinetApp.Data;
+using FileCabinetApp.Iterators;
 using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.Services
@@ -12,7 +13,6 @@ namespace FileCabinetApp.Services
         private const int RecordSize = 279;
         private const int MaxNameLength = 120;
         private const byte OffsetIsDelitedFlag = 2;
-        private static readonly ReadOnlyCollection<FileCabinetRecord> EmptyRecordReadOnlyCollection = new List<FileCabinetRecord>().AsReadOnly();
         private readonly Dictionary<string, List<long>> firstNameDictionary = new (StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, List<long>> lastNameDictionary = new (StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<DateTime, List<long>> dateOfBirthDictionary = new ();
@@ -210,71 +210,44 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByFirstName(string firstName)
+        public IRecordIterator FindByFirstName(string firstName)
         {
             if (this.firstNameDictionary.ContainsKey(firstName))
             {
                 var offsets = this.firstNameDictionary[firstName];
-                var foundRecords = new List<FileCabinetRecord>();
-                foreach (var offset in offsets)
-                {
-                    if (this.TryGetRecordByOffset(offset, out var record))
-                    {
-                        foundRecords.Add(record);
-                    }
-                }
-
-                return new ReadOnlyCollection<FileCabinetRecord>(foundRecords);
+                return new FilesystemIterator(this, offsets);
             }
 
-            return EmptyRecordReadOnlyCollection;
+            return new FilesystemIterator();
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByLastName(string lastName)
+        public IRecordIterator FindByLastName(string lastName)
         {
             if (this.lastNameDictionary.ContainsKey(lastName))
             {
                 var offsets = this.lastNameDictionary[lastName];
-                var foundRecords = new List<FileCabinetRecord>();
-                foreach (var offset in offsets)
-                {
-                    if (this.TryGetRecordByOffset(offset, out var record))
-                    {
-                        foundRecords.Add(record);
-                    }
-                }
-
-                return new ReadOnlyCollection<FileCabinetRecord>(foundRecords);
+                return new FilesystemIterator(this, offsets);
             }
 
-            return EmptyRecordReadOnlyCollection;
+            return new FilesystemIterator();
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
+        public IRecordIterator FindByDateOfBirth(string sourceDate)
         {
             if (!DateTime.TryParse(sourceDate, out var dateOfBirth))
             {
-                return EmptyRecordReadOnlyCollection;
+                return new FilesystemIterator();
             }
 
             if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
             {
                 var offsets = this.dateOfBirthDictionary[dateOfBirth];
-                var foundRecords = new List<FileCabinetRecord>();
-                foreach (var offset in offsets)
-                {
-                    if (this.TryGetRecordByOffset(offset, out var record))
-                    {
-                        foundRecords.Add(record);
-                    }
-                }
-
-                return new ReadOnlyCollection<FileCabinetRecord>(foundRecords);
+                return new FilesystemIterator(this, offsets);
             }
 
-            return EmptyRecordReadOnlyCollection;
+            return new FilesystemIterator();
         }
 
         /// <summary>
@@ -386,6 +359,27 @@ namespace FileCabinetApp.Services
             this.fileStream.Close();
         }
 
+        /// <summary>
+        /// Gets records by offset.
+        /// </summary>
+        /// <param name="offset">Offset.</param>
+        /// <param name="record">Record.</param>
+        /// <returns>Is successful.</returns>
+        public bool TryGetRecordByOffset(long offset, out FileCabinetRecord record)
+        {
+            var recordBuffer = new byte[RecordSize];
+            this.fileStream.Seek(offset, SeekOrigin.Begin);
+            this.fileStream.Read(recordBuffer, 0, RecordSize);
+            BytesToFileCabinetRecord(recordBuffer, out record, out var status);
+            int isDeleted = (status >> OffsetIsDelitedFlag) & 1;
+            if (isDeleted == 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
+
         private static byte[] RecordToBytes(FileCabinetRecord fileCabinetRecord)
         {
             if (fileCabinetRecord == null)
@@ -472,21 +466,6 @@ namespace FileCabinetApp.Services
 
                     return false;
                 }
-            }
-
-            return false;
-        }
-
-        private bool TryGetRecordByOffset(long offset, out FileCabinetRecord record)
-        {
-            var recordBuffer = new byte[RecordSize];
-            this.fileStream.Seek(offset, SeekOrigin.Begin);
-            this.fileStream.Read(recordBuffer, 0, RecordSize);
-            BytesToFileCabinetRecord(recordBuffer, out record, out var status);
-            int isDeleted = (status >> OffsetIsDelitedFlag) & 1;
-            if (isDeleted == 0)
-            {
-                return true;
             }
 
             return false;
