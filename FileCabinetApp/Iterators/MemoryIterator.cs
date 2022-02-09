@@ -47,7 +47,7 @@ namespace FileCabinetApp.Iterators
                 return this.records.ElementAt(this.currentIndex++);
             }
 
-            return new FileCabinetRecord();
+            return new ();
         }
 
         private bool HasMore()

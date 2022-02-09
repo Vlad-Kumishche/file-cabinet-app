@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using FileCabinetApp.Data;
-using FileCabinetApp.Iterators;
 
 namespace FileCabinetApp.Services
 {
@@ -51,20 +50,6 @@ namespace FileCabinetApp.Services
             Console.WriteLine($"{nameof(this.service.Insert)} method execution duration is {this.watch.ElapsedTicks} ticks.");
             Console.WriteLine();
             return recordId;
-        }
-
-        /// <inheritdoc/>
-        public void EditRecord(RecordArgs recordToEdit)
-        {
-            this.watch.Reset();
-            this.watch.Start();
-
-            this.service.EditRecord(recordToEdit);
-
-            this.watch.Stop();
-
-            Console.WriteLine($"{nameof(this.service.EditRecord)} method execution duration is {this.watch.ElapsedTicks} ticks.");
-            Console.WriteLine();
         }
 
         /// <inheritdoc/>
@@ -199,21 +184,6 @@ namespace FileCabinetApp.Services
 
             Console.WriteLine($"{nameof(this.service.Purge)} method execution duration is {this.watch.ElapsedTicks} ticks.");
             Console.WriteLine();
-        }
-
-        /// <inheritdoc/>
-        public bool Remove(int recordId)
-        {
-            this.watch.Reset();
-            this.watch.Start();
-
-            var isSuccessful = this.service.Remove(recordId);
-
-            this.watch.Stop();
-
-            Console.WriteLine($"{nameof(this.service.Remove)} method execution duration is {this.watch.ElapsedTicks} ticks.");
-            Console.WriteLine();
-            return isSuccessful;
         }
 
         /// <inheritdoc/>

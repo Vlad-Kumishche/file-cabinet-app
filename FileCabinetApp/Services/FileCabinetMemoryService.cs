@@ -70,23 +70,6 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public void EditRecord(RecordArgs recordToEdit)
-        {
-            this.validator.ValidateParameters(recordToEdit);
-            var record = this.GetRecordById(recordToEdit.Id);
-            this.RemoveRecordFromDictionaries(record);
-
-            record.FirstName = recordToEdit.FirstName;
-            record.LastName = recordToEdit.LastName;
-            record.DateOfBirth = recordToEdit.DateOfBirth;
-            record.Height = recordToEdit.Height;
-            record.CashSavings = recordToEdit.CashSavings;
-            record.FavoriteLetter = recordToEdit.FavoriteLetter;
-
-            this.AddRecordToDictionaries(record);
-        }
-
-        /// <inheritdoc/>
         public ReadOnlyCollection<int> Update(List<KeyValuePair<string, string>> newParameters, List<KeyValuePair<string, string>> searchOptions)
         {
             var identifiersOfUpdatedRecords = new List<int>();
@@ -326,29 +309,6 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public bool Remove(int recordId)
-        {
-            if (recordId < 1)
-            {
-                throw new ArgumentException($"The {nameof(recordId)} cannot be less than one.");
-            }
-
-            FileCabinetRecord recordToRemove;
-            try
-            {
-                recordToRemove = this.GetRecordById(recordId);
-            }
-            catch (ArgumentException)
-            {
-                return false;
-            }
-
-            this.list.Remove(recordToRemove);
-            this.RemoveRecordFromDictionaries(recordToRemove);
-            return true;
-        }
-
-        /// <inheritdoc/>
         public ReadOnlyCollection<int> Delete(string key, string value)
         {
             List<FileCabinetRecord> recordsToDelete = new ();
@@ -514,6 +474,44 @@ namespace FileCabinetApp.Services
         public void Purge()
         {
             Console.WriteLine("The memory service does not need to be defragmented.");
+        }
+
+        private void EditRecord(RecordArgs recordToEdit)
+        {
+            this.validator.ValidateParameters(recordToEdit);
+            var record = this.GetRecordById(recordToEdit.Id);
+            this.RemoveRecordFromDictionaries(record);
+
+            record.FirstName = recordToEdit.FirstName;
+            record.LastName = recordToEdit.LastName;
+            record.DateOfBirth = recordToEdit.DateOfBirth;
+            record.Height = recordToEdit.Height;
+            record.CashSavings = recordToEdit.CashSavings;
+            record.FavoriteLetter = recordToEdit.FavoriteLetter;
+
+            this.AddRecordToDictionaries(record);
+        }
+
+        private bool Remove(int recordId)
+        {
+            if (recordId < 1)
+            {
+                throw new ArgumentException($"The {nameof(recordId)} cannot be less than one.");
+            }
+
+            FileCabinetRecord recordToRemove;
+            try
+            {
+                recordToRemove = this.GetRecordById(recordId);
+            }
+            catch (ArgumentException)
+            {
+                return false;
+            }
+
+            this.list.Remove(recordToRemove);
+            this.RemoveRecordFromDictionaries(recordToRemove);
+            return true;
         }
 
         private void RemoveRecordFromDictionaries(FileCabinetRecord recordToRemove)

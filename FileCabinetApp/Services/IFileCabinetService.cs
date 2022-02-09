@@ -23,12 +23,6 @@ namespace FileCabinetApp.Services
         public int Insert(RecordArgs recordToInsert);
 
         /// <summary>
-        /// Edits specified file cabinet record.
-        /// </summary>
-        /// <param name="recordToEdit">Record to edit.</param>
-        void EditRecord(RecordArgs recordToEdit);
-
-        /// <summary>
         /// Updates a records with specified parameters.
         /// </summary>
         /// <param name="newParameters">A set of new parameters.</param>
@@ -89,13 +83,6 @@ namespace FileCabinetApp.Services
         /// <param name="snapshot">snapshot.</param>
         /// <returns>Number of restores records.</returns>
         public int Restore(FileCabinetServiceSnapshot snapshot);
-
-        /// <summary>
-        /// Removes the record.
-        /// </summary>
-        /// <param name="recordId">Id of record for remove.</param>
-        /// <returns>Whether the removal was successful.</returns>
-        public bool Remove(int recordId);
 
         /// <summary>
         /// Deletes the record with specified key and value.

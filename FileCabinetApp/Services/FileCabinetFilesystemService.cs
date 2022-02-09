@@ -113,38 +113,6 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public void EditRecord(RecordArgs recordToEdit)
-        {
-            this.validator.ValidateParameters(recordToEdit);
-
-            var record = new FileCabinetRecord
-            {
-                Id = recordToEdit.Id,
-                FirstName = recordToEdit.FirstName,
-                LastName = recordToEdit.LastName,
-                DateOfBirth = recordToEdit.DateOfBirth,
-                Height = recordToEdit.Height,
-                CashSavings = recordToEdit.CashSavings,
-                FavoriteLetter = recordToEdit.FavoriteLetter,
-            };
-
-            if (this.TryGetOffsetOfRecordWithId(record.Id, out var offset))
-            {
-                this.RemoveRecordFromDictionaries(this.GetRecordById(record.Id), offset);
-                this.AddRecordToDictionaries(record, offset);
-
-                var bytesOfRecord = RecordToBytes(record);
-                this.fileStream.Seek(offset, SeekOrigin.Begin);
-                this.fileStream.Write(bytesOfRecord, 0, bytesOfRecord.Length);
-                this.fileStream.Flush();
-            }
-            else
-            {
-                throw new ArgumentException($"There is no record with {nameof(record.Id)} == {record.Id}", nameof(recordToEdit));
-            }
-        }
-
-        /// <inheritdoc/>
         public ReadOnlyCollection<int> Update(List<KeyValuePair<string, string>> newParameters, List<KeyValuePair<string, string>> searchOptions)
         {
             var identifiersOfUpdatedRecords = new List<int>();
@@ -421,23 +389,6 @@ namespace FileCabinetApp.Services
             }
 
             return importedRecordsCount;
-        }
-
-        /// <inheritdoc/>
-        public bool Remove(int recordId)
-        {
-            if (recordId < 1)
-            {
-                throw new ArgumentException($"The {nameof(recordId)} cannot be less than one.");
-            }
-
-            if (this.TryGetOffsetOfRecordWithId(recordId, out var offset))
-            {
-                this.RemoveByOffset(offset);
-                return true;
-            }
-
-            return false;
         }
 
         /// <inheritdoc/>
@@ -807,6 +758,37 @@ namespace FileCabinetApp.Services
                 record.Height = binaryReader.ReadInt16();
                 record.CashSavings = binaryReader.ReadDecimal();
                 record.FavoriteLetter = binaryReader.ReadChar();
+            }
+        }
+
+        private void EditRecord(RecordArgs recordToEdit)
+        {
+            this.validator.ValidateParameters(recordToEdit);
+
+            var record = new FileCabinetRecord
+            {
+                Id = recordToEdit.Id,
+                FirstName = recordToEdit.FirstName,
+                LastName = recordToEdit.LastName,
+                DateOfBirth = recordToEdit.DateOfBirth,
+                Height = recordToEdit.Height,
+                CashSavings = recordToEdit.CashSavings,
+                FavoriteLetter = recordToEdit.FavoriteLetter,
+            };
+
+            if (this.TryGetOffsetOfRecordWithId(record.Id, out var offset))
+            {
+                this.RemoveRecordFromDictionaries(this.GetRecordById(record.Id), offset);
+                this.AddRecordToDictionaries(record, offset);
+
+                var bytesOfRecord = RecordToBytes(record);
+                this.fileStream.Seek(offset, SeekOrigin.Begin);
+                this.fileStream.Write(bytesOfRecord, 0, bytesOfRecord.Length);
+                this.fileStream.Flush();
+            }
+            else
+            {
+                throw new ArgumentException($"There is no record with {nameof(record.Id)} == {record.Id}", nameof(recordToEdit));
             }
         }
 

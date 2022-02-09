@@ -52,7 +52,7 @@ namespace FileCabinetApp.Iterators
                 return nextRecord;
             }
 
-            return new FileCabinetRecord();
+            return new ();
         }
 
         private bool HasMore()

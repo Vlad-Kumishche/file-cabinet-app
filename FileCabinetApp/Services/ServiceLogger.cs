@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
 using FileCabinetApp.Data;
-using FileCabinetApp.Iterators;
 
 namespace FileCabinetApp.Services
 {
@@ -53,20 +52,6 @@ namespace FileCabinetApp.Services
             Log($"{nameof(this.service.Insert)}() returned '{recordId}'");
 
             return recordId;
-        }
-
-        /// <inheritdoc/>
-        public void EditRecord(RecordArgs recordToEdit)
-        {
-            this.service.EditRecord(recordToEdit);
-
-            Log($"Calling {nameof(this.service.EditRecord)}() with" +
-                $"{nameof(recordToEdit.FirstName)} = '{recordToEdit.FirstName}', " +
-                $"{nameof(recordToEdit.LastName)} = '{recordToEdit.LastName}', " +
-                $"{nameof(recordToEdit.DateOfBirth)} = '{recordToEdit.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', " +
-                $"{nameof(recordToEdit.Height)} = '{recordToEdit.Height}', " +
-                $"{nameof(recordToEdit.CashSavings)} = '{recordToEdit.CashSavings}', " +
-                $"{nameof(recordToEdit.FavoriteLetter)} = '{recordToEdit.FavoriteLetter}'");
         }
 
         /// <inheritdoc/>
@@ -169,18 +154,6 @@ namespace FileCabinetApp.Services
             this.service.Purge();
 
             Log($"Calling {nameof(this.service.Purge)}()");
-        }
-
-        /// <inheritdoc/>
-        public bool Remove(int recordId)
-        {
-            var isSuccessful = this.service.Remove(recordId);
-
-            Log($"Calling {nameof(this.service.Remove)}() with" +
-                $"{nameof(recordId)} = '{recordId}'");
-            Log($"{nameof(this.service.Remove)}() returned '{isSuccessful}'");
-
-            return isSuccessful;
         }
 
         /// <inheritdoc/>
