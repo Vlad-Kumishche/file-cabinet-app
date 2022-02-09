@@ -29,6 +29,14 @@ namespace FileCabinetApp.Services
         void EditRecord(RecordArgs recordToEdit);
 
         /// <summary>
+        /// Updates a records with specified parameters.
+        /// </summary>
+        /// <param name="newParameters">A set of new parameters.</param>
+        /// <param name="searchOptions">A set of parameters to search a record.</param>
+        /// <returns>The list of updated records ids.</returns>
+        public ReadOnlyCollection<int> Update(List<KeyValuePair<string, string>> newParameters, List<KeyValuePair<string, string>> searchOptions);
+
+        /// <summary>
         /// Makes snapshot of current class state.
         /// </summary>
         /// <returns>Snapshot of FileCabinetService.</returns>

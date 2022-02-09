@@ -70,6 +70,19 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
+        public ReadOnlyCollection<int> Update(List<KeyValuePair<string, string>> newParameters, List<KeyValuePair<string, string>> searchOptions)
+        {
+            var updatedRecordIds = this.service.Update(newParameters, searchOptions);
+
+            Log($"Calling {nameof(this.service.Update)}() with" +
+                $"{nameof(newParameters)} = '{newParameters}'" +
+                $"{nameof(searchOptions)} = '{searchOptions}'");
+            Log($"{nameof(this.service.Update)}() returned '{updatedRecordIds}'");
+
+            return updatedRecordIds;
+        }
+
+        /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
         {
             var records = this.service.FindByDateOfBirth(sourceDate);

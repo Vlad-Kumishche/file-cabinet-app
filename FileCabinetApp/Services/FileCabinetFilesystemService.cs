@@ -145,6 +145,236 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
+        public ReadOnlyCollection<int> Update(List<KeyValuePair<string, string>> newParameters, List<KeyValuePair<string, string>> searchOptions)
+        {
+            var identifiersOfUpdatedRecords = new List<int>();
+            var listOfListsMatchesOffsets = new List<List<long>>();
+            foreach (var searchOptionPair in searchOptions)
+            {
+                switch (searchOptionPair.Key)
+                {
+                    case "id":
+                        if (int.TryParse(searchOptionPair.Value, out int id))
+                        {
+                            if (this.TryGetOffsetOfRecordWithId(id, out var offset))
+                            {
+                                listOfListsMatchesOffsets.Add(new () { offset });
+                            }
+                            else
+                            {
+                                throw new ArgumentException($"There is no records with {nameof(id)} = '{id}'.");
+                            }
+                        }
+                        else
+                        {
+                            throw new ArgumentException($"Invalid {nameof(id)} value.");
+                        }
+
+                        break;
+
+                    case "firstname":
+                        string firstName = searchOptionPair.Value;
+                        if (this.TryGetOffsetsWhereFirstNameIs(firstName, out var firstNameOffsets))
+                        {
+                            listOfListsMatchesOffsets.Add(new (firstNameOffsets));
+                        }
+                        else
+                        {
+                            throw new ArgumentException($"There is no records with {nameof(firstName)} = '{firstName}'.");
+                        }
+
+                        break;
+
+                    case "lastname":
+                        string lastName = searchOptionPair.Value;
+                        if (this.TryGetOffsetsWhereLastNameIs(lastName, out var lastNameOffsets))
+                        {
+                            listOfListsMatchesOffsets.Add(new (lastNameOffsets));
+                        }
+                        else
+                        {
+                            throw new ArgumentException($"There is no records with {nameof(lastName)} = '{lastName}'.");
+                        }
+
+                        break;
+
+                    case "dateofbirth":
+                        string dateOfBirth = searchOptionPair.Value;
+                        if (this.TryGetOffsetsWhereDateOfBirthIs(dateOfBirth, out var dateOfBirthOffsets))
+                        {
+                            listOfListsMatchesOffsets.Add(new (dateOfBirthOffsets));
+                        }
+                        else
+                        {
+                            throw new ArgumentException($"There is no records with {nameof(dateOfBirth)} = '{dateOfBirth}'.");
+                        }
+
+                        break;
+
+                    case "height":
+                        string height = searchOptionPair.Value;
+                        if (this.TryGetOffsetsWhereHeightIs(height, out var heightOffsets))
+                        {
+                            listOfListsMatchesOffsets.Add(new (heightOffsets));
+                        }
+                        else
+                        {
+                            throw new ArgumentException($"There is no records with {nameof(height)} = '{height}'.");
+                        }
+
+                        break;
+
+                    case "cashsavings":
+                        string cashSavings = searchOptionPair.Value;
+                        if (this.TryGetOffsetsWhereCashSavingsIs(cashSavings, out var cashSavingsOffsets))
+                        {
+                            listOfListsMatchesOffsets.Add(new (cashSavingsOffsets));
+                        }
+                        else
+                        {
+                            throw new ArgumentException($"There is no records with {nameof(cashSavings)} = '{cashSavings}'.");
+                        }
+
+                        break;
+
+                    case "favoriteletter":
+                        string favoriteLetter = searchOptionPair.Value;
+                        if (this.TryGetOffsetsWhereFavoriteLetterIs(favoriteLetter, out var favoriteLetterOffsets))
+                        {
+                            listOfListsMatchesOffsets.Add(new (favoriteLetterOffsets));
+                        }
+                        else
+                        {
+                            throw new ArgumentException($"There is no records with {nameof(favoriteLetter)} = '{favoriteLetter}'.");
+                        }
+
+                        break;
+
+                    default:
+                        throw new ArgumentException($"Invalid key '{searchOptionPair.Key}' to update the record.");
+                }
+            }
+
+            IEnumerable<long> offsetsOfRecordsToUpdate = new List<long>();
+            foreach (var listsOfMatchesOffsets in listOfListsMatchesOffsets)
+            {
+                if (offsetsOfRecordsToUpdate.Any())
+                {
+                    offsetsOfRecordsToUpdate = offsetsOfRecordsToUpdate.Intersect(listsOfMatchesOffsets);
+                }
+                else
+                {
+                    offsetsOfRecordsToUpdate = listsOfMatchesOffsets;
+                }
+            }
+
+            var recordsToUpdate = new List<FileCabinetRecord>();
+            foreach (var offset in offsetsOfRecordsToUpdate)
+            {
+                if (this.TryGetRecordByOffset(offset, out var record))
+                {
+                    recordsToUpdate.Add(record);
+                }
+            }
+
+            if (recordsToUpdate.Count > 0)
+            {
+                foreach (var sourceRecord in recordsToUpdate)
+                {
+                    identifiersOfUpdatedRecords.Add(sourceRecord.Id);
+                    var recordToEdit = new RecordArgs()
+                    {
+                        Id = sourceRecord.Id,
+                        FirstName = sourceRecord.FirstName,
+                        LastName = sourceRecord.LastName,
+                        DateOfBirth = sourceRecord.DateOfBirth,
+                        Height = sourceRecord.Height,
+                        CashSavings = sourceRecord.CashSavings,
+                        FavoriteLetter = sourceRecord.FavoriteLetter,
+                    };
+
+                    foreach (var newRecordParameter in newParameters)
+                    {
+                        switch (newRecordParameter.Key)
+                        {
+                            case "id":
+                                throw new ArgumentException("Update of the id field is prohibited.");
+
+                            case "firstname":
+                                recordToEdit.FirstName = newRecordParameter.Value;
+
+                                break;
+
+                            case "lastname":
+                                recordToEdit.LastName = newRecordParameter.Value;
+
+                                break;
+
+                            case "dateofbirth":
+                                if (DateTime.TryParse(newRecordParameter.Value, new CultureInfo("en-US"), DateTimeStyles.None, out DateTime dateOfBirth))
+                                {
+                                    recordToEdit.DateOfBirth = dateOfBirth;
+                                }
+                                else
+                                {
+                                    throw new ArgumentException($"Invalid '{nameof(dateOfBirth)}' value.");
+                                }
+
+                                break;
+
+                            case "height":
+                                if (short.TryParse(newRecordParameter.Value, out short height))
+                                {
+                                    recordToEdit.Height = height;
+                                }
+                                else
+                                {
+                                    throw new ArgumentException($"Invalid '{nameof(height)}' value.");
+                                }
+
+                                break;
+
+                            case "cashsavings":
+                                if (decimal.TryParse(newRecordParameter.Value, out decimal cashSavings))
+                                {
+                                    recordToEdit.CashSavings = cashSavings;
+                                }
+                                else
+                                {
+                                    throw new ArgumentException($"Invalid '{nameof(cashSavings)}' value.");
+                                }
+
+                                break;
+
+                            case "favoriteletter":
+                                if (char.TryParse(newRecordParameter.Value, out char favoriteLetter))
+                                {
+                                    recordToEdit.FavoriteLetter = favoriteLetter;
+                                }
+                                else
+                                {
+                                    throw new ArgumentException($"Invalid '{nameof(favoriteLetter)}' value.");
+                                }
+
+                                break;
+
+                            default:
+                                throw new ArgumentException($"Invalid key '{newRecordParameter.Key}' to update the record.");
+                        }
+                    }
+
+                    this.EditRecord(recordToEdit);
+                }
+
+                return new (identifiersOfUpdatedRecords);
+            }
+            else
+            {
+                throw new ArgumentException("No records were found with the specified keys.");
+            }
+        }
+
+        /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             var records = new List<FileCabinetRecord>(this.GetRecords());
@@ -214,7 +444,7 @@ namespace FileCabinetApp.Services
         public ReadOnlyCollection<int> Delete(string key, string value)
         {
             List<long> offsetsOfRecordsToDelete;
-            List<int> identifiersOfRecordsToDelete = new ();
+            var identifiersOfRecordsToDelete = new List<int>();
 
             switch (key)
             {
@@ -316,7 +546,7 @@ namespace FileCabinetApp.Services
                     break;
 
                 default:
-                    throw new ArgumentException($"There is no {key} {nameof(key)}.");
+                    throw new ArgumentException($"There is no {key} '{nameof(key)}'.");
             }
 
             if (offsetsOfRecordsToDelete.Count > 0)

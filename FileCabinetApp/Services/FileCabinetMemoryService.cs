@@ -87,6 +87,191 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
+        public ReadOnlyCollection<int> Update(List<KeyValuePair<string, string>> newParameters, List<KeyValuePair<string, string>> searchOptions)
+        {
+            var identifiersOfUpdatedRecords = new List<int>();
+            var recordsToUpdate = this.list.FindAll(delegate(FileCabinetRecord fileCabinetRecord)
+            {
+                bool isRecordMacthesSearchOptions = false;
+
+                foreach (var searchOptionPair in searchOptions)
+                {
+                    switch (searchOptionPair.Key)
+                    {
+                        case "id":
+                            if (int.TryParse(searchOptionPair.Value, out int id))
+                            {
+                                isRecordMacthesSearchOptions = fileCabinetRecord.Id == id;
+                            }
+                            else
+                            {
+                                throw new ArgumentException($"Invalid {nameof(id)} value.");
+                            }
+
+                            break;
+                        case "firstname":
+                            isRecordMacthesSearchOptions = fileCabinetRecord.FirstName == searchOptionPair.Value;
+
+                            break;
+                        case "lastname":
+                            isRecordMacthesSearchOptions = fileCabinetRecord.LastName == searchOptionPair.Value;
+
+                            break;
+                        case "dateofbirth":
+                            if (DateTime.TryParse(searchOptionPair.Value, new CultureInfo("en-US"), DateTimeStyles.None, out DateTime dateOfBirth))
+                            {
+                                isRecordMacthesSearchOptions = fileCabinetRecord.DateOfBirth == dateOfBirth;
+                            }
+                            else
+                            {
+                                throw new ArgumentException($"Invalid {nameof(dateOfBirth)} value.");
+                            }
+
+                            break;
+                        case "height":
+                            if (short.TryParse(searchOptionPair.Value, out short height))
+                            {
+                                isRecordMacthesSearchOptions = fileCabinetRecord.Height == height;
+                            }
+                            else
+                            {
+                                throw new ArgumentException($"Invalid {nameof(height)} value.");
+                            }
+
+                            break;
+                        case "cashsavings":
+                            if (decimal.TryParse(searchOptionPair.Value, out decimal cashSavings))
+                            {
+                                isRecordMacthesSearchOptions = fileCabinetRecord.CashSavings == cashSavings;
+                            }
+                            else
+                            {
+                                throw new ArgumentException($"Invalid {nameof(cashSavings)} value.");
+                            }
+
+                            break;
+                        case "favoriteletter":
+                            if (char.TryParse(searchOptionPair.Value, out char favoriteLetter))
+                            {
+                                isRecordMacthesSearchOptions = fileCabinetRecord.FavoriteLetter == favoriteLetter;
+                            }
+                            else
+                            {
+                                throw new ArgumentException($"Invalid {nameof(favoriteLetter)} value.");
+                            }
+
+                            break;
+                        default:
+                            throw new ArgumentException($"Invalid key '{searchOptionPair.Key}' to update the record.");
+                    }
+
+                    if (!isRecordMacthesSearchOptions)
+                    {
+                        break;
+                    }
+                }
+
+                return isRecordMacthesSearchOptions;
+            });
+
+            if (recordsToUpdate.Count > 0)
+            {
+                foreach (var sourceRecord in recordsToUpdate)
+                {
+                    identifiersOfUpdatedRecords.Add(sourceRecord.Id);
+                    var recordToEdit = new RecordArgs()
+                    {
+                        Id = sourceRecord.Id,
+                        FirstName = sourceRecord.FirstName,
+                        LastName = sourceRecord.LastName,
+                        DateOfBirth = sourceRecord.DateOfBirth,
+                        Height = sourceRecord.Height,
+                        CashSavings = sourceRecord.CashSavings,
+                        FavoriteLetter = sourceRecord.FavoriteLetter,
+                    };
+
+                    foreach (var newRecordParameter in newParameters)
+                    {
+                        switch (newRecordParameter.Key)
+                        {
+                            case "id":
+                                throw new ArgumentException("Update of the id field is prohibited.");
+
+                            case "firstname":
+                                recordToEdit.FirstName = newRecordParameter.Value;
+
+                                break;
+
+                            case "lastname":
+                                recordToEdit.LastName = newRecordParameter.Value;
+
+                                break;
+
+                            case "dateofbirth":
+                                if (DateTime.TryParse(newRecordParameter.Value, new CultureInfo("en-US"), DateTimeStyles.None, out DateTime dateOfBirth))
+                                {
+                                    recordToEdit.DateOfBirth = dateOfBirth;
+                                }
+                                else
+                                {
+                                    throw new ArgumentException($"Invalid '{nameof(dateOfBirth)}' value.");
+                                }
+
+                                break;
+
+                            case "height":
+                                if (short.TryParse(newRecordParameter.Value, out short height))
+                                {
+                                    recordToEdit.Height = height;
+                                }
+                                else
+                                {
+                                    throw new ArgumentException($"Invalid '{nameof(height)}' value.");
+                                }
+
+                                break;
+
+                            case "cashsavings":
+                                if (decimal.TryParse(newRecordParameter.Value, out decimal cashSavings))
+                                {
+                                    recordToEdit.CashSavings = cashSavings;
+                                }
+                                else
+                                {
+                                    throw new ArgumentException($"Invalid '{nameof(cashSavings)}' value.");
+                                }
+
+                                break;
+
+                            case "favoriteletter":
+                                if (char.TryParse(newRecordParameter.Value, out char favoriteLetter))
+                                {
+                                    recordToEdit.FavoriteLetter = favoriteLetter;
+                                }
+                                else
+                                {
+                                    throw new ArgumentException($"Invalid '{nameof(favoriteLetter)}' value.");
+                                }
+
+                                break;
+
+                            default:
+                                throw new ArgumentException($"Invalid key '{newRecordParameter.Key}' to update the record.");
+                        }
+                    }
+
+                    this.EditRecord(recordToEdit);
+                }
+
+                return new (identifiersOfUpdatedRecords);
+            }
+            else
+            {
+                throw new ArgumentException("No records were found with the specified keys.");
+            }
+        }
+
+        /// <inheritdoc/>
         public FileCabinetServiceSnapshot MakeSnapshot()
         {
             return new FileCabinetServiceSnapshot(this.list);

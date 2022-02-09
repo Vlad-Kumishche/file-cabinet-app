@@ -152,6 +152,20 @@
             </summary>
             <param name="command">Unknown command.</param>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.DeleteCommandHandler">
+            <summary>
+            Handler for delete command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.DeleteCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.DeleteCommandHandler"/> class.
+            </summary>
+            <param name="fileCabinetService">Used service.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.DeleteCommandHandler.Command(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.EditCommandHandler">
             <summary>
             Handler for edit command.
@@ -253,6 +267,20 @@
         <member name="M:FileCabinetApp.CommandHandlers.ImportCommandHandler.Command(System.String)">
             <inheritdoc/>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.InsertCommandHandler">
+            <summary>
+            Handler for insert command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.InsertCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.InsertCommandHandler"/> class.
+            </summary>
+            <param name="fileCabinetService">Used service.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.InsertCommandHandler.Command(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.ListCommandHandler">
             <summary>
             Handler for list command.
@@ -329,6 +357,20 @@
         <member name="M:FileCabinetApp.CommandHandlers.StatCommandHandler.Command(System.String)">
             <inheritdoc/>
         </member>
+        <member name="T:FileCabinetApp.CommandHandlers.UpdateCommandHandler">
+            <summary>
+            Handler for update command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.UpdateCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.UpdateCommandHandler"/> class.
+            </summary>
+            <param name="fileCabinetService">Used service.</param>
+        </member>
+        <member name="M:FileCabinetApp.CommandHandlers.UpdateCommandHandler.Command(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.CreateCommandHandler">
             <summary>
             Handler for create command.
@@ -341,34 +383,6 @@
             <param name="fileCabinetService">Used service.</param>
         </member>
         <member name="M:FileCabinetApp.CreateCommandHandler.Command(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="T:FileCabinetApp.DeleteCommandHandler">
-            <summary>
-            Handler for delete command.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.DeleteCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.DeleteCommandHandler"/> class.
-            </summary>
-            <param name="fileCabinetService">Used service.</param>
-        </member>
-        <member name="M:FileCabinetApp.DeleteCommandHandler.Command(System.String)">
-            <inheritdoc/>
-        </member>
-        <member name="T:FileCabinetApp.InsertCommandHandler">
-            <summary>
-            Handler for insert command.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.InsertCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService)">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.InsertCommandHandler"/> class.
-            </summary>
-            <param name="fileCabinetService">Used service.</param>
-        </member>
-        <member name="M:FileCabinetApp.InsertCommandHandler.Command(System.String)">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Data.FileCabinetRecord">
@@ -640,6 +654,9 @@
         <member name="M:FileCabinetApp.Services.FileCabinetFilesystemService.EditRecord(FileCabinetApp.Data.RecordArgs)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFilesystemService.Update(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.Services.FileCabinetFilesystemService.MakeSnapshot">
             <inheritdoc/>
         </member>
@@ -710,6 +727,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.EditRecord(FileCabinetApp.Data.RecordArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Update(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.MakeSnapshot">
@@ -819,6 +839,14 @@
             </summary>
             <param name="recordToEdit">Record to edit.</param>
         </member>
+        <member name="M:FileCabinetApp.Services.IFileCabinetService.Update(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
+            <summary>
+            Updates a records with specified parameters.
+            </summary>
+            <param name="newParameters">A set of new parameters.</param>
+            <param name="searchOptions">A set of parameters to search a record.</param>
+            <returns>The list of updated records ids.</returns>
+        </member>
         <member name="M:FileCabinetApp.Services.IFileCabinetService.MakeSnapshot">
             <summary>
             Makes snapshot of current class state.
@@ -913,6 +941,9 @@
         <member name="M:FileCabinetApp.Services.ServiceLogger.EditRecord(FileCabinetApp.Data.RecordArgs)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.Services.ServiceLogger.Update(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.Services.ServiceLogger.FindByDateOfBirth(System.String)">
             <inheritdoc/>
         </member>
@@ -964,6 +995,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceMeter.EditRecord(FileCabinetApp.Data.RecordArgs)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.ServiceMeter.Update(System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}},System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceMeter.FindByDateOfBirth(System.String)">

@@ -1,10 +1,9 @@
 ﻿using System.Globalization;
 using System.Text.RegularExpressions;
-using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.Data;
 using FileCabinetApp.Services;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
     /// Handler for insert command.

@@ -1,9 +1,8 @@
 ﻿using System.Text;
 using System.Text.RegularExpressions;
-using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.Services;
 
-namespace FileCabinetApp
+namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
     /// Handler for delete command.
@@ -23,7 +22,9 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         protected override void Command(string parameters)
         {
-            const string invalidCommandMessage = "Invalid 'delete' command.";
+            const int keyIndex = 1;
+            const int valueIndex = 2;
+            string invalidCommandMessage = $"Invalid {this.CommandName} command.";
 
             try
             {
@@ -36,8 +37,8 @@ namespace FileCabinetApp
                 if (parametersRegex.IsMatch(parameters))
                 {
                     var matchParameters = parametersRegex.Match(parameters);
-                    var key = matchParameters.Groups[1].Value.ToLowerInvariant().Trim(' ');
-                    var value = Regex.Match(matchParameters.Groups[2].Value, @"'(.*?)'").Groups[1].Value.Trim(' ');
+                    var key = matchParameters.Groups[keyIndex].Value.ToLowerInvariant().Trim(' ');
+                    var value = Regex.Match(matchParameters.Groups[valueIndex].Value, @"'(.*?)'").Groups[1].Value.Trim(' ');
 
                     if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
                     {
@@ -56,14 +57,14 @@ namespace FileCabinetApp
                         Console.Write($"Record {message}");
                         if (identifiers.Count == 1)
                         {
-                            Console.WriteLine(" is deleted.");
+                            Console.Write(" is");
                         }
                         else
                         {
-                            Console.WriteLine(" are deleted.");
+                            Console.Write(" are");
                         }
 
-                        Console.WriteLine();
+                        Console.WriteLine(" deleted.");
                     }
                     else
                     {
@@ -78,7 +79,6 @@ namespace FileCabinetApp
             catch (ArgumentException ex)
             {
                 Console.WriteLine($"The records have not been deleted. {ex.Message}");
-                Console.WriteLine();
             }
         }
     }
