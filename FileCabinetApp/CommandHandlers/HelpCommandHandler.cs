@@ -1,4 +1,6 @@
-﻿namespace FileCabinetApp.CommandHandlers
+﻿using System.Collections.ObjectModel;
+
+namespace FileCabinetApp.CommandHandlers
 {
     /// <summary>
     /// Handler for help command.
@@ -31,6 +33,21 @@
         public HelpCommandHandler()
         {
             this.CommandName = "help";
+        }
+
+        /// <summary>
+        /// Gets a list of commands.
+        /// </summary>
+        /// <returns>List of commands.</returns>
+        public static ReadOnlyCollection<string> GetListOfCommands()
+        {
+            var commnads = new List<string>();
+            foreach (var commands in HelpMessages)
+            {
+                commnads.Add(commands[0]);
+            }
+
+            return new (commnads);
         }
 
         /// <inheritdoc/>

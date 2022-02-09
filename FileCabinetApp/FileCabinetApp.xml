@@ -219,6 +219,12 @@
             Initializes a new instance of the <see cref="T:FileCabinetApp.CommandHandlers.HelpCommandHandler"/> class.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.CommandHandlers.HelpCommandHandler.GetListOfCommands">
+            <summary>
+            Gets a list of commands.
+            </summary>
+            <returns>List of commands.</returns>
+        </member>
         <member name="M:FileCabinetApp.CommandHandlers.HelpCommandHandler.Command(System.String)">
             <inheritdoc/>
         </member>
