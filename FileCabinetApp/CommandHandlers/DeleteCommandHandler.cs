@@ -1,0 +1,85 @@
+﻿using System.Text;
+using System.Text.RegularExpressions;
+using FileCabinetApp.Services;
+
+namespace FileCabinetApp.CommandHandlers
+{
+    /// <summary>
+    /// Handler for delete command.
+    /// </summary>
+    public class DeleteCommandHandler : ServiceCommandHandlerBase
+    {
+        /// <summary>
+        /// Initializes a new instance of the <see cref="DeleteCommandHandler"/> class.
+        /// </summary>
+        /// <param name="fileCabinetService">Used service.</param>
+        public DeleteCommandHandler(IFileCabinetService fileCabinetService)
+            : base(fileCabinetService)
+        {
+            this.CommandName = "delete";
+        }
+
+        /// <inheritdoc/>
+        protected override void Command(string parameters)
+        {
+            const int keyIndex = 1;
+            const int valueIndex = 2;
+            string invalidCommandMessage = $"Invalid {this.CommandName} command.";
+
+            try
+            {
+                if (string.IsNullOrEmpty(parameters))
+                {
+                    throw new ArgumentNullException(nameof(parameters), "The list of parameters cannot be empty.");
+                }
+
+                var parametersRegex = new Regex(@"where (.*)=(.*)", RegexOptions.IgnoreCase);
+                if (parametersRegex.IsMatch(parameters))
+                {
+                    var matchParameters = parametersRegex.Match(parameters);
+                    var key = matchParameters.Groups[keyIndex].Value.ToLowerInvariant().Trim(' ');
+                    var value = Regex.Match(matchParameters.Groups[valueIndex].Value, @"'(.*?)'").Groups[1].Value.Trim(' ');
+
+                    if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
+                    {
+                        var identifiers = this.FileCabinetService.Delete(key, value);
+                        var message = new StringBuilder();
+
+                        for (int i = 0; i < identifiers.Count; i++)
+                        {
+                            message.Append(FormattableString.Invariant($"#{identifiers[i]}"));
+                            if (i < identifiers.Count - 1)
+                            {
+                                message.Append(", ");
+                            }
+                        }
+
+                        Console.Write($"Record {message}");
+                        if (identifiers.Count == 1)
+                        {
+                            Console.Write(" is");
+                        }
+                        else
+                        {
+                            Console.Write(" are");
+                        }
+
+                        Console.WriteLine(" deleted.");
+                    }
+                    else
+                    {
+                        throw new ArgumentException(invalidCommandMessage);
+                    }
+                }
+                else
+                {
+                    throw new ArgumentException(invalidCommandMessage);
+                }
+            }
+            catch (ArgumentException ex)
+            {
+                Console.WriteLine($"The records have not been deleted. {ex.Message}");
+            }
+        }
+    }
+}

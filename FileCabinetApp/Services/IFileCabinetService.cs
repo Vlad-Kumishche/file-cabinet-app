@@ -16,10 +16,19 @@ namespace FileCabinetApp.Services
         int CreateRecord(RecordArgs recordToCreate);
 
         /// <summary>
-        /// Edits specified file cabinet record.
+        /// Inserts file cabinet record.
         /// </summary>
-        /// <param name="recordToEdit">Record to edit.</param>
-        void EditRecord(RecordArgs recordToEdit);
+        /// <param name="recordToInsert">Record to insert.</param>
+        /// <returns>The id of the record.</returns>
+        public int Insert(RecordArgs recordToInsert);
+
+        /// <summary>
+        /// Updates a records with specified parameters.
+        /// </summary>
+        /// <param name="newParameters">A set of new parameters.</param>
+        /// <param name="searchOptions">A set of parameters to search a record.</param>
+        /// <returns>The list of updated records ids.</returns>
+        public ReadOnlyCollection<int> Update(List<KeyValuePair<string, string>> newParameters, List<KeyValuePair<string, string>> searchOptions);
 
         /// <summary>
         /// Makes snapshot of current class state.
@@ -76,11 +85,12 @@ namespace FileCabinetApp.Services
         public int Restore(FileCabinetServiceSnapshot snapshot);
 
         /// <summary>
-        /// Removes the record.
+        /// Deletes the record with specified key and value.
         /// </summary>
-        /// <param name="recordId">Id of record for remove.</param>
-        /// <returns>Whether the removal was successful.</returns>
-        public bool Remove(int recordId);
+        /// <param name="key">Key.</param>
+        /// <param name="value">Value.</param>
+        /// <returns>The list of deleted record ids.</returns>
+        public ReadOnlyCollection<int> Delete(string key, string value);
 
         /// <summary>
         /// Defragments the data file.

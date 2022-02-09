@@ -27,7 +27,7 @@ namespace FileCabinetApp.Readers
         public IList<FileCabinetRecord> ReadAll()
         {
             IList<FileCabinetRecord> records;
-            XmlSerializer serializer = new XmlSerializer(typeof(List<FileCabinetRecord>));
+            XmlSerializer serializer = new (typeof(List<FileCabinetRecord>));
             records = serializer.Deserialize(this.reader) as IList<FileCabinetRecord> ?? new List<FileCabinetRecord>();
             return records;
         }

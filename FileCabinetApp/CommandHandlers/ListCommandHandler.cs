@@ -1,5 +1,4 @@
 ﻿using FileCabinetApp.Data;
-using FileCabinetApp.Iterators;
 using FileCabinetApp.Services;
 
 namespace FileCabinetApp.CommandHandlers

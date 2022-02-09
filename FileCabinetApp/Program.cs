@@ -111,24 +111,26 @@ namespace FileCabinetApp
             var exitCommandHandler = new ExitCommandHandler(x => isRunning = x);
             var statCommandHandler = new StatCommandHandler(fileCabinetService);
             var createCommandHandler = new CreateCommandHandler(fileCabinetService);
+            var insertCommandHandler = new InsertCommandHandler(fileCabinetService);
             var listCommandHandler = new ListCommandHandler(fileCabinetService, DefaultRecordPrint);
-            var editCommandHandler = new EditCommandHandler(fileCabinetService);
+            var updateCommandHandler = new UpdateCommandHandler(fileCabinetService);
             var findCommandHandler = new FindCommandHandler(fileCabinetService, DefaultRecordPrint);
             var exportCommandHandler = new ExportCommandHandler(fileCabinetService);
             var importCommandHandler = new ImportCommandHandler(fileCabinetService);
-            var removeCommandHandler = new RemoveCommandHandler(fileCabinetService);
+            var deleteCommandHandler = new DeleteCommandHandler(fileCabinetService);
             var purgeCommandHandler = new PurgeCommandHandler(fileCabinetService);
 
             helpCommandHandler.SetNext(exitCommandHandler);
             exitCommandHandler.SetNext(statCommandHandler);
             statCommandHandler.SetNext(createCommandHandler);
-            createCommandHandler.SetNext(listCommandHandler);
-            listCommandHandler.SetNext(editCommandHandler);
-            editCommandHandler.SetNext(findCommandHandler);
+            createCommandHandler.SetNext(insertCommandHandler);
+            insertCommandHandler.SetNext(listCommandHandler);
+            listCommandHandler.SetNext(updateCommandHandler);
+            updateCommandHandler.SetNext(findCommandHandler);
             findCommandHandler.SetNext(exportCommandHandler);
             exportCommandHandler.SetNext(importCommandHandler);
-            importCommandHandler.SetNext(removeCommandHandler);
-            removeCommandHandler.SetNext(purgeCommandHandler);
+            importCommandHandler.SetNext(deleteCommandHandler);
+            deleteCommandHandler.SetNext(purgeCommandHandler);
 
             return helpCommandHandler;
         }

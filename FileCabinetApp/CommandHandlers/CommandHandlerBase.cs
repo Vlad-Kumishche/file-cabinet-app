@@ -1,5 +1,4 @@
 ﻿using System.Globalization;
-using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -213,7 +212,7 @@ namespace FileCabinetApp.CommandHandlers
 
             if (string.IsNullOrEmpty(nameToValidate) || nameToValidate.Length < minLength || nameToValidate.Length > maxLength)
             {
-                return Tuple.Create(false, $"Length of \"{nameToValidate}\" does not meet the requirements. Min. length = {minLength}, max. lenght = {maxLength}");
+                return Tuple.Create(false, $"Length of \"{nameToValidate}\" does not meet the requirements. Min. length = {minLength}, max. Length = {maxLength}");
             }
 
             foreach (char c in nameToValidate)
@@ -340,8 +339,69 @@ namespace FileCabinetApp.CommandHandlers
         /// <param name="command">Unknown command.</param>
         private static void PrintMissedCommandInfo(string command)
         {
-            Console.WriteLine($"There is no '{command}' command.");
+            Console.WriteLine($"There is no '{command}' command. See help.");
             Console.WriteLine();
+
+            var similarCommands = new List<string>();
+            const int sensingDistance = 3;
+            foreach (var supportedCommand in HelpCommandHandler.GetListOfCommands())
+            {
+                if (GetLevenshteinDistance(command, supportedCommand) < sensingDistance)
+                {
+                    similarCommands.Add(supportedCommand);
+                }
+            }
+
+            if (similarCommands.Count > 0)
+            {
+                Console.Write("The most similar command");
+                if (similarCommands.Count == 1)
+                {
+                    Console.WriteLine(" is");
+                }
+                else
+                {
+                    Console.WriteLine("s are");
+                }
+
+                foreach (var similarCommand in similarCommands)
+                {
+                    Console.WriteLine($"\t{similarCommand}");
+                }
+
+                Console.WriteLine();
+            }
+
+            return;
         }
+
+        private static int GetMinInt(int a, int b, int c) => (a = a < b ? a : b) < c ? a : c;
+
+        private static int GetLevenshteinDistance(string firstString, int firstLength, string secondString, int secondLength)
+        {
+            if (firstLength == 0)
+            {
+                return secondLength;
+            }
+
+            if (secondLength == 0)
+            {
+                return firstLength;
+            }
+
+            var substitutionCost = 0;
+            if (firstString[firstLength - 1] != secondString[secondLength - 1])
+            {
+                substitutionCost = 1;
+            }
+
+            var deletion = GetLevenshteinDistance(firstString, firstLength - 1, secondString, secondLength) + 1;
+            var insertion = GetLevenshteinDistance(firstString, firstLength, secondString, secondLength - 1) + 1;
+            var substitution = GetLevenshteinDistance(firstString, firstLength - 1, secondString, secondLength - 1) + substitutionCost;
+
+            return GetMinInt(deletion, insertion, substitution);
+        }
+
+        private static int GetLevenshteinDistance(string firstString, string secondString) => GetLevenshteinDistance(firstString, firstString.Length, secondString, secondString.Length);
     }
 }

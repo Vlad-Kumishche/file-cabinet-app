@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Diagnostics;
 using FileCabinetApp.Data;
-using FileCabinetApp.Iterators;
 
 namespace FileCabinetApp.Services
 {
@@ -39,17 +38,33 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public void EditRecord(RecordArgs recordToEdit)
+        public int Insert(RecordArgs recordToInsert)
         {
             this.watch.Reset();
             this.watch.Start();
 
-            this.service.EditRecord(recordToEdit);
+            var recordId = this.service.Insert(recordToInsert);
 
             this.watch.Stop();
 
-            Console.WriteLine($"{nameof(this.service.EditRecord)} method execution duration is {this.watch.ElapsedTicks} ticks.");
+            Console.WriteLine($"{nameof(this.service.Insert)} method execution duration is {this.watch.ElapsedTicks} ticks.");
             Console.WriteLine();
+            return recordId;
+        }
+
+        /// <inheritdoc/>
+        public ReadOnlyCollection<int> Update(List<KeyValuePair<string, string>> newParameters, List<KeyValuePair<string, string>> searchOptions)
+        {
+            this.watch.Reset();
+            this.watch.Start();
+
+            var updatedRecordIds = this.service.Update(newParameters, searchOptions);
+
+            this.watch.Stop();
+
+            Console.WriteLine($"{nameof(this.service.Update)} method execution duration is {this.watch.ElapsedTicks} ticks.");
+            Console.WriteLine();
+            return updatedRecordIds;
         }
 
         /// <inheritdoc/>
@@ -172,18 +187,18 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public bool Remove(int recordId)
+        public ReadOnlyCollection<int> Delete(string key, string value)
         {
             this.watch.Reset();
             this.watch.Start();
 
-            var isSuccessful = this.service.Remove(recordId);
+            var deletedRecordIds = this.service.Delete(key, value);
 
             this.watch.Stop();
 
-            Console.WriteLine($"{nameof(this.service.Remove)} method execution duration is {this.watch.ElapsedTicks} ticks.");
+            Console.WriteLine($"{nameof(this.service.Delete)} method execution duration is {this.watch.ElapsedTicks} ticks.");
             Console.WriteLine();
-            return isSuccessful;
+            return deletedRecordIds;
         }
 
         /// <inheritdoc/>

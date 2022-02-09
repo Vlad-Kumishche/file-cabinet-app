@@ -29,14 +29,14 @@ namespace FileCabinetApp.Validators
         /// <exception cref="ArgumentException">Thrown when the length of the string does not match the given range.</exception>
         public void ValidateParameters(RecordArgs recordToValidate)
         {
-            string? line = recordToValidate.FirstName;
-            if (string.IsNullOrEmpty(line))
+            string? lastName = recordToValidate.LastName;
+            if (string.IsNullOrEmpty(lastName))
             {
                 throw new ArgumentNullException(nameof(recordToValidate));
             }
-            else if (line.Length < this.minLength || line.Length > this.maxLength)
+            else if (lastName.Length < this.minLength || lastName.Length > this.maxLength)
             {
-                throw new ArgumentException($"{nameof(line)}.Length does not meet the requirements.", nameof(recordToValidate));
+                throw new ArgumentException($"{nameof(lastName)}.Length does not meet the requirements.", nameof(recordToValidate));
             }
             else
             {

@@ -1,7 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
 using FileCabinetApp.Data;
-using FileCabinetApp.Iterators;
 
 namespace FileCabinetApp.Services
 {
@@ -40,17 +39,32 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public void EditRecord(RecordArgs recordToEdit)
+        public int Insert(RecordArgs recordToInsert)
         {
-            this.service.EditRecord(recordToEdit);
+            var recordId = this.service.Insert(recordToInsert);
+            Log($"Calling {nameof(this.service.Insert)}() with" +
+                $"{nameof(recordToInsert.FirstName)} = '{recordToInsert.FirstName}', " +
+                $"{nameof(recordToInsert.LastName)} = '{recordToInsert.LastName}', " +
+                $"{nameof(recordToInsert.DateOfBirth)} = '{recordToInsert.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', " +
+                $"{nameof(recordToInsert.Height)} = '{recordToInsert.Height}', " +
+                $"{nameof(recordToInsert.CashSavings)} = '{recordToInsert.CashSavings}', " +
+                $"{nameof(recordToInsert.FavoriteLetter)} = '{recordToInsert.FavoriteLetter}'");
+            Log($"{nameof(this.service.Insert)}() returned '{recordId}'");
 
-            Log($"Calling {nameof(this.service.EditRecord)}() with" +
-                $"{nameof(recordToEdit.FirstName)} = '{recordToEdit.FirstName}', " +
-                $"{nameof(recordToEdit.LastName)} = '{recordToEdit.LastName}', " +
-                $"{nameof(recordToEdit.DateOfBirth)} = '{recordToEdit.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', " +
-                $"{nameof(recordToEdit.Height)} = '{recordToEdit.Height}', " +
-                $"{nameof(recordToEdit.CashSavings)} = '{recordToEdit.CashSavings}', " +
-                $"{nameof(recordToEdit.FavoriteLetter)} = '{recordToEdit.FavoriteLetter}'");
+            return recordId;
+        }
+
+        /// <inheritdoc/>
+        public ReadOnlyCollection<int> Update(List<KeyValuePair<string, string>> newParameters, List<KeyValuePair<string, string>> searchOptions)
+        {
+            var updatedRecordIds = this.service.Update(newParameters, searchOptions);
+
+            Log($"Calling {nameof(this.service.Update)}() with" +
+                $"{nameof(newParameters)} = '{newParameters}'" +
+                $"{nameof(searchOptions)} = '{searchOptions}'");
+            Log($"{nameof(this.service.Update)}() returned '{updatedRecordIds}'");
+
+            return updatedRecordIds;
         }
 
         /// <inheritdoc/>
@@ -143,15 +157,16 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public bool Remove(int recordId)
+        public ReadOnlyCollection<int> Delete(string key, string value)
         {
-            var isSuccessful = this.service.Remove(recordId);
+            var deletedRecordIds = this.service.Delete(key, value);
 
-            Log($"Calling {nameof(this.service.Remove)}() with" +
-                $"{nameof(recordId)} = '{recordId}'");
-            Log($"{nameof(this.service.Remove)}() returned '{isSuccessful}'");
+            Log($"Calling {nameof(this.service.Delete)}() with" +
+                $"{nameof(key)} = '{key}'" +
+                $"{nameof(value)} = '{value}'");
+            Log($"{nameof(this.service.Delete)}() returned '{deletedRecordIds}'");
 
-            return isSuccessful;
+            return deletedRecordIds;
         }
 
         /// <inheritdoc/>
