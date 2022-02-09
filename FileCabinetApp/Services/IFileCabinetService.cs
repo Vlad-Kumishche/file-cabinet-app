@@ -90,6 +90,14 @@ namespace FileCabinetApp.Services
         public bool Remove(int recordId);
 
         /// <summary>
+        /// Deletes the record with specified key and value.
+        /// </summary>
+        /// <param name="key">Key.</param>
+        /// <param name="value">Value.</param>
+        /// <returns>The list of deleted record ids.</returns>
+        public ReadOnlyCollection<int> Delete(string key, string value);
+
+        /// <summary>
         /// Defragments the data file.
         /// </summary>
         public void Purge();

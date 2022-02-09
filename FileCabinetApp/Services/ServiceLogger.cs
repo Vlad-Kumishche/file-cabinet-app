@@ -171,6 +171,19 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
+        public ReadOnlyCollection<int> Delete(string key, string value)
+        {
+            var deletedRecordIds = this.service.Delete(key, value);
+
+            Log($"Calling {nameof(this.service.Delete)}() with" +
+                $"{nameof(key)} = '{key}'" +
+                $"{nameof(value)} = '{value}'");
+            Log($"{nameof(this.service.Delete)}() returned '{deletedRecordIds}'");
+
+            return deletedRecordIds;
+        }
+
+        /// <inheritdoc/>
         public int Restore(FileCabinetServiceSnapshot snapshot)
         {
             var amountOfRestoredRecords = this.service.Restore(snapshot);

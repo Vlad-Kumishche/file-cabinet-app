@@ -343,9 +343,23 @@
         <member name="M:FileCabinetApp.CreateCommandHandler.Command(System.String)">
             <inheritdoc/>
         </member>
+        <member name="T:FileCabinetApp.DeleteCommandHandler">
+            <summary>
+            Handler for delete command.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.DeleteCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.DeleteCommandHandler"/> class.
+            </summary>
+            <param name="fileCabinetService">Used service.</param>
+        </member>
+        <member name="M:FileCabinetApp.DeleteCommandHandler.Command(System.String)">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.InsertCommandHandler">
             <summary>
-            Handler for create command.
+            Handler for insert command.
             </summary>
         </member>
         <member name="M:FileCabinetApp.InsertCommandHandler.#ctor(FileCabinetApp.Services.IFileCabinetService)">
@@ -635,6 +649,9 @@
         <member name="M:FileCabinetApp.Services.FileCabinetFilesystemService.Remove(System.Int32)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetFilesystemService.Delete(System.String,System.String)">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.Services.FileCabinetFilesystemService.Purge">
             <inheritdoc/>
         </member>
@@ -702,6 +719,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.Delete(System.String,System.String)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.FileCabinetMemoryService.FindByFirstName(System.String)">
@@ -860,6 +880,14 @@
             <param name="recordId">Id of record for remove.</param>
             <returns>Whether the removal was successful.</returns>
         </member>
+        <member name="M:FileCabinetApp.Services.IFileCabinetService.Delete(System.String,System.String)">
+            <summary>
+            Deletes the record with specified key and value.
+            </summary>
+            <param name="key">Key.</param>
+            <param name="value">Value.</param>
+            <returns>The list of deleted record ids.</returns>
+        </member>
         <member name="M:FileCabinetApp.Services.IFileCabinetService.Purge">
             <summary>
             Defragments the data file.
@@ -912,6 +940,9 @@
         <member name="M:FileCabinetApp.Services.ServiceLogger.Remove(System.Int32)">
             <inheritdoc/>
         </member>
+        <member name="M:FileCabinetApp.Services.ServiceLogger.Delete(System.String,System.String)">
+            <inheritdoc/>
+        </member>
         <member name="M:FileCabinetApp.Services.ServiceLogger.Restore(FileCabinetApp.Services.FileCabinetServiceSnapshot)">
             <inheritdoc/>
         </member>
@@ -960,6 +991,9 @@
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceMeter.Remove(System.Int32)">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Services.ServiceMeter.Delete(System.String,System.String)">
             <inheritdoc/>
         </member>
         <member name="M:FileCabinetApp.Services.ServiceMeter.Restore(FileCabinetApp.Services.FileCabinetServiceSnapshot)">

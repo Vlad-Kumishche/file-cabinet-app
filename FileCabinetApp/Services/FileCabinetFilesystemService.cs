@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Globalization;
 using FileCabinetApp.Data;
 using FileCabinetApp.Iterators;
 using FileCabinetApp.Validators;
@@ -16,6 +17,9 @@ namespace FileCabinetApp.Services
         private readonly Dictionary<string, List<long>> firstNameDictionary = new (StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, List<long>> lastNameDictionary = new (StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<DateTime, List<long>> dateOfBirthDictionary = new ();
+        private readonly Dictionary<short, List<long>> heightDictionary = new ();
+        private readonly Dictionary<decimal, List<long>> cashSavingsDictionary = new ();
+        private readonly Dictionary<char, List<long>> favoriteLetterDictionary = new ();
         private readonly IRecordValidator validator;
 
         /// <summary>
@@ -199,17 +203,139 @@ namespace FileCabinetApp.Services
 
             if (this.TryGetOffsetOfRecordWithId(recordId, out var offset))
             {
-                this.RemoveRecordFromDictionaries(this.GetRecordById(recordId), offset);
-
-                byte firstPartOfStatus = 0;
-                firstPartOfStatus ^= (byte)((-1 ^ firstPartOfStatus) & (1 << OffsetIsDelitedFlag));
-                this.fileStream.Seek(offset, SeekOrigin.Begin);
-                this.fileStream.WriteByte(firstPartOfStatus);
-                this.deletedRecordsCount++;
+                this.RemoveByOffset(offset);
                 return true;
             }
 
             return false;
+        }
+
+        /// <inheritdoc/>
+        public ReadOnlyCollection<int> Delete(string key, string value)
+        {
+            List<long> offsetsOfRecordsToDelete;
+            List<int> identifiersOfRecordsToDelete = new ();
+
+            switch (key)
+            {
+                case "id":
+                    if (int.TryParse(value, out int id))
+                    {
+                        if (this.TryGetOffsetOfRecordWithId(id, out var offset))
+                        {
+                            offsetsOfRecordsToDelete = new () { offset };
+                        }
+                        else
+                        {
+                            throw new ArgumentException($"There is no records with {nameof(id)} = '{id}'.");
+                        }
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"Invalid {nameof(id)} value.");
+                    }
+
+                    break;
+
+                case "firstname":
+                    string firstName = value;
+                    if (this.TryGetOffsetsWhereFirstNameIs(firstName, out var firstNameOffsets))
+                    {
+                        offsetsOfRecordsToDelete = new (firstNameOffsets);
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"There is no records with {nameof(firstName)} = '{firstName}'.");
+                    }
+
+                    break;
+
+                case "lastname":
+                    string lastName = value;
+                    if (this.TryGetOffsetsWhereLastNameIs(lastName, out var lastNameOffsets))
+                    {
+                        offsetsOfRecordsToDelete = new (lastNameOffsets);
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"There is no records with {nameof(lastName)} = '{lastName}'.");
+                    }
+
+                    break;
+
+                case "dateofbirth":
+                    string dateOfBirth = value;
+                    if (this.TryGetOffsetsWhereDateOfBirthIs(dateOfBirth, out var dateOfBirthOffsets))
+                    {
+                        offsetsOfRecordsToDelete = new (dateOfBirthOffsets);
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"There is no records with {nameof(dateOfBirth)} = '{dateOfBirth}'.");
+                    }
+
+                    break;
+
+                case "height":
+                    string height = value;
+                    if (this.TryGetOffsetsWhereHeightIs(height, out var heightOffsets))
+                    {
+                        offsetsOfRecordsToDelete = new (heightOffsets);
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"There is no records with {nameof(height)} = '{height}'.");
+                    }
+
+                    break;
+
+                case "cashsavings":
+                    string cashSavings = value;
+                    if (this.TryGetOffsetsWhereCashSavingsIs(cashSavings, out var cashSavingsOffsets))
+                    {
+                        offsetsOfRecordsToDelete = new (cashSavingsOffsets);
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"There is no records with {nameof(cashSavings)} = '{cashSavings}'.");
+                    }
+
+                    break;
+
+                case "favoriteletter":
+                    string favoriteLetter = value;
+                    if (this.TryGetOffsetsWhereFavoriteLetterIs(favoriteLetter, out var favoriteLetterOffsets))
+                    {
+                        offsetsOfRecordsToDelete = new (favoriteLetterOffsets);
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"There is no records with {nameof(favoriteLetter)} = '{favoriteLetter}'.");
+                    }
+
+                    break;
+
+                default:
+                    throw new ArgumentException($"There is no {key} {nameof(key)}.");
+            }
+
+            if (offsetsOfRecordsToDelete.Count > 0)
+            {
+                foreach (var offset in offsetsOfRecordsToDelete)
+                {
+                    if (this.TryGetRecordByOffset(offset, out var record))
+                    {
+                        identifiersOfRecordsToDelete.Add(record.Id);
+                        this.RemoveByOffset(offset);
+                    }
+                }
+
+                return new (identifiersOfRecordsToDelete);
+            }
+            else
+            {
+                throw new ArgumentException("No records were found.");
+            }
         }
 
         /// <inheritdoc/>
@@ -234,9 +360,8 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
         {
-            if (this.firstNameDictionary.ContainsKey(firstName))
+            if (this.TryGetOffsetsWhereFirstNameIs(firstName, out var offsets))
             {
-                var offsets = this.firstNameDictionary[firstName];
                 return new FilesystemIterator(this, offsets);
             }
 
@@ -246,9 +371,8 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
         {
-            if (this.lastNameDictionary.ContainsKey(lastName))
+            if (this.TryGetOffsetsWhereLastNameIs(lastName, out var offsets))
             {
-                var offsets = this.lastNameDictionary[lastName];
                 return new FilesystemIterator(this, offsets);
             }
 
@@ -258,14 +382,8 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
         {
-            if (!DateTime.TryParse(sourceDate, out var dateOfBirth))
+            if (this.TryGetOffsetsWhereDateOfBirthIs(sourceDate, out var offsets))
             {
-                return new FilesystemIterator();
-            }
-
-            if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
-            {
-                var offsets = this.dateOfBirthDictionary[dateOfBirth];
                 return new FilesystemIterator(this, offsets);
             }
 
@@ -462,6 +580,27 @@ namespace FileCabinetApp.Services
             }
         }
 
+        private bool RemoveByOffset(long offset)
+        {
+            if (offset < 0)
+            {
+                throw new ArgumentException($"The {nameof(offset)} cannot be less than zero.");
+            }
+
+            if (this.TryGetRecordByOffset(offset, out var record))
+            {
+                this.RemoveRecordFromDictionaries(record, offset);
+                byte firstPartOfStatus = 0;
+                firstPartOfStatus ^= (byte)((-1 ^ firstPartOfStatus) & (1 << OffsetIsDelitedFlag));
+                this.fileStream.Seek(offset, SeekOrigin.Begin);
+                this.fileStream.WriteByte(firstPartOfStatus);
+                this.deletedRecordsCount++;
+                return true;
+            }
+
+            return false;
+        }
+
         private bool TryGetOffsetOfRecordWithId(int id, out long offset)
         {
             offset = -1;
@@ -497,11 +636,13 @@ namespace FileCabinetApp.Services
             this.firstNameDictionary[recordToRemove.FirstName].Remove(offset);
             this.lastNameDictionary[recordToRemove.LastName].Remove(offset);
             this.dateOfBirthDictionary[recordToRemove.DateOfBirth].Remove(offset);
+            this.heightDictionary[recordToRemove.Height].Remove(offset);
+            this.cashSavingsDictionary[recordToRemove.CashSavings].Remove(offset);
+            this.favoriteLetterDictionary[recordToRemove.FavoriteLetter].Remove(offset);
         }
 
         private void AddRecordToDictionaries(FileCabinetRecord record, long offset)
         {
-            // to avoid CS8604
             record.FirstName ??= string.Empty;
             record.LastName ??= string.Empty;
 
@@ -531,6 +672,125 @@ namespace FileCabinetApp.Services
             {
                 this.dateOfBirthDictionary[record.DateOfBirth] = new () { offset };
             }
+
+            if (this.heightDictionary.ContainsKey(record.Height))
+            {
+                this.heightDictionary[record.Height].Add(offset);
+            }
+            else
+            {
+                this.heightDictionary[record.Height] = new () { offset };
+            }
+
+            if (this.cashSavingsDictionary.ContainsKey(record.CashSavings))
+            {
+                this.cashSavingsDictionary[record.CashSavings].Add(offset);
+            }
+            else
+            {
+                this.cashSavingsDictionary[record.CashSavings] = new () { offset };
+            }
+
+            if (this.favoriteLetterDictionary.ContainsKey(record.FavoriteLetter))
+            {
+                this.favoriteLetterDictionary[record.FavoriteLetter].Add(offset);
+            }
+            else
+            {
+                this.favoriteLetterDictionary[record.FavoriteLetter] = new () { offset };
+            }
+        }
+
+        private bool TryGetOffsetsWhereFirstNameIs(string firstName, out List<long> offsets)
+        {
+            if (this.firstNameDictionary.ContainsKey(firstName))
+            {
+                offsets = this.firstNameDictionary[firstName];
+                return true;
+            }
+
+            offsets = new List<long>();
+            return false;
+        }
+
+        private bool TryGetOffsetsWhereLastNameIs(string lastName, out List<long> offsets)
+        {
+            if (this.lastNameDictionary.ContainsKey(lastName))
+            {
+                offsets = this.lastNameDictionary[lastName];
+                return true;
+            }
+
+            offsets = new List<long>();
+            return false;
+        }
+
+        private bool TryGetOffsetsWhereDateOfBirthIs(string sourceDate, out List<long> offsets)
+        {
+            offsets = new List<long>();
+            if (!DateTime.TryParse(sourceDate, new CultureInfo("en-US"), DateTimeStyles.None, out var dateOfBirth))
+            {
+                return false;
+            }
+
+            if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
+            {
+                offsets = this.dateOfBirthDictionary[dateOfBirth];
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool TryGetOffsetsWhereHeightIs(string sourceHeight, out List<long> offsets)
+        {
+            offsets = new List<long>();
+            if (!short.TryParse(sourceHeight, out var height))
+            {
+                return false;
+            }
+
+            if (this.heightDictionary.ContainsKey(height))
+            {
+                offsets = this.heightDictionary[height];
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool TryGetOffsetsWhereCashSavingsIs(string sourceCashSavings, out List<long> offsets)
+        {
+            offsets = new List<long>();
+            if (!decimal.TryParse(sourceCashSavings, out var cashSavings))
+            {
+                return false;
+            }
+
+            if (this.cashSavingsDictionary.ContainsKey(cashSavings))
+            {
+                offsets = this.cashSavingsDictionary[cashSavings];
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool TryGetOffsetsWhereFavoriteLetterIs(string sourceLetter, out List<long> offsets)
+        {
+            offsets = new List<long>();
+            if (!char.TryParse(sourceLetter, out var favoriteLetter))
+            {
+                return false;
+            }
+
+            if (this.favoriteLetterDictionary.ContainsKey(favoriteLetter))
+            {
+                offsets = this.favoriteLetterDictionary[favoriteLetter];
+                return true;
+            }
+
+            return false;
         }
     }
 }

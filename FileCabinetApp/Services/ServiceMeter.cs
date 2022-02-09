@@ -202,6 +202,21 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
+        public ReadOnlyCollection<int> Delete(string key, string value)
+        {
+            this.watch.Reset();
+            this.watch.Start();
+
+            var deletedRecordIds = this.service.Delete(key, value);
+
+            this.watch.Stop();
+
+            Console.WriteLine($"{nameof(this.service.Delete)} method execution duration is {this.watch.ElapsedTicks} ticks.");
+            Console.WriteLine();
+            return deletedRecordIds;
+        }
+
+        /// <inheritdoc/>
         public int Restore(FileCabinetServiceSnapshot snapshot)
         {
             this.watch.Reset();

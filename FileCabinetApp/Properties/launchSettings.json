@@ -2,7 +2,7 @@
   "profiles": {
     "FileCabinetApp": {
       "commandName": "Project",
-      "commandLineArgs": "--validation-rules=def -s file -u stopwatch -u logger"
+      "commandLineArgs": "--validation-rules=def -s mem -u stopwatch -u logger"
     }
   }
 }

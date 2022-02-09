@@ -7,7 +7,7 @@ using FileCabinetApp.Services;
 namespace FileCabinetApp
 {
     /// <summary>
-    /// Handler for create command.
+    /// Handler for insert command.
     /// </summary>
     public class InsertCommandHandler : ServiceCommandHandlerBase
     {
@@ -34,7 +34,7 @@ namespace FileCabinetApp
             {
                 if (string.IsNullOrEmpty(parameters))
                 {
-                    throw new ArgumentNullException(nameof(parameters), "The list of parameters for the 'insert' command cannot be empty.");
+                    throw new ArgumentNullException(nameof(parameters), $"The list of parameters for the '{this.CommandName}' command cannot be empty.");
                 }
 
                 var parameterRegex = new Regex(@"(.*) values (.*)", RegexOptions.IgnoreCase);
@@ -63,7 +63,7 @@ namespace FileCabinetApp
                                 }
                                 else
                                 {
-                                    throw new ArgumentException($"Invalid {nameof(id)} parameter.");
+                                    throw new ArgumentException($"Invalid {nameof(id)} value.");
                                 }
 
                                 break;
@@ -83,7 +83,7 @@ namespace FileCabinetApp
                                 }
                                 else
                                 {
-                                    throw new ArgumentException($"Invalid {nameof(dateOfBirth)} parameter.");
+                                    throw new ArgumentException($"Invalid {nameof(dateOfBirth)} value.");
                                 }
 
                                 break;
@@ -95,7 +95,7 @@ namespace FileCabinetApp
                                 }
                                 else
                                 {
-                                    throw new ArgumentException($"Invalid {nameof(height)} parameter.");
+                                    throw new ArgumentException($"Invalid {nameof(height)} value.");
                                 }
 
                                 break;
@@ -107,7 +107,7 @@ namespace FileCabinetApp
                                 }
                                 else
                                 {
-                                    throw new ArgumentException($"Invalid {nameof(cashSavings)} parameter.");
+                                    throw new ArgumentException($"Invalid {nameof(cashSavings)} value.");
                                 }
 
                                 break;
@@ -119,7 +119,7 @@ namespace FileCabinetApp
                                 }
                                 else
                                 {
-                                    throw new ArgumentException($"Invalid {nameof(favoriteLetter)} parameter.");
+                                    throw new ArgumentException($"Invalid {nameof(favoriteLetter)} value.");
                                 }
 
                                 break;
@@ -135,12 +135,12 @@ namespace FileCabinetApp
                 }
                 else
                 {
-                    throw new ArgumentException("Incorrect syntax for 'insert' command.");
+                    throw new ArgumentException($"Invalid '{this.CommandName}' command.");
                 }
             }
             catch (ArgumentException ex)
             {
-                Console.WriteLine($"No entry has been inserted. {ex.Message}");
+                Console.WriteLine($"No record has been inserted. {ex.Message}");
             }
 
             static List<string> GetSubstrings(string inputString) => inputString.Split(new char[] { '(', ',', ')' }, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList<string>();

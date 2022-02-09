@@ -1,4 +1,5 @@
 ﻿using System.Collections.ObjectModel;
+using System.Globalization;
 using FileCabinetApp.Data;
 using FileCabinetApp.Iterators;
 using FileCabinetApp.Validators;
@@ -160,6 +161,102 @@ namespace FileCabinetApp.Services
             this.list.Remove(recordToRemove);
             this.RemoveRecordFromDictionaries(recordToRemove);
             return true;
+        }
+
+        /// <inheritdoc/>
+        public ReadOnlyCollection<int> Delete(string key, string value)
+        {
+            List<FileCabinetRecord> recordsToDelete = new ();
+            List<int> identifiersOfRecordsToDelete = new ();
+
+            switch (key)
+            {
+                case "id":
+                    if (int.TryParse(value, out int id))
+                    {
+                        recordsToDelete = this.list.FindAll(record => record.Id == id);
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"Invalid {nameof(id)} value.");
+                    }
+
+                    break;
+
+                case "firstname":
+                    recordsToDelete = this.list.FindAll(record => record.FirstName == value);
+                    break;
+
+                case "lastname":
+                    recordsToDelete = this.list.FindAll(record => record.LastName == value);
+                    break;
+
+                case "dateofbirth":
+                    if (DateTime.TryParse(value, new CultureInfo("en-US"), DateTimeStyles.None, out DateTime dateOfBirth))
+                    {
+                        recordsToDelete = this.list.FindAll(record => record.DateOfBirth == dateOfBirth);
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"Invalid {nameof(dateOfBirth)} value.");
+                    }
+
+                    break;
+
+                case "height":
+                    if (short.TryParse(value, out short height))
+                    {
+                        recordsToDelete = this.list.FindAll(record => record.Height == height);
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"Invalid {nameof(height)} value.");
+                    }
+
+                    break;
+
+                case "cashsavings":
+                    if (decimal.TryParse(value, out decimal cashSavings))
+                    {
+                        recordsToDelete = this.list.FindAll(record => record.CashSavings == cashSavings);
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"Invalid {nameof(cashSavings)} value.");
+                    }
+
+                    break;
+
+                case "favoriteletter":
+                    if (char.TryParse(value, out char favoriteLetter))
+                    {
+                        recordsToDelete = this.list.FindAll(record => record.FavoriteLetter == favoriteLetter);
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"Invalid {nameof(favoriteLetter)} value.");
+                    }
+
+                    break;
+
+                default:
+                    throw new ArgumentException($"There is no {key} {nameof(key)}.");
+            }
+
+            if (recordsToDelete.Count > 0)
+            {
+                foreach (var record in recordsToDelete)
+                {
+                    identifiersOfRecordsToDelete.Add(record.Id);
+                    this.Remove(record.Id);
+                }
+
+                return new (identifiersOfRecordsToDelete);
+            }
+            else
+            {
+                throw new ArgumentException("No records were found.");
+            }
         }
 
         /// <inheritdoc/>
