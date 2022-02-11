@@ -1,6 +1,7 @@
 ﻿using System.Globalization;
 using FileCabinetApp.CommandHandlers;
 using FileCabinetApp.Data;
+using FileCabinetApp.Printers;
 using FileCabinetApp.Services;
 using FileCabinetApp.Validators;
 
@@ -112,9 +113,10 @@ namespace FileCabinetApp
             var statCommandHandler = new StatCommandHandler(fileCabinetService);
             var createCommandHandler = new CreateCommandHandler(fileCabinetService);
             var insertCommandHandler = new InsertCommandHandler(fileCabinetService);
-            var listCommandHandler = new ListCommandHandler(fileCabinetService, DefaultRecordPrint);
+            var listCommandHandler = new ListCommandHandler(fileCabinetService, new DefaultRecordPrinter());
             var updateCommandHandler = new UpdateCommandHandler(fileCabinetService);
-            var findCommandHandler = new FindCommandHandler(fileCabinetService, DefaultRecordPrint);
+            var selectCommandHandler = new SelectCommandHandler(fileCabinetService, new DefaultRecordPrinter());
+            var findCommandHandler = new FindCommandHandler(fileCabinetService, new DefaultRecordPrinter());
             var exportCommandHandler = new ExportCommandHandler(fileCabinetService);
             var importCommandHandler = new ImportCommandHandler(fileCabinetService);
             var deleteCommandHandler = new DeleteCommandHandler(fileCabinetService);
@@ -126,7 +128,8 @@ namespace FileCabinetApp
             createCommandHandler.SetNext(insertCommandHandler);
             insertCommandHandler.SetNext(listCommandHandler);
             listCommandHandler.SetNext(updateCommandHandler);
-            updateCommandHandler.SetNext(findCommandHandler);
+            updateCommandHandler.SetNext(selectCommandHandler);
+            selectCommandHandler.SetNext(findCommandHandler);
             findCommandHandler.SetNext(exportCommandHandler);
             exportCommandHandler.SetNext(importCommandHandler);
             importCommandHandler.SetNext(deleteCommandHandler);
@@ -246,28 +249,6 @@ namespace FileCabinetApp
                 default:
                     break;
             }
-        }
-
-        private static void DefaultRecordPrint(IEnumerator<FileCabinetRecord> records)
-        {
-            if (records == null)
-            {
-                throw new ArgumentNullException(nameof(records));
-            }
-
-            if (!records.MoveNext())
-            {
-                Console.WriteLine("Nothing found");
-                return;
-            }
-
-            do
-            {
-                var record = records.Current;
-                string date = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
-                Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {date}, {record.Height} cm, {record.CashSavings}$, {record.FavoriteLetter}");
-            }
-            while (records.MoveNext());
         }
     }
 }

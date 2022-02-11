@@ -26,7 +26,7 @@ namespace FileCabinetApp.Validators
         /// </summary>
         /// <param name="recordToValidate">Record to validate.</param>
         /// <exception cref="ArgumentException">Thrown when the height does not match the specified range.</exception>
-        public void ValidateParameters(RecordArgs recordToValidate)
+        public void ValidateParameters(RecordParameters recordToValidate)
         {
             short height = recordToValidate.Height;
             if (height < this.minHeight || height > this.maxHeight)

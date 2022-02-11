@@ -39,6 +39,7 @@ namespace FileCabinetApp.Iterators
             while (this.HasMore())
             {
                 yield return this.GetCurrent();
+                this.currentIndex++;
             }
         }
 
@@ -47,7 +48,7 @@ namespace FileCabinetApp.Iterators
 
         private FileCabinetRecord GetCurrent()
         {
-            if (this.HasMore() && this.service!.TryGetRecordByOffset(this.offsets.ElementAt(this.currentIndex++), out var nextRecord))
+            if (this.HasMore() && this.service!.TryGetRecordByOffset(this.offsets.ElementAt(this.currentIndex), out var nextRecord))
             {
                 return nextRecord;
             }

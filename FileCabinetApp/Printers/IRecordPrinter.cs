@@ -11,6 +11,6 @@ namespace FileCabinetApp.Printers
         /// Prints the records.
         /// </summary>
         /// <param name="records">Records to print.</param>
-        public void Print(IEnumerable<FileCabinetRecord> records);
+        public void Print(IEnumerator<FileCabinetRecord> records);
     }
 }

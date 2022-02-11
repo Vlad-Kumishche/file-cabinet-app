@@ -22,8 +22,7 @@ namespace FileCabinetApp.CommandHandlers
         /// <inheritdoc/>
         protected override void Command(string parameters)
         {
-            const int keyIndex = 1;
-            const int valueIndex = 2;
+            const int searchOptionsIndex = 1;
             string invalidCommandMessage = $"Invalid {this.CommandName} command.";
 
             try
@@ -33,43 +32,34 @@ namespace FileCabinetApp.CommandHandlers
                     throw new ArgumentNullException(nameof(parameters), "The list of parameters cannot be empty.");
                 }
 
-                var parametersRegex = new Regex(@"where (.*)=(.*)", RegexOptions.IgnoreCase);
+                var parametersRegex = new Regex(@"where (.*)", RegexOptions.IgnoreCase);
                 if (parametersRegex.IsMatch(parameters))
                 {
                     var matchParameters = parametersRegex.Match(parameters);
-                    var key = matchParameters.Groups[keyIndex].Value.ToLowerInvariant().Trim(' ');
-                    var value = Regex.Match(matchParameters.Groups[valueIndex].Value, @"'(.*?)'").Groups[1].Value.Trim(' ');
+                    var recordSearchOptions = GetKeyValuePairsOfSearchOptions(matchParameters.Groups[searchOptionsIndex].Value, out var logicalOperator);
 
-                    if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
+                    var identifiers = this.FileCabinetService.Delete(recordSearchOptions, logicalOperator);
+                    var message = new StringBuilder();
+                    for (int i = 0; i < identifiers.Count; i++)
                     {
-                        var identifiers = this.FileCabinetService.Delete(key, value);
-                        var message = new StringBuilder();
-
-                        for (int i = 0; i < identifiers.Count; i++)
+                        message.Append(FormattableString.Invariant($"#{identifiers[i]}"));
+                        if (i < identifiers.Count - 1)
                         {
-                            message.Append(FormattableString.Invariant($"#{identifiers[i]}"));
-                            if (i < identifiers.Count - 1)
-                            {
-                                message.Append(", ");
-                            }
+                            message.Append(", ");
                         }
+                    }
 
-                        Console.Write($"Record {message}");
-                        if (identifiers.Count == 1)
-                        {
-                            Console.Write(" is");
-                        }
-                        else
-                        {
-                            Console.Write(" are");
-                        }
-
-                        Console.WriteLine(" deleted.");
+                    Console.Write($"Record {message}");
+                    if (identifiers.Count == 1)
+                    {
+                        Console.Write(" is");
                     }
                     else
                     {
-                        throw new ArgumentException(invalidCommandMessage);
+                        Console.Write(" are");
                     }
+
+                    Console.WriteLine(" deleted.");
                 }
                 else
                 {
@@ -80,6 +70,8 @@ namespace FileCabinetApp.CommandHandlers
             {
                 Console.WriteLine($"The records have not been deleted. {ex.Message}");
             }
+
+            Console.WriteLine();
         }
     }
 }

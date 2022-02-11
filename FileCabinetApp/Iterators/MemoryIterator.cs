@@ -34,6 +34,7 @@ namespace FileCabinetApp.Iterators
             while (this.HasMore())
             {
                 yield return this.GetCurrent();
+                this.currentIndex++;
             }
         }
 
@@ -44,7 +45,7 @@ namespace FileCabinetApp.Iterators
         {
             if (this.HasMore())
             {
-                return this.records.ElementAt(this.currentIndex++);
+                return this.records.ElementAt(this.currentIndex);
             }
 
             return new ();

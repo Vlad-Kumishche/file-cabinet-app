@@ -21,6 +21,7 @@ namespace FileCabinetApp.CommandHandlers
         protected override void Command(string parameters)
         {
             this.FileCabinetService.Purge();
+            Console.WriteLine();
         }
     }
 }

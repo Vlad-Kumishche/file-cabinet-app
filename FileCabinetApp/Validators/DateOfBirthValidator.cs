@@ -27,7 +27,7 @@ namespace FileCabinetApp.Validators
         /// </summary>
         /// <param name="recordToValidate">Record to validate.</param>
         /// <exception cref="ArgumentException">Thrown when the length of the string does not match the specified range.</exception>
-        public void ValidateParameters(RecordArgs recordToValidate)
+        public void ValidateParameters(RecordParameters recordToValidate)
         {
             DateTime dateOfBirth = recordToValidate.DateOfBirth;
             if (dateOfBirth < this.from || dateOfBirth >= this.to)

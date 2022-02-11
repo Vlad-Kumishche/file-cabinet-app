@@ -1,4 +1,4 @@
-﻿using FileCabinetApp.Data;
+﻿using FileCabinetApp.Printers;
 using FileCabinetApp.Services;
 
 namespace FileCabinetApp.CommandHandlers
@@ -8,14 +8,14 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class FindCommandHandler : ServiceCommandHandlerBase
     {
-        private readonly Action<IEnumerator<FileCabinetRecord>> printer;
+        private readonly IRecordPrinter printer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FindCommandHandler"/> class.
         /// </summary>
         /// <param name="fileCabinetService">Used service.</param>
         /// <param name="printer">Used printer.</param>
-        public FindCommandHandler(IFileCabinetService fileCabinetService, Action<IEnumerator<FileCabinetRecord>> printer)
+        public FindCommandHandler(IFileCabinetService fileCabinetService, IRecordPrinter printer)
             : base(fileCabinetService)
         {
             this.CommandName = "find";
@@ -68,8 +68,8 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            var iterator = records.GetEnumerator();
-            this.printer(iterator);
+            this.printer.Print(records.GetEnumerator());
+            Console.WriteLine();
         }
     }
 }

@@ -22,7 +22,7 @@ namespace FileCabinetApp
         /// <inheritdoc/>
         protected override void Command(string parameters)
         {
-            var recordToCreate = new RecordArgs();
+            var recordToCreate = new RecordParameters();
 
             Console.Write("First name: ");
             recordToCreate.FirstName = ReadInput(StringConverter, NameValidator);
@@ -44,6 +44,8 @@ namespace FileCabinetApp
 
             int recordId = this.FileCabinetService.CreateRecord(recordToCreate);
             Console.WriteLine($"Record #{recordId} created.");
+
+            Console.WriteLine();
         }
     }
 }

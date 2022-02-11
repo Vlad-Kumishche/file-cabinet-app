@@ -11,6 +11,6 @@ namespace FileCabinetApp.Validators
         /// Validates the file cabinet record.
         /// </summary>
         /// <param name="recordToValidate">Record to validate.</param>
-        public void ValidateParameters(RecordArgs recordToValidate);
+        public void ValidateParameters(RecordParameters recordToValidate);
     }
 }

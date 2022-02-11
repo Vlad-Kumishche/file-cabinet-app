@@ -93,6 +93,8 @@ namespace FileCabinetApp.CommandHandlers
             {
                 Console.WriteLine($"Export failed: can't open file {path}");
             }
+
+            Console.WriteLine();
         }
     }
 }

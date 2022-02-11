@@ -1,4 +1,5 @@
 ﻿using FileCabinetApp.Data;
+using FileCabinetApp.Printers;
 using FileCabinetApp.Services;
 
 namespace FileCabinetApp.CommandHandlers
@@ -8,14 +9,14 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public class ListCommandHandler : ServiceCommandHandlerBase
     {
-        private readonly Action<IEnumerator<FileCabinetRecord>> printer;
+        private readonly IRecordPrinter printer;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ListCommandHandler"/> class.
         /// </summary>
         /// <param name="fileCabinetService">Used service.</param>
         /// <param name="printer">Used printer.</param>
-        public ListCommandHandler(IFileCabinetService fileCabinetService, Action<IEnumerator<FileCabinetRecord>> printer)
+        public ListCommandHandler(IFileCabinetService fileCabinetService, IRecordPrinter printer)
             : base(fileCabinetService)
         {
             this.CommandName = "list";
@@ -26,8 +27,8 @@ namespace FileCabinetApp.CommandHandlers
         protected override void Command(string parameters)
         {
             var records = this.FileCabinetService.GetRecords();
-            var iterator = records.GetEnumerator();
-            this.printer(iterator);
+            this.printer.Print(records.GetEnumerator());
+            Console.WriteLine();
         }
     }
 }

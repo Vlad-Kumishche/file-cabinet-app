@@ -50,7 +50,7 @@ namespace FileCabinetApp.CommandHandlers
                         throw new ArgumentException($"The max number of required parameters is {maxRecordParamsCount}.");
                     }
 
-                    var recordForInsert = new RecordArgs();
+                    var recordForInsert = new RecordParameters();
                     for (int i = 0; i < recordFields.Count; i++)
                     {
                         switch (recordFields[i])
@@ -130,7 +130,6 @@ namespace FileCabinetApp.CommandHandlers
 
                     var insertedRecordId = this.FileCabinetService.Insert(recordForInsert);
                     Console.WriteLine($"Record #{insertedRecordId} inserted.");
-                    Console.WriteLine();
                 }
                 else
                 {
@@ -142,7 +141,7 @@ namespace FileCabinetApp.CommandHandlers
                 Console.WriteLine($"No record has been inserted. {ex.Message}");
             }
 
-            static List<string> GetSubstrings(string inputString) => inputString.Split(new char[] { '(', ',', ')' }, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList<string>();
+            Console.WriteLine();
         }
     }
 }
