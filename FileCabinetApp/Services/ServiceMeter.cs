@@ -23,7 +23,7 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public int CreateRecord(RecordArgs recordToCreate)
+        public int CreateRecord(RecordParameters recordToCreate)
         {
             this.watch.Reset();
             this.watch.Start();
@@ -38,7 +38,7 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public int Insert(RecordArgs recordToInsert)
+        public int Insert(RecordParameters recordToInsert)
         {
             this.watch.Reset();
             this.watch.Start();
@@ -53,12 +53,12 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<int> Update(List<KeyValuePair<string, string>> newParameters, List<KeyValuePair<string, string>> searchOptions)
+        public ReadOnlyCollection<int> Update(List<KeyValuePair<string, string>> newParameters, List<KeyValuePair<string, string>> searchOptions, string logicalOperator)
         {
             this.watch.Reset();
             this.watch.Start();
 
-            var updatedRecordIds = this.service.Update(newParameters, searchOptions);
+            var updatedRecordIds = this.service.Update(newParameters, searchOptions, logicalOperator);
 
             this.watch.Stop();
 
@@ -68,48 +68,18 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
+        public IEnumerable<FileCabinetRecord> SelectByOptions(List<KeyValuePair<string, string>> searchOptions, string logicalOperator)
         {
             this.watch.Reset();
             this.watch.Start();
 
-            var records = this.service.FindByDateOfBirth(sourceDate);
+            var selectedRecords = this.service.SelectByOptions(searchOptions, logicalOperator);
 
             this.watch.Stop();
 
-            Console.WriteLine($"{nameof(this.service.FindByDateOfBirth)} method execution duration is {this.watch.ElapsedTicks} ticks.");
+            Console.WriteLine($"{nameof(this.service.SelectByOptions)} method execution duration is {this.watch.ElapsedTicks} ticks.");
             Console.WriteLine();
-            return records;
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            this.watch.Reset();
-            this.watch.Start();
-
-            var records = this.service.FindByFirstName(firstName);
-
-            this.watch.Stop();
-
-            Console.WriteLine($"{nameof(this.service.FindByFirstName)} method execution duration is {this.watch.ElapsedTicks} ticks.");
-            Console.WriteLine();
-            return records;
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            this.watch.Reset();
-            this.watch.Start();
-
-            var records = this.service.FindByLastName(lastName);
-
-            this.watch.Stop();
-
-            Console.WriteLine($"{nameof(this.service.FindByLastName)} method execution duration is {this.watch.ElapsedTicks} ticks.");
-            Console.WriteLine();
-            return records;
+            return selectedRecords;
         }
 
         /// <inheritdoc/>
@@ -125,21 +95,6 @@ namespace FileCabinetApp.Services
             Console.WriteLine($"{nameof(this.service.GetRecordById)} method execution duration is {this.watch.ElapsedTicks} ticks.");
             Console.WriteLine();
             return record;
-        }
-
-        /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
-        {
-            this.watch.Reset();
-            this.watch.Start();
-
-            var records = this.service.GetRecords();
-
-            this.watch.Stop();
-
-            Console.WriteLine($"{nameof(this.service.GetRecords)} method execution duration is {this.watch.ElapsedTicks} ticks.");
-            Console.WriteLine();
-            return records;
         }
 
         /// <inheritdoc/>
@@ -187,12 +142,12 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<int> Delete(string key, string value)
+        public ReadOnlyCollection<int> Delete(List<KeyValuePair<string, string>> searchOptions, string logicalOperator)
         {
             this.watch.Reset();
             this.watch.Start();
 
-            var deletedRecordIds = this.service.Delete(key, value);
+            var deletedRecordIds = this.service.Delete(searchOptions, logicalOperator);
 
             this.watch.Stop();
 

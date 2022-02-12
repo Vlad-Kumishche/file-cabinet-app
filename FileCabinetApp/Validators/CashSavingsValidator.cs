@@ -26,7 +26,7 @@ namespace FileCabinetApp.Validators
         /// </summary>
         /// <param name="recordToValidate">Record to validate.</param>
         /// <exception cref="ArgumentException">Thrown when the cash savings does not match the specified range.</exception>
-        public void ValidateParameters(RecordArgs recordToValidate)
+        public void ValidateParameters(RecordParameters recordToValidate)
         {
             decimal cashSavings = recordToValidate.CashSavings;
             if (cashSavings < this.minCashSavings || cashSavings > this.maxCashSavings)

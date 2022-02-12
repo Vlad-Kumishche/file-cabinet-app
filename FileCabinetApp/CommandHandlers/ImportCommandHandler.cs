@@ -92,6 +92,8 @@ namespace FileCabinetApp.CommandHandlers
             {
                 Console.WriteLine($"Import failed: can't open file {path}");
             }
+
+            Console.WriteLine();
         }
     }
 }

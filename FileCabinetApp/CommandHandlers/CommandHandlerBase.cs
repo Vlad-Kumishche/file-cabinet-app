@@ -1,4 +1,5 @@
 ﻿using System.Globalization;
+using System.Text.RegularExpressions;
 
 namespace FileCabinetApp.CommandHandlers
 {
@@ -7,6 +8,11 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public abstract class CommandHandlerBase : ICommandHandler
     {
+        /// <summary>
+        /// Select add sign.
+        /// </summary>
+        protected const string SelectAll = "*";
+
         private ICommandHandler? nextHandler;
         private string? commandName;
 
@@ -325,6 +331,100 @@ namespace FileCabinetApp.CommandHandlers
             }
 
             return Tuple.Create(true, string.Empty);
+        }
+
+        /// <summary>
+        /// Gets substrings from <paramref name="inputString"/>.
+        /// </summary>
+        /// <param name="inputString">String.</param>
+        /// <returns>Substrings.</returns>
+        protected static List<string> GetSubstrings(string inputString) => inputString.Split(new char[] { '(', ',', ')' }, StringSplitOptions.TrimEntries | StringSplitOptions.RemoveEmptyEntries).ToList();
+
+        /// <summary>
+        /// Gets search options and logical operator between them.
+        /// </summary>
+        /// <param name="searchOptions">A set of parameters to search a record.</param>
+        /// <param name="logicalOperator">Logical operator.</param>
+        /// <returns>Separated options.</returns>
+        /// <exception cref="ArgumentNullException">Thrown when <paramref name="searchOptions"/> is null or empty.</exception>
+        /// <exception cref="ArgumentException">Thrown when using the "AND" and "OR" operators at the same time.</exception>
+        protected static List<KeyValuePair<string, string>> GetKeyValuePairsOfSearchOptions(string searchOptions, out string logicalOperator)
+        {
+            if (string.IsNullOrEmpty(searchOptions))
+            {
+                throw new ArgumentNullException(nameof(searchOptions));
+            }
+
+            if (searchOptions.Trim() == SelectAll)
+            {
+                logicalOperator = string.Empty;
+                return new () { new (SelectAll, SelectAll) };
+            }
+
+            var keyValuePairs = new List<KeyValuePair<string, string>>();
+            var separatedByAnd = Regex.Split(searchOptions, " and ", RegexOptions.IgnoreCase);
+            var separatedByOr = Regex.Split(searchOptions, " or ", RegexOptions.IgnoreCase);
+
+            var byAndIterator = separatedByAnd.GetEnumerator();
+            byAndIterator.MoveNext();
+            var byOrIterator = separatedByOr.GetEnumerator();
+            byOrIterator.MoveNext();
+
+            var firstSubstringByAnd = byAndIterator.Current;
+            var firstSubstringByOr = byOrIterator.Current;
+
+            string[] separatedSearchOptions;
+            if (!firstSubstringByAnd.Equals(searchOptions) &&
+                !firstSubstringByOr.Equals(searchOptions) &&
+                !separatedByAnd.SequenceEqual(separatedByOr))
+            {
+                throw new ArgumentException("Either 'AND' or 'OR' is allowed, but not both.");
+            }
+            else if (!firstSubstringByAnd.Equals(searchOptions))
+            {
+                logicalOperator = "and";
+                separatedSearchOptions = separatedByAnd;
+            }
+            else
+            {
+                logicalOperator = "or";
+                separatedSearchOptions = separatedByOr;
+            }
+
+            var optionRegex = new Regex(@"(.*)=(.*)");
+            foreach (var option in separatedSearchOptions)
+            {
+                keyValuePairs.Add(GetPairOfParameters(optionRegex, option));
+            }
+
+            return keyValuePairs;
+        }
+
+        /// <summary>
+        /// Gets key value pair of parameters.
+        /// </summary>
+        /// <param name="regex">Used regex.</param>
+        /// <param name="pairOfParams">Source pair.</param>
+        /// <returns>Separated pair.</returns>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="pairOfParams"/> is invalid.</exception>
+        protected static KeyValuePair<string, string> GetPairOfParameters(Regex regex, string pairOfParams)
+        {
+            const int keyIndex = 1;
+            const int valueIndex = 2;
+            if (regex.IsMatch(pairOfParams))
+            {
+                var match = regex.Match(pairOfParams);
+                var key = match.Groups[keyIndex].Value.Trim(' ').ToLowerInvariant();
+                var value = Regex.Match(match.Groups[valueIndex].Value, @"'(.*?)'").Groups[1].Value.Trim(' ');
+                if (string.IsNullOrEmpty(value))
+                {
+                    throw new ArgumentException($"In pair '{pairOfParams}' value must be in single quotes.");
+                }
+
+                return new KeyValuePair<string, string>(key, value);
+            }
+
+            throw new ArgumentException($"Pair of parameters '{pairOfParams}' is incorrect.");
         }
 
         /// <summary>

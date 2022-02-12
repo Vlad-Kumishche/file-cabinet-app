@@ -37,9 +37,9 @@ namespace FileCabinetApp.CommandHandlers
                 {
                     var matchParameters = parametersRegex.Match(parameters);
                     var newRecordParameters = GetKeyValuePairsOfParameters(matchParameters.Groups[newRecordParametersIndex].Value);
-                    var recordSearchOptions = GetKeyValuePairsOfSearchOptions(matchParameters.Groups[searchOptionsIndex].Value);
+                    var recordSearchOptions = GetKeyValuePairsOfSearchOptions(matchParameters.Groups[searchOptionsIndex].Value, out var logicalOperator);
 
-                    var identifiers = this.FileCabinetService.Update(newRecordParameters, recordSearchOptions);
+                    var identifiers = this.FileCabinetService.Update(newRecordParameters, recordSearchOptions, logicalOperator);
                     var message = new StringBuilder();
                     for (int i = 0; i < identifiers.Count; i++)
                     {
@@ -71,6 +71,8 @@ namespace FileCabinetApp.CommandHandlers
             {
                 Console.WriteLine($"The records have not been updated. {ex.Message}");
             }
+
+            Console.WriteLine();
         }
 
         private static List<KeyValuePair<string, string>> GetKeyValuePairsOfParameters(string parameters)
@@ -90,45 +92,6 @@ namespace FileCabinetApp.CommandHandlers
             }
 
             return keyValuePairs;
-        }
-
-        private static List<KeyValuePair<string, string>> GetKeyValuePairsOfSearchOptions(string searchOptions)
-        {
-            if (string.IsNullOrEmpty(searchOptions))
-            {
-                throw new ArgumentNullException(nameof(searchOptions));
-            }
-
-            var keyValuePairs = new List<KeyValuePair<string, string>>();
-            var separatedSearchOptions = searchOptions.Split(" and ");
-            var optionRegex = new Regex(@"(.*)=(.*)");
-
-            foreach (var option in separatedSearchOptions)
-            {
-                keyValuePairs.Add(GetPairOfParameters(optionRegex, option));
-            }
-
-            return keyValuePairs;
-        }
-
-        private static KeyValuePair<string, string> GetPairOfParameters(Regex regex, string pairOfParams)
-        {
-            const int keyIndex = 1;
-            const int valueIndex = 2;
-            if (regex.IsMatch(pairOfParams))
-            {
-                var match = regex.Match(pairOfParams);
-                var key = match.Groups[keyIndex].Value.Trim(' ').ToLowerInvariant();
-                var value = Regex.Match(match.Groups[valueIndex].Value, @"'(.*?)'").Groups[1].Value.Trim(' ');
-                if (string.IsNullOrEmpty(value))
-                {
-                    throw new ArgumentException($"In pair '{pairOfParams}' value must be in single quotes.");
-                }
-
-                return new KeyValuePair<string, string>(key, value);
-            }
-
-            throw new ArgumentException($"Pair of parameters '{pairOfParams}' is incorrect.");
         }
     }
 }

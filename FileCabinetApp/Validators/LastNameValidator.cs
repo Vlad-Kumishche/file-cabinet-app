@@ -27,7 +27,7 @@ namespace FileCabinetApp.Validators
         /// <param name="recordToValidate">Record to validate.</param>
         /// <exception cref="ArgumentNullException">Thrown when string to validate is null or empty.</exception>
         /// <exception cref="ArgumentException">Thrown when the length of the string does not match the given range.</exception>
-        public void ValidateParameters(RecordArgs recordToValidate)
+        public void ValidateParameters(RecordParameters recordToValidate)
         {
             string? lastName = recordToValidate.LastName;
             if (string.IsNullOrEmpty(lastName))

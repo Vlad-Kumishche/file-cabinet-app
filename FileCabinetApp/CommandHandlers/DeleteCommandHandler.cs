@@ -22,8 +22,7 @@ namespace FileCabinetApp.CommandHandlers
         /// <inheritdoc/>
         protected override void Command(string parameters)
         {
-            const int keyIndex = 1;
-            const int valueIndex = 2;
+            const int searchOptionsIndex = 1;
             string invalidCommandMessage = $"Invalid {this.CommandName} command.";
 
             try
@@ -33,53 +32,52 @@ namespace FileCabinetApp.CommandHandlers
                     throw new ArgumentNullException(nameof(parameters), "The list of parameters cannot be empty.");
                 }
 
-                var parametersRegex = new Regex(@"where (.*)=(.*)", RegexOptions.IgnoreCase);
-                if (parametersRegex.IsMatch(parameters))
+                List<KeyValuePair<string, string>> recordSearchOptions = new () { new (SelectAll, SelectAll) };
+                string logicalOperator = string.Empty;
+
+                if (parameters.Trim() != SelectAll)
                 {
-                    var matchParameters = parametersRegex.Match(parameters);
-                    var key = matchParameters.Groups[keyIndex].Value.ToLowerInvariant().Trim(' ');
-                    var value = Regex.Match(matchParameters.Groups[valueIndex].Value, @"'(.*?)'").Groups[1].Value.Trim(' ');
-
-                    if (!string.IsNullOrEmpty(key) && !string.IsNullOrEmpty(value))
+                    var parametersRegex = new Regex(@"where (.*)", RegexOptions.IgnoreCase);
+                    if (parametersRegex.IsMatch(parameters))
                     {
-                        var identifiers = this.FileCabinetService.Delete(key, value);
-                        var message = new StringBuilder();
-
-                        for (int i = 0; i < identifiers.Count; i++)
-                        {
-                            message.Append(FormattableString.Invariant($"#{identifiers[i]}"));
-                            if (i < identifiers.Count - 1)
-                            {
-                                message.Append(", ");
-                            }
-                        }
-
-                        Console.Write($"Record {message}");
-                        if (identifiers.Count == 1)
-                        {
-                            Console.Write(" is");
-                        }
-                        else
-                        {
-                            Console.Write(" are");
-                        }
-
-                        Console.WriteLine(" deleted.");
+                        var matchParameters = parametersRegex.Match(parameters);
+                        recordSearchOptions = GetKeyValuePairsOfSearchOptions(matchParameters.Groups[searchOptionsIndex].Value, out logicalOperator);
                     }
                     else
                     {
                         throw new ArgumentException(invalidCommandMessage);
                     }
                 }
+
+                var identifiers = this.FileCabinetService.Delete(recordSearchOptions, logicalOperator);
+                var message = new StringBuilder();
+                for (int i = 0; i < identifiers.Count; i++)
+                {
+                    message.Append(FormattableString.Invariant($"#{identifiers[i]}"));
+                    if (i < identifiers.Count - 1)
+                    {
+                        message.Append(", ");
+                    }
+                }
+
+                Console.Write($"Record {message}");
+                if (identifiers.Count == 1)
+                {
+                    Console.Write(" is");
+                }
                 else
                 {
-                    throw new ArgumentException(invalidCommandMessage);
+                    Console.Write(" are");
                 }
+
+                Console.WriteLine(" deleted.");
             }
             catch (ArgumentException ex)
             {
                 Console.WriteLine($"The records have not been deleted. {ex.Message}");
             }
+
+            Console.WriteLine();
         }
     }
 }

@@ -22,7 +22,7 @@ namespace FileCabinetApp.Validators
         /// Validates the parameters.
         /// </summary>
         /// <param name="recordToValidate">The parameters.</param>
-        public void ValidateParameters(RecordArgs recordToValidate)
+        public void ValidateParameters(RecordParameters recordToValidate)
         {
             foreach (var validator in this.validators)
             {

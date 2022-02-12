@@ -12,7 +12,7 @@ namespace FileCabinetApp.Validators
         /// </summary>
         /// <param name="recordToValidate">Record to validate.</param>
         /// <exception cref="ArgumentException">Thrown when the character is not an English letter.</exception>
-        public void ValidateParameters(RecordArgs recordToValidate)
+        public void ValidateParameters(RecordParameters recordToValidate)
         {
             char c = recordToValidate.FavoriteLetter;
             if ((c < 'a' || c > 'z') && (c < 'A' || c > 'Z'))

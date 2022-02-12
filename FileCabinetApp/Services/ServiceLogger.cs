@@ -22,11 +22,11 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public int CreateRecord(RecordArgs recordToCreate)
+        public int CreateRecord(RecordParameters recordToCreate)
         {
             var recordId = this.service.CreateRecord(recordToCreate);
 
-            Log($"Calling {nameof(this.service.CreateRecord)}() with" +
+            Log($"Calling {nameof(this.service.CreateRecord)}() with " +
                 $"{nameof(recordToCreate.FirstName)} = '{recordToCreate.FirstName}', " +
                 $"{nameof(recordToCreate.LastName)} = '{recordToCreate.LastName}', " +
                 $"{nameof(recordToCreate.DateOfBirth)} = '{recordToCreate.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', " +
@@ -39,10 +39,10 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public int Insert(RecordArgs recordToInsert)
+        public int Insert(RecordParameters recordToInsert)
         {
             var recordId = this.service.Insert(recordToInsert);
-            Log($"Calling {nameof(this.service.Insert)}() with" +
+            Log($"Calling {nameof(this.service.Insert)}() with " +
                 $"{nameof(recordToInsert.FirstName)} = '{recordToInsert.FirstName}', " +
                 $"{nameof(recordToInsert.LastName)} = '{recordToInsert.LastName}', " +
                 $"{nameof(recordToInsert.DateOfBirth)} = '{recordToInsert.DateOfBirth.ToString("dd/MM/yyyy", CultureInfo.InvariantCulture)}', " +
@@ -55,52 +55,30 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<int> Update(List<KeyValuePair<string, string>> newParameters, List<KeyValuePair<string, string>> searchOptions)
+        public ReadOnlyCollection<int> Update(List<KeyValuePair<string, string>> newParameters, List<KeyValuePair<string, string>> searchOptions, string logicalOperator)
         {
-            var updatedRecordIds = this.service.Update(newParameters, searchOptions);
+            var updatedRecordIds = this.service.Update(newParameters, searchOptions, logicalOperator);
 
-            Log($"Calling {nameof(this.service.Update)}() with" +
+            Log($"Calling {nameof(this.service.Update)}() with " +
                 $"{nameof(newParameters)} = '{newParameters}'" +
-                $"{nameof(searchOptions)} = '{searchOptions}'");
+                $"{nameof(searchOptions)} = '{searchOptions}'" +
+                $"{nameof(logicalOperator)} = '{logicalOperator}'");
             Log($"{nameof(this.service.Update)}() returned '{updatedRecordIds}'");
 
             return updatedRecordIds;
         }
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
+        public IEnumerable<FileCabinetRecord> SelectByOptions(List<KeyValuePair<string, string>> searchOptions, string logicalOperator)
         {
-            var records = this.service.FindByDateOfBirth(sourceDate);
+            var selectedRecords = this.service.SelectByOptions(searchOptions, logicalOperator);
 
-            Log($"Calling {nameof(this.service.FindByDateOfBirth)}() with" +
-                $"{nameof(sourceDate)} = '{sourceDate}'");
-            Log($"{nameof(this.service.FindByDateOfBirth)}() returned '{records}'");
+            Log($"Calling {nameof(this.service.SelectByOptions)}() with " +
+                $"{nameof(searchOptions)} = '{searchOptions}'" +
+                $"{nameof(logicalOperator)} = '{logicalOperator}'");
+            Log($"{nameof(this.service.SelectByOptions)}() returned '{selectedRecords}'");
 
-            return records;
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            var records = this.service.FindByFirstName(firstName);
-
-            Log($"Calling {nameof(this.service.FindByFirstName)}() with" +
-                $"{nameof(firstName)} = '{firstName}'");
-            Log($"{nameof(this.service.FindByFirstName)}() returned '{records}'");
-
-            return records;
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            var records = this.service.FindByLastName(lastName);
-
-            Log($"Calling {nameof(this.service.FindByLastName)}() with" +
-                $"{nameof(lastName)} = '{lastName}'");
-            Log($"{nameof(this.service.FindByLastName)}() returned '{records}'");
-
-            return records;
+            return selectedRecords;
         }
 
         /// <inheritdoc/>
@@ -108,22 +86,11 @@ namespace FileCabinetApp.Services
         {
             var record = this.service.GetRecordById(id);
 
-            Log($"Calling {nameof(this.service.GetRecordById)}() with" +
+            Log($"Calling {nameof(this.service.GetRecordById)}() with " +
                 $"{nameof(id)} = '{id}'");
             Log($"{nameof(this.service.GetRecordById)}() returned '{record}'");
 
             return record;
-        }
-
-        /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
-        {
-            var records = this.service.GetRecords();
-
-            Log($"Calling {nameof(this.service.GetRecords)}()");
-            Log($"{nameof(this.service.GetRecords)}() returned '{records}'");
-
-            return records;
         }
 
         /// <inheritdoc/>
@@ -157,13 +124,13 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public ReadOnlyCollection<int> Delete(string key, string value)
+        public ReadOnlyCollection<int> Delete(List<KeyValuePair<string, string>> searchOptions, string logicalOperator)
         {
-            var deletedRecordIds = this.service.Delete(key, value);
+            var deletedRecordIds = this.service.Delete(searchOptions, logicalOperator);
 
-            Log($"Calling {nameof(this.service.Delete)}() with" +
-                $"{nameof(key)} = '{key}'" +
-                $"{nameof(value)} = '{value}'");
+            Log($"Calling {nameof(this.service.Delete)}() with " +
+                $"{nameof(searchOptions)} = '{searchOptions}'" +
+                $"{nameof(logicalOperator)} = '{logicalOperator}'");
             Log($"{nameof(this.service.Delete)}() returned '{deletedRecordIds}'");
 
             return deletedRecordIds;
@@ -174,7 +141,7 @@ namespace FileCabinetApp.Services
         {
             var amountOfRestoredRecords = this.service.Restore(snapshot);
 
-            Log($"Calling {nameof(this.service.Restore)}() with" +
+            Log($"Calling {nameof(this.service.Restore)}() with " +
                 $"{nameof(snapshot)} = '{snapshot}'");
             Log($"{nameof(this.service.Restore)}() returned '{amountOfRestoredRecords}'");
 

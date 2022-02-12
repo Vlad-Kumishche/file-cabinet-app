@@ -1,9 +1,11 @@
-﻿namespace FileCabinetApp.Data
+﻿using System.Globalization;
+
+namespace FileCabinetApp.Data
 {
     /// <summary>
     /// Class for introducing parameters for file cabinet record.
     /// </summary>
-    public class RecordArgs
+    public class RecordParameters
     {
         /// <summary>
         /// Gets or sets the id of the record.
