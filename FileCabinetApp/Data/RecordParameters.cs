@@ -48,5 +48,83 @@ namespace FileCabinetApp.Data
         /// </summary>
         /// <value>The favorite letter of the person.</value>
         public char FavoriteLetter { get; set; }
+
+        /// <summary>
+        /// Updates <paramref name="recordToUpdate"/> with <paramref name="newParameters"/>.
+        /// </summary>
+        /// <param name="recordToUpdate">Parameters to update.</param>
+        /// <param name="newParameters">New Parameters.</param>
+        /// <exception cref="ArgumentException">Thrown when <paramref name="newParameters"/> contains non-existent key.</exception>
+        public static void UpdateRecordParams(RecordParameters recordToUpdate, List<KeyValuePair<string, string>> newParameters)
+        {
+            foreach (var newRecordParameter in newParameters)
+            {
+                switch (newRecordParameter.Key)
+                {
+                    case "id":
+                        throw new ArgumentException("Update of the id field is prohibited.");
+
+                    case "firstname":
+                        recordToUpdate.FirstName = newRecordParameter.Value;
+
+                        break;
+
+                    case "lastname":
+                        recordToUpdate.LastName = newRecordParameter.Value;
+                        break;
+
+                    case "dateofbirth":
+                        if (DateTime.TryParse(newRecordParameter.Value, new CultureInfo("en-US"), DateTimeStyles.None, out DateTime dateOfBirth))
+                        {
+                            recordToUpdate.DateOfBirth = dateOfBirth;
+                        }
+                        else
+                        {
+                            throw new ArgumentException($"Invalid '{nameof(dateOfBirth)}' value.");
+                        }
+
+                        break;
+
+                    case "height":
+                        if (short.TryParse(newRecordParameter.Value, out short height))
+                        {
+                            recordToUpdate.Height = height;
+                        }
+                        else
+                        {
+                            throw new ArgumentException($"Invalid '{nameof(height)}' value.");
+                        }
+
+                        break;
+
+                    case "cashsavings":
+                        if (decimal.TryParse(newRecordParameter.Value, out decimal cashSavings))
+                        {
+                            recordToUpdate.CashSavings = cashSavings;
+                        }
+                        else
+                        {
+                            throw new ArgumentException($"Invalid '{nameof(cashSavings)}' value.");
+                        }
+
+                        break;
+
+                    case "favoriteletter":
+                        if (char.TryParse(newRecordParameter.Value, out char favoriteLetter))
+                        {
+                            recordToUpdate.FavoriteLetter = favoriteLetter;
+                        }
+                        else
+                        {
+                            throw new ArgumentException($"Invalid '{nameof(favoriteLetter)}' value.");
+                        }
+
+                        break;
+
+                    default:
+                        throw new ArgumentException($"There is no key like '{newRecordParameter.Key}'.");
+                }
+            }
+        }
     }
 }
