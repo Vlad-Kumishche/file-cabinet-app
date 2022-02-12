@@ -9,14 +9,16 @@ namespace FileCabinetApp.Printers
     public class DefaultRecordPrinter : IRecordPrinter
     {
         /// <inheritdoc/>
-        public void Print(IEnumerator<FileCabinetRecord> records)
+        public void Print(IEnumerable<FileCabinetRecord> records, List<string> recordFieldsToPrint)
         {
             if (records == null)
             {
                 throw new ArgumentNullException(nameof(records));
             }
 
-            if (!records.MoveNext())
+            var iterator = records.GetEnumerator();
+
+            if (!iterator.MoveNext())
             {
                 Console.WriteLine("Nothing found");
                 return;
@@ -24,11 +26,11 @@ namespace FileCabinetApp.Printers
 
             do
             {
-                var record = records.Current;
+                var record = iterator.Current;
                 string date = record.DateOfBirth.ToString("yyyy-MMM-dd", CultureInfo.InvariantCulture);
                 Console.WriteLine($"#{record.Id}, {record.FirstName}, {record.LastName}, {date}, {record.Height} cm, {record.CashSavings}$, {record.FavoriteLetter}");
             }
-            while (records.MoveNext());
+            while (iterator.MoveNext());
         }
     }
 }

@@ -11,6 +11,7 @@ namespace FileCabinetApp.Services
     /// </summary>
     public class FileCabinetMemoryService : IFileCabinetService
     {
+        private const string SelectAll = "*";
         private readonly List<FileCabinetRecord> list = new ();
         private readonly Dictionary<string, List<FileCabinetRecord>> firstNameDictionary = new (StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new (StringComparer.OrdinalIgnoreCase);
@@ -182,6 +183,11 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> SelectByOptions(List<KeyValuePair<string, string>> searchOptions, string logicalOperator)
         {
+            if (IsNeedToSelectAll(searchOptions))
+            {
+                return this.GetRecords();
+            }
+
             var listOfListsMatchesRecords = new List<IEnumerable<FileCabinetRecord>>();
             foreach (var searchOptionPair in searchOptions)
             {
@@ -351,6 +357,18 @@ namespace FileCabinetApp.Services
                         throw new ArgumentException($"Invalid key '{newRecordParameter.Key}'.");
                 }
             }
+        }
+
+        private static bool IsNeedToSelectAll(List<KeyValuePair<string, string>> searchOptions)
+        {
+            var firstPair = searchOptions.GetEnumerator();
+            firstPair.MoveNext();
+            if (firstPair.Current.Key == SelectAll)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private IEnumerable<FileCabinetRecord> GetRecordsWith(string key, string value, string logicalOperator)

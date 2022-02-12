@@ -32,39 +32,45 @@ namespace FileCabinetApp.CommandHandlers
                     throw new ArgumentNullException(nameof(parameters), "The list of parameters cannot be empty.");
                 }
 
-                var parametersRegex = new Regex(@"where (.*)", RegexOptions.IgnoreCase);
-                if (parametersRegex.IsMatch(parameters))
+                List<KeyValuePair<string, string>> recordSearchOptions = new () { new (SelectAll, SelectAll) };
+                string logicalOperator = string.Empty;
+
+                if (parameters.Trim() != SelectAll)
                 {
-                    var matchParameters = parametersRegex.Match(parameters);
-                    var recordSearchOptions = GetKeyValuePairsOfSearchOptions(matchParameters.Groups[searchOptionsIndex].Value, out var logicalOperator);
-
-                    var identifiers = this.FileCabinetService.Delete(recordSearchOptions, logicalOperator);
-                    var message = new StringBuilder();
-                    for (int i = 0; i < identifiers.Count; i++)
+                    var parametersRegex = new Regex(@"where (.*)", RegexOptions.IgnoreCase);
+                    if (parametersRegex.IsMatch(parameters))
                     {
-                        message.Append(FormattableString.Invariant($"#{identifiers[i]}"));
-                        if (i < identifiers.Count - 1)
-                        {
-                            message.Append(", ");
-                        }
-                    }
-
-                    Console.Write($"Record {message}");
-                    if (identifiers.Count == 1)
-                    {
-                        Console.Write(" is");
+                        var matchParameters = parametersRegex.Match(parameters);
+                        recordSearchOptions = GetKeyValuePairsOfSearchOptions(matchParameters.Groups[searchOptionsIndex].Value, out logicalOperator);
                     }
                     else
                     {
-                        Console.Write(" are");
+                        throw new ArgumentException(invalidCommandMessage);
                     }
+                }
 
-                    Console.WriteLine(" deleted.");
+                var identifiers = this.FileCabinetService.Delete(recordSearchOptions, logicalOperator);
+                var message = new StringBuilder();
+                for (int i = 0; i < identifiers.Count; i++)
+                {
+                    message.Append(FormattableString.Invariant($"#{identifiers[i]}"));
+                    if (i < identifiers.Count - 1)
+                    {
+                        message.Append(", ");
+                    }
+                }
+
+                Console.Write($"Record {message}");
+                if (identifiers.Count == 1)
+                {
+                    Console.Write(" is");
                 }
                 else
                 {
-                    throw new ArgumentException(invalidCommandMessage);
+                    Console.Write(" are");
                 }
+
+                Console.WriteLine(" deleted.");
             }
             catch (ArgumentException ex)
             {

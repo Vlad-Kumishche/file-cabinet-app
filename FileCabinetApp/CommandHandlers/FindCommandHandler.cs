@@ -68,7 +68,7 @@ namespace FileCabinetApp.CommandHandlers
                 return;
             }
 
-            this.printer.Print(records.GetEnumerator());
+            this.printer.Print(records, new List<string>());
             Console.WriteLine();
         }
     }

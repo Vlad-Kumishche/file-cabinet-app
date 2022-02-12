@@ -36,6 +36,7 @@ namespace FileCabinetApp.Iterators
         /// <inheritdoc/>
         public IEnumerator<FileCabinetRecord> GetEnumerator()
         {
+            this.currentIndex = 0;
             while (this.HasMore())
             {
                 yield return this.GetCurrent();

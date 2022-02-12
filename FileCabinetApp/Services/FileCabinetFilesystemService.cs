@@ -14,6 +14,7 @@ namespace FileCabinetApp.Services
         private const int RecordSize = 279;
         private const int MaxNameLength = 120;
         private const byte OffsetIsDelitedFlag = 2;
+        private const string SelectAll = "*";
         private readonly Dictionary<string, List<long>> firstNameDictionary = new (StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<string, List<long>> lastNameDictionary = new (StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<DateTime, List<long>> dateOfBirthDictionary = new ();
@@ -239,6 +240,11 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> SelectByOptions(List<KeyValuePair<string, string>> searchOptions, string logicalOperator)
         {
+            if (IsNeedToSelectAll(searchOptions))
+            {
+                return this.GetRecords();
+            }
+
             var listOfListsMatchesOffsets = new List<List<long>>();
             foreach (var searchOptionPair in searchOptions)
             {
@@ -559,6 +565,18 @@ namespace FileCabinetApp.Services
                         throw new ArgumentException($"Invalid key '{newRecordParameter.Key}'.");
                 }
             }
+        }
+
+        private static bool IsNeedToSelectAll(List<KeyValuePair<string, string>> searchOptions)
+        {
+            var firstPair = searchOptions.GetEnumerator();
+            firstPair.MoveNext();
+            if (firstPair.Current.Key == SelectAll)
+            {
+                return true;
+            }
+
+            return false;
         }
 
         private void EditRecord(RecordParameters recordToEdit)

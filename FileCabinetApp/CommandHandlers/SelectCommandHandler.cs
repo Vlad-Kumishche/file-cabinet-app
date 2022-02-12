@@ -36,20 +36,27 @@ namespace FileCabinetApp.CommandHandlers
                     throw new ArgumentNullException(nameof(parameters), $"The list of parameters for the '{this.CommandName}' command cannot be empty.");
                 }
 
-                var parametersRegex = new Regex(@"(.*) where (.*)", RegexOptions.IgnoreCase);
-                if (parametersRegex.IsMatch(parameters))
-                {
-                    var matchParameters = parametersRegex.Match(parameters);
-                    var recordFieldsToSelect = GetSubstrings(matchParameters.Groups[fieldsIndex].Value.ToLowerInvariant());
-                    var recordSearchOptions = GetKeyValuePairsOfSearchOptions(matchParameters.Groups[searchOptionsIndex].Value, out var logicalOperator);
+                List<string> recordFieldsToSelect = new () { SelectAll };
+                List<KeyValuePair<string, string>> recordSearchOptions = new () { new (SelectAll, SelectAll) };
+                string logicalOperator = string.Empty;
 
-                    var selectedRecords = this.FileCabinetService.SelectByOptions(recordSearchOptions, logicalOperator);
-                    this.printer.Print(selectedRecords.GetEnumerator());
-                }
-                else
+                if (parameters.Trim() != SelectAll)
                 {
-                    throw new ArgumentException($"Incorrect syntax for {this.CommandName} command.");
+                    var parametersRegex = new Regex(@"(.*) where (.*)", RegexOptions.IgnoreCase);
+                    if (parametersRegex.IsMatch(parameters))
+                    {
+                        var matchParameters = parametersRegex.Match(parameters);
+                        recordFieldsToSelect = GetSubstrings(matchParameters.Groups[fieldsIndex].Value.ToLowerInvariant());
+                        recordSearchOptions = GetKeyValuePairsOfSearchOptions(matchParameters.Groups[searchOptionsIndex].Value, out logicalOperator);
+                    }
+                    else
+                    {
+                        throw new ArgumentException($"Incorrect syntax for {this.CommandName} command.");
+                    }
                 }
+
+                var selectedRecords = this.FileCabinetService.SelectByOptions(recordSearchOptions, logicalOperator);
+                this.printer.Print(selectedRecords, recordFieldsToSelect);
             }
             catch (ArgumentException ex)
             {

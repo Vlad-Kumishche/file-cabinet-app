@@ -115,7 +115,7 @@ namespace FileCabinetApp
             var insertCommandHandler = new InsertCommandHandler(fileCabinetService);
             var listCommandHandler = new ListCommandHandler(fileCabinetService, new DefaultRecordPrinter());
             var updateCommandHandler = new UpdateCommandHandler(fileCabinetService);
-            var selectCommandHandler = new SelectCommandHandler(fileCabinetService, new DefaultRecordPrinter());
+            var selectCommandHandler = new SelectCommandHandler(fileCabinetService, new TableRecordPrinter());
             var findCommandHandler = new FindCommandHandler(fileCabinetService, new DefaultRecordPrinter());
             var exportCommandHandler = new ExportCommandHandler(fileCabinetService);
             var importCommandHandler = new ImportCommandHandler(fileCabinetService);

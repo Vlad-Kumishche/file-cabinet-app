@@ -8,6 +8,11 @@ namespace FileCabinetApp.CommandHandlers
     /// </summary>
     public abstract class CommandHandlerBase : ICommandHandler
     {
+        /// <summary>
+        /// Select add sign.
+        /// </summary>
+        protected const string SelectAll = "*";
+
         private ICommandHandler? nextHandler;
         private string? commandName;
 
@@ -348,6 +353,12 @@ namespace FileCabinetApp.CommandHandlers
             if (string.IsNullOrEmpty(searchOptions))
             {
                 throw new ArgumentNullException(nameof(searchOptions));
+            }
+
+            if (searchOptions.Trim() == SelectAll)
+            {
+                logicalOperator = string.Empty;
+                return new () { new (SelectAll, SelectAll) };
             }
 
             var keyValuePairs = new List<KeyValuePair<string, string>>();

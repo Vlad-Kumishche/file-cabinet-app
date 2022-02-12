@@ -37,6 +37,11 @@
             CommandHandlerBase.
             </summary>
         </member>
+        <member name="F:FileCabinetApp.CommandHandlers.CommandHandlerBase.SelectAll">
+            <summary>
+            Select add sign.
+            </summary>
+        </member>
         <member name="P:FileCabinetApp.CommandHandlers.CommandHandlerBase.CommandName">
             <summary>
             Gets or sets command name.
@@ -548,7 +553,7 @@
             Default record printer.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Printers.DefaultRecordPrinter.Print(System.Collections.Generic.IEnumerator{FileCabinetApp.Data.FileCabinetRecord})">
+        <member name="M:FileCabinetApp.Printers.DefaultRecordPrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.Data.FileCabinetRecord},System.Collections.Generic.List{System.String})">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Printers.IRecordPrinter">
@@ -556,18 +561,19 @@
             Provides a printer for displaying records.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Printers.IRecordPrinter.Print(System.Collections.Generic.IEnumerator{FileCabinetApp.Data.FileCabinetRecord})">
+        <member name="M:FileCabinetApp.Printers.IRecordPrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.Data.FileCabinetRecord},System.Collections.Generic.List{System.String})">
             <summary>
             Prints the records.
             </summary>
             <param name="records">Records to print.</param>
+            <param name="recordFieldsToPrint">The fields of records to print.</param>
         </member>
         <member name="T:FileCabinetApp.Printers.TableRecordPrinter">
             <summary>
             Prints records in a table.
             </summary>
         </member>
-        <member name="M:FileCabinetApp.Printers.TableRecordPrinter.Print(System.Collections.Generic.IEnumerator{FileCabinetApp.Data.FileCabinetRecord})">
+        <member name="M:FileCabinetApp.Printers.TableRecordPrinter.Print(System.Collections.Generic.IEnumerable{FileCabinetApp.Data.FileCabinetRecord},System.Collections.Generic.List{System.String})">
             <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Program">
