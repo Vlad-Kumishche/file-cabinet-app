@@ -82,42 +82,6 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
-        {
-            var records = this.service.FindByDateOfBirth(sourceDate);
-
-            Log($"Calling {nameof(this.service.FindByDateOfBirth)}() with " +
-                $"{nameof(sourceDate)} = '{sourceDate}'");
-            Log($"{nameof(this.service.FindByDateOfBirth)}() returned '{records}'");
-
-            return records;
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            var records = this.service.FindByFirstName(firstName);
-
-            Log($"Calling {nameof(this.service.FindByFirstName)}() with " +
-                $"{nameof(firstName)} = '{firstName}'");
-            Log($"{nameof(this.service.FindByFirstName)}() returned '{records}'");
-
-            return records;
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            var records = this.service.FindByLastName(lastName);
-
-            Log($"Calling {nameof(this.service.FindByLastName)}() with " +
-                $"{nameof(lastName)} = '{lastName}'");
-            Log($"{nameof(this.service.FindByLastName)}() returned '{records}'");
-
-            return records;
-        }
-
-        /// <inheritdoc/>
         public FileCabinetRecord GetRecordById(int id)
         {
             var record = this.service.GetRecordById(id);
@@ -127,17 +91,6 @@ namespace FileCabinetApp.Services
             Log($"{nameof(this.service.GetRecordById)}() returned '{record}'");
 
             return record;
-        }
-
-        /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
-        {
-            var records = this.service.GetRecords();
-
-            Log($"Calling {nameof(this.service.GetRecords)}()");
-            Log($"{nameof(this.service.GetRecords)}() returned '{records}'");
-
-            return records;
         }
 
         /// <inheritdoc/>

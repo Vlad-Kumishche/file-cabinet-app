@@ -272,39 +272,6 @@ namespace FileCabinetApp.Services
             return new FilesystemIterator(this, offsetsOfSelectedRecords);
         }
 
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            if (this.TryGetOffsetsWhereFirstNameIs(firstName, out var offsets))
-            {
-                return new FilesystemIterator(this, offsets);
-            }
-
-            return new FilesystemIterator();
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            if (this.TryGetOffsetsWhereLastNameIs(lastName, out var offsets))
-            {
-                return new FilesystemIterator(this, offsets);
-            }
-
-            return new FilesystemIterator();
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
-        {
-            if (this.TryGetOffsetsWhereDateOfBirthIs(sourceDate, out var offsets))
-            {
-                return new FilesystemIterator(this, offsets);
-            }
-
-            return new FilesystemIterator();
-        }
-
         /// <summary>
         /// Gets id of last record.
         /// </summary>
@@ -376,27 +343,6 @@ namespace FileCabinetApp.Services
             {
                 throw new ArgumentException($"There is no record with {nameof(id)} == {id}", nameof(id));
             }
-        }
-
-        /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
-        {
-            List<FileCabinetRecord> records = new ();
-            var recordBuffer = new byte[RecordSize];
-
-            this.fileStream.Seek(0, SeekOrigin.Begin);
-            for (int i = 0; i < this.fileStream.Length; i += RecordSize)
-            {
-                this.fileStream.Read(recordBuffer, 0, RecordSize);
-                BytesToFileCabinetRecord(recordBuffer, out var record, out var status);
-                int isDeleted = (status >> OffsetIsDelitedFlag) & 1;
-                if (isDeleted == 0)
-                {
-                    records.Add(record);
-                }
-            }
-
-            return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
         /// <inheritdoc/>
@@ -608,6 +554,26 @@ namespace FileCabinetApp.Services
             {
                 throw new ArgumentException($"There is no record with {nameof(record.Id)} == {record.Id}", nameof(recordToEdit));
             }
+        }
+
+        private ReadOnlyCollection<FileCabinetRecord> GetRecords()
+        {
+            List<FileCabinetRecord> records = new ();
+            var recordBuffer = new byte[RecordSize];
+
+            this.fileStream.Seek(0, SeekOrigin.Begin);
+            for (int i = 0; i < this.fileStream.Length; i += RecordSize)
+            {
+                this.fileStream.Read(recordBuffer, 0, RecordSize);
+                BytesToFileCabinetRecord(recordBuffer, out var record, out var status);
+                int isDeleted = (status >> OffsetIsDelitedFlag) & 1;
+                if (isDeleted == 0)
+                {
+                    records.Add(record);
+                }
+            }
+
+            return new ReadOnlyCollection<FileCabinetRecord>(records);
         }
 
         private bool RemoveById(int recordId)

@@ -216,47 +216,6 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            if (this.firstNameDictionary.ContainsKey(firstName))
-            {
-                var records = new ReadOnlyCollection<FileCabinetRecord>(this.firstNameDictionary[firstName]);
-                return new MemoryIterator(records);
-            }
-
-            return new MemoryIterator();
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            if (this.lastNameDictionary.ContainsKey(lastName))
-            {
-                var records = new ReadOnlyCollection<FileCabinetRecord>(this.lastNameDictionary[lastName]);
-                return new MemoryIterator(records);
-            }
-
-            return new MemoryIterator();
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
-        {
-            if (!DateTime.TryParse(sourceDate, out var dateOfBirth))
-            {
-                return new MemoryIterator();
-            }
-
-            if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
-            {
-                var records = new ReadOnlyCollection<FileCabinetRecord>(this.dateOfBirthDictionary[dateOfBirth]);
-                return new MemoryIterator(records);
-            }
-
-            return new MemoryIterator();
-        }
-
-        /// <inheritdoc/>
         public FileCabinetRecord GetRecordById(int id)
         {
             var record = this.list.Find(x => x.Id == id);
@@ -266,13 +225,6 @@ namespace FileCabinetApp.Services
             }
 
             return record;
-        }
-
-        /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
-        {
-            var records = new ReadOnlyCollection<FileCabinetRecord>(this.list);
-            return records;
         }
 
         /// <inheritdoc/>
@@ -441,6 +393,50 @@ namespace FileCabinetApp.Services
 
                 throw ex;
             }
+        }
+
+        private IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
+        {
+            if (this.firstNameDictionary.ContainsKey(firstName))
+            {
+                var records = new ReadOnlyCollection<FileCabinetRecord>(this.firstNameDictionary[firstName]);
+                return new MemoryIterator(records);
+            }
+
+            return new MemoryIterator();
+        }
+
+        private IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
+        {
+            if (this.lastNameDictionary.ContainsKey(lastName))
+            {
+                var records = new ReadOnlyCollection<FileCabinetRecord>(this.lastNameDictionary[lastName]);
+                return new MemoryIterator(records);
+            }
+
+            return new MemoryIterator();
+        }
+
+        private IEnumerable<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
+        {
+            if (!DateTime.TryParse(sourceDate, out var dateOfBirth))
+            {
+                return new MemoryIterator();
+            }
+
+            if (this.dateOfBirthDictionary.ContainsKey(dateOfBirth))
+            {
+                var records = new ReadOnlyCollection<FileCabinetRecord>(this.dateOfBirthDictionary[dateOfBirth]);
+                return new MemoryIterator(records);
+            }
+
+            return new MemoryIterator();
+        }
+
+        private ReadOnlyCollection<FileCabinetRecord> GetRecords()
+        {
+            var records = new ReadOnlyCollection<FileCabinetRecord>(this.list);
+            return records;
         }
 
         private void EditRecord(RecordParameters recordToEdit)

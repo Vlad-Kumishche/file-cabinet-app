@@ -83,51 +83,6 @@ namespace FileCabinetApp.Services
         }
 
         /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByDateOfBirth(string sourceDate)
-        {
-            this.watch.Reset();
-            this.watch.Start();
-
-            var records = this.service.FindByDateOfBirth(sourceDate);
-
-            this.watch.Stop();
-
-            Console.WriteLine($"{nameof(this.service.FindByDateOfBirth)} method execution duration is {this.watch.ElapsedTicks} ticks.");
-            Console.WriteLine();
-            return records;
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByFirstName(string firstName)
-        {
-            this.watch.Reset();
-            this.watch.Start();
-
-            var records = this.service.FindByFirstName(firstName);
-
-            this.watch.Stop();
-
-            Console.WriteLine($"{nameof(this.service.FindByFirstName)} method execution duration is {this.watch.ElapsedTicks} ticks.");
-            Console.WriteLine();
-            return records;
-        }
-
-        /// <inheritdoc/>
-        public IEnumerable<FileCabinetRecord> FindByLastName(string lastName)
-        {
-            this.watch.Reset();
-            this.watch.Start();
-
-            var records = this.service.FindByLastName(lastName);
-
-            this.watch.Stop();
-
-            Console.WriteLine($"{nameof(this.service.FindByLastName)} method execution duration is {this.watch.ElapsedTicks} ticks.");
-            Console.WriteLine();
-            return records;
-        }
-
-        /// <inheritdoc/>
         public FileCabinetRecord GetRecordById(int id)
         {
             this.watch.Reset();
@@ -140,21 +95,6 @@ namespace FileCabinetApp.Services
             Console.WriteLine($"{nameof(this.service.GetRecordById)} method execution duration is {this.watch.ElapsedTicks} ticks.");
             Console.WriteLine();
             return record;
-        }
-
-        /// <inheritdoc/>
-        public ReadOnlyCollection<FileCabinetRecord> GetRecords()
-        {
-            this.watch.Reset();
-            this.watch.Start();
-
-            var records = this.service.GetRecords();
-
-            this.watch.Stop();
-
-            Console.WriteLine($"{nameof(this.service.GetRecords)} method execution duration is {this.watch.ElapsedTicks} ticks.");
-            Console.WriteLine();
-            return records;
         }
 
         /// <inheritdoc/>
