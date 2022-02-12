@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
+using FileCabinetApp.Cache;
 using FileCabinetApp.Data;
 using FileCabinetApp.Iterators;
 using FileCabinetApp.Validators;

@@ -1,5 +1,6 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
+using FileCabinetApp.Cache;
 using FileCabinetApp.Data;
 using FileCabinetApp.Iterators;
 using FileCabinetApp.Validators;
@@ -17,6 +18,7 @@ namespace FileCabinetApp.Services
         private readonly Dictionary<string, List<FileCabinetRecord>> lastNameDictionary = new (StringComparer.OrdinalIgnoreCase);
         private readonly Dictionary<DateTime, List<FileCabinetRecord>> dateOfBirthDictionary = new ();
         private readonly IRecordValidator validator;
+        private readonly Memoizator memoizator;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="FileCabinetMemoryService"/> class.
@@ -25,6 +27,7 @@ namespace FileCabinetApp.Services
         public FileCabinetMemoryService(IRecordValidator validator)
         {
             this.validator = validator;
+            this.memoizator = new Memoizator(this);
         }
 
         /// <inheritdoc/>
@@ -61,23 +64,25 @@ namespace FileCabinetApp.Services
                 }
                 catch
                 {
+                    this.memoizator.Clear();
                     return this.CreateRecord(recordToInsert);
                 }
 
                 throw new ArgumentException("A record with the given Id already exists.", nameof(recordToInsert));
             }
 
+            this.memoizator.Clear();
             return this.CreateRecord(recordToInsert);
         }
 
         /// <inheritdoc/>
         public ReadOnlyCollection<int> Update(List<KeyValuePair<string, string>> newParameters, List<KeyValuePair<string, string>> searchOptions, string logicalOperator)
         {
-            var identifiersOfUpdatedRecords = new List<int>();
-            var recordsToUpdate = this.SelectByOptions(searchOptions, logicalOperator);
+            var recordsToUpdate = this.memoizator.SelectByOptions(searchOptions, logicalOperator);
 
             if (recordsToUpdate.Any())
             {
+                var identifiersOfUpdatedRecords = new List<int>();
                 foreach (var sourceRecord in recordsToUpdate)
                 {
                     identifiersOfUpdatedRecords.Add(sourceRecord.Id);
@@ -96,12 +101,11 @@ namespace FileCabinetApp.Services
                     this.EditRecord(recordToUpdate);
                 }
 
+                this.memoizator.Clear();
                 return new (identifiersOfUpdatedRecords);
             }
-            else
-            {
-                throw new ArgumentException("No records were found with the specified keys.");
-            }
+
+            throw new ArgumentException("No records were found with the specified keys.");
         }
 
         /// <inheritdoc/>
@@ -161,7 +165,7 @@ namespace FileCabinetApp.Services
         /// <inheritdoc/>
         public ReadOnlyCollection<int> Delete(List<KeyValuePair<string, string>> searchOptions, string logicalOperator)
         {
-            var recordsToDelete = this.SelectByOptions(searchOptions, logicalOperator);
+            var recordsToDelete = this.memoizator.SelectByOptions(searchOptions, logicalOperator);
 
             if (recordsToDelete.Any())
             {
@@ -172,20 +176,26 @@ namespace FileCabinetApp.Services
                     this.Remove(record.Id);
                 }
 
+                this.memoizator.Clear();
                 return new (identifiersOfRecordsToDelete);
             }
-            else
-            {
-                throw new ArgumentException("No records were found.");
-            }
+
+            throw new ArgumentException("No records were found.");
         }
 
         /// <inheritdoc/>
         public IEnumerable<FileCabinetRecord> SelectByOptions(List<KeyValuePair<string, string>> searchOptions, string logicalOperator)
         {
+            if (this.memoizator.TryGetRecords(searchOptions, logicalOperator, out var cachedRecords))
+            {
+                return cachedRecords;
+            }
+
             if (IsNeedToSelectAll(searchOptions))
             {
-                return this.GetRecords();
+                var records = this.GetRecords();
+                this.memoizator.AddResult(searchOptions, logicalOperator, records);
+                return records;
             }
 
             var listOfListsMatchesRecords = new List<IEnumerable<FileCabinetRecord>>();
@@ -212,7 +222,9 @@ namespace FileCabinetApp.Services
                 }
             }
 
-            return new MemoryIterator(selectedRecords);
+            var resultOfSelection = new MemoryIterator(selectedRecords);
+            this.memoizator.AddResult(searchOptions, logicalOperator, resultOfSelection);
+            return resultOfSelection;
         }
 
         /// <inheritdoc/>
