@@ -125,18 +125,8 @@ namespace FileCabinetApp.Services
                 foreach (var sourceRecord in recordsToUpdate)
                 {
                     identifiersOfUpdatedRecords.Add(sourceRecord.Id);
-                    var recordToUpdate = new RecordParameters()
-                    {
-                        Id = sourceRecord.Id,
-                        FirstName = sourceRecord.FirstName,
-                        LastName = sourceRecord.LastName,
-                        DateOfBirth = sourceRecord.DateOfBirth,
-                        Height = sourceRecord.Height,
-                        CashSavings = sourceRecord.CashSavings,
-                        FavoriteLetter = sourceRecord.FavoriteLetter,
-                    };
-
-                    RecordParameters.UpdateRecordParams(recordToUpdate, newParameters);
+                    var recordToUpdate = new RecordParameters(sourceRecord);
+                    RecordParameters.UpdateRecordParams(ref recordToUpdate, newParameters);
                     this.EditRecord(recordToUpdate);
                 }
 
@@ -162,16 +152,7 @@ namespace FileCabinetApp.Services
             var importedRecordsCount = 0;
             foreach (var importedRecord in loadedRecords)
             {
-                var recordParameters = new RecordParameters()
-                {
-                    Id = importedRecord.Id,
-                    FirstName = importedRecord.FirstName,
-                    LastName = importedRecord.LastName,
-                    DateOfBirth = importedRecord.DateOfBirth,
-                    Height = importedRecord.Height,
-                    CashSavings = importedRecord.CashSavings,
-                    FavoriteLetter = importedRecord.FavoriteLetter,
-                };
+                var recordParameters = new RecordParameters(importedRecord);
 
                 try
                 {

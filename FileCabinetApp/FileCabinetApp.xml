@@ -472,6 +472,17 @@
             Class for introducing parameters for file cabinet record.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.Data.RecordParameters.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Data.RecordParameters"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Data.RecordParameters.#ctor(FileCabinetApp.Data.FileCabinetRecord)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Data.RecordParameters"/> class.
+            </summary>
+            <param name="record">Record to by copied.</param>
+        </member>
         <member name="P:FileCabinetApp.Data.RecordParameters.Id">
             <summary>
             Gets or sets the id of the record.
@@ -514,7 +525,7 @@
             </summary>
             <value>The favorite letter of the person.</value>
         </member>
-        <member name="M:FileCabinetApp.Data.RecordParameters.UpdateRecordParams(FileCabinetApp.Data.RecordParameters,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
+        <member name="M:FileCabinetApp.Data.RecordParameters.UpdateRecordParams(FileCabinetApp.Data.RecordParameters@,System.Collections.Generic.List{System.Collections.Generic.KeyValuePair{System.String,System.String}})">
             <summary>
             Updates <paramref name="recordToUpdate"/> with <paramref name="newParameters"/>.
             </summary>
