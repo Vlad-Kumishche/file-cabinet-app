@@ -45,6 +45,51 @@
             Cleares the cache.
             </summary>
         </member>
+        <member name="T:FileCabinetApp.Collections.FilesystemCollection">
+            <summary>
+            Collection for records in <see cref="T:FileCabinetApp.Services.FileCabinetFilesystemService"/>.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Collections.FilesystemCollection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Collections.FilesystemCollection"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Collections.FilesystemCollection.#ctor(FileCabinetApp.Services.FileCabinetFilesystemService,System.Collections.Generic.IEnumerable{System.Int64})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Collections.FilesystemCollection"/> class.
+            </summary>
+            <param name="service">Service.</param>
+            <param name="offsets">Offsets.</param>
+        </member>
+        <member name="M:FileCabinetApp.Collections.FilesystemCollection.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Collections.FilesystemCollection.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="T:FileCabinetApp.Collections.MemoryCollection">
+            <summary>
+            Iterator for records in <see cref="T:FileCabinetApp.Collections.MemoryCollection"/>.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Collections.MemoryCollection.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Collections.MemoryCollection"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Collections.MemoryCollection.#ctor(System.Collections.Generic.IEnumerable{FileCabinetApp.Data.FileCabinetRecord})">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Collections.MemoryCollection"/> class.
+            </summary>
+            <param name="records">Records.</param>
+        </member>
+        <member name="M:FileCabinetApp.Collections.MemoryCollection.GetEnumerator">
+            <inheritdoc/>
+        </member>
+        <member name="M:FileCabinetApp.Collections.MemoryCollection.System#Collections#IEnumerable#GetEnumerator">
+            <inheritdoc/>
+        </member>
         <member name="T:FileCabinetApp.CommandHandlers.AppCommandRequest">
             <summary>
             Application command request.
@@ -425,6 +470,17 @@
             Сlass represents the file cabinet record.
             </summary>
         </member>
+        <member name="M:FileCabinetApp.Data.FileCabinetRecord.#ctor">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Data.FileCabinetRecord"/> class.
+            </summary>
+        </member>
+        <member name="M:FileCabinetApp.Data.FileCabinetRecord.#ctor(FileCabinetApp.Data.RecordParameters)">
+            <summary>
+            Initializes a new instance of the <see cref="T:FileCabinetApp.Data.FileCabinetRecord"/> class.
+            </summary>
+            <param name="record">Record to by copied.</param>
+        </member>
         <member name="P:FileCabinetApp.Data.FileCabinetRecord.Id">
             <summary>
             Gets or sets the id of the record.
@@ -532,51 +588,6 @@
             <param name="recordToUpdate">Parameters to update.</param>
             <param name="newParameters">New Parameters.</param>
             <exception cref="T:System.ArgumentException">Thrown when <paramref name="newParameters"/> contains non-existent key.</exception>
-        </member>
-        <member name="T:FileCabinetApp.Iterators.FilesystemIterator">
-            <summary>
-            Iterator for records in <see cref="T:FileCabinetApp.Services.FileCabinetFilesystemService"/>.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.FilesystemIterator"/> class.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.#ctor(FileCabinetApp.Services.FileCabinetFilesystemService,System.Collections.Generic.IEnumerable{System.Int64})">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.FilesystemIterator"/> class.
-            </summary>
-            <param name="service">Service.</param>
-            <param name="offsets">Offsets.</param>
-        </member>
-        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.GetEnumerator">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.Iterators.FilesystemIterator.System#Collections#IEnumerable#GetEnumerator">
-            <inheritdoc/>
-        </member>
-        <member name="T:FileCabinetApp.Iterators.MemoryIterator">
-            <summary>
-            Iterator for records in <see cref="T:FileCabinetApp.Iterators.MemoryIterator"/>.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.Iterators.MemoryIterator.#ctor">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.MemoryIterator"/> class.
-            </summary>
-        </member>
-        <member name="M:FileCabinetApp.Iterators.MemoryIterator.#ctor(System.Collections.Generic.IEnumerable{FileCabinetApp.Data.FileCabinetRecord})">
-            <summary>
-            Initializes a new instance of the <see cref="T:FileCabinetApp.Iterators.MemoryIterator"/> class.
-            </summary>
-            <param name="records">Records.</param>
-        </member>
-        <member name="M:FileCabinetApp.Iterators.MemoryIterator.GetEnumerator">
-            <inheritdoc/>
-        </member>
-        <member name="M:FileCabinetApp.Iterators.MemoryIterator.System#Collections#IEnumerable#GetEnumerator">
-            <inheritdoc/>
         </member>
         <member name="T:FileCabinetApp.Printers.IRecordPrinter">
             <summary>

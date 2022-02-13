@@ -1,31 +1,32 @@
 ﻿using System.Collections;
+using System.Collections.ObjectModel;
 using FileCabinetApp.Data;
 
-namespace FileCabinetApp.Iterators
+namespace FileCabinetApp.Collections
 {
     /// <summary>
-    /// Iterator for records in <see cref="MemoryIterator"/>.
+    /// Iterator for records in <see cref="MemoryCollection"/>.
     /// </summary>
-    public class MemoryIterator : IEnumerable<FileCabinetRecord>
+    public class MemoryCollection : IEnumerable<FileCabinetRecord>
     {
         private readonly IEnumerable<FileCabinetRecord> records;
         private int currentIndex;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MemoryIterator"/> class.
+        /// Initializes a new instance of the <see cref="MemoryCollection"/> class.
         /// </summary>
-        public MemoryIterator()
+        public MemoryCollection()
         {
             this.records = new List<FileCabinetRecord>();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="MemoryIterator"/> class.
+        /// Initializes a new instance of the <see cref="MemoryCollection"/> class.
         /// </summary>
         /// <param name="records">Records.</param>
-        public MemoryIterator(IEnumerable<FileCabinetRecord> records)
+        public MemoryCollection(IEnumerable<FileCabinetRecord> records)
         {
-            this.records = records ?? throw new ArgumentNullException(nameof(records));
+            this.records = new ReadOnlyCollection<FileCabinetRecord>(new List<FileCabinetRecord>(records));
         }
 
         /// <inheritdoc/>

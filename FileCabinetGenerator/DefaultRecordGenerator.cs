@@ -27,7 +27,7 @@ namespace FileCabinetGenerator
         /// <inheritdoc/>
         public List<FileCabinetRecord> GenerateRecords(int startId, int amount)
         {
-            List<FileCabinetRecord> records = new List<FileCabinetRecord>();
+            var records = new List<FileCabinetRecord>();
 
             for (int i = 0; i < amount; i++)
             {

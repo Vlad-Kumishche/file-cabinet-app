@@ -2,35 +2,35 @@
 using FileCabinetApp.Data;
 using FileCabinetApp.Services;
 
-namespace FileCabinetApp.Iterators
+namespace FileCabinetApp.Collections
 {
     /// <summary>
-    /// Iterator for records in <see cref="FileCabinetFilesystemService"/>.
+    /// Collection for records in <see cref="FileCabinetFilesystemService"/>.
     /// </summary>
-    public class FilesystemIterator : IEnumerable<FileCabinetRecord>
+    public class FilesystemCollection : IEnumerable<FileCabinetRecord>
     {
         private readonly FileCabinetFilesystemService? service;
         private readonly IEnumerable<long> offsets;
         private int currentIndex;
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FilesystemIterator"/> class.
+        /// Initializes a new instance of the <see cref="FilesystemCollection"/> class.
         /// </summary>
-        public FilesystemIterator()
+        public FilesystemCollection()
         {
             this.service = null;
             this.offsets = new List<long>();
         }
 
         /// <summary>
-        /// Initializes a new instance of the <see cref="FilesystemIterator"/> class.
+        /// Initializes a new instance of the <see cref="FilesystemCollection"/> class.
         /// </summary>
         /// <param name="service">Service.</param>
         /// <param name="offsets">Offsets.</param>
-        public FilesystemIterator(FileCabinetFilesystemService service, IEnumerable<long> offsets)
+        public FilesystemCollection(FileCabinetFilesystemService service, IEnumerable<long> offsets)
         {
-            this.service = service ?? throw new ArgumentNullException(nameof(service));
-            this.offsets = offsets ?? throw new ArgumentNullException(nameof(offsets));
+            this.service = service;
+            this.offsets = offsets;
         }
 
         /// <inheritdoc/>

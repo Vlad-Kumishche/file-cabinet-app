@@ -1,8 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
-using FileCabinetApp.Cache;
+using FileCabinetApp.Collections;
 using FileCabinetApp.Data;
-using FileCabinetApp.Iterators;
 using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.Services
@@ -70,16 +69,11 @@ namespace FileCabinetApp.Services
         public int CreateRecord(RecordParameters recordToCreate)
         {
             this.validator.ValidateParameters(recordToCreate);
-            var record = new FileCabinetRecord
+            var record = new FileCabinetRecord(recordToCreate);
+            if (record.Id == 0)
             {
-                Id = (recordToCreate.Id == 0) ? this.LastRecordId + 1 : recordToCreate.Id,
-                FirstName = recordToCreate.FirstName,
-                LastName = recordToCreate.LastName,
-                DateOfBirth = recordToCreate.DateOfBirth,
-                Height = recordToCreate.Height,
-                CashSavings = recordToCreate.CashSavings,
-                FavoriteLetter = recordToCreate.FavoriteLetter,
-            };
+                record.Id = this.LastRecordId + 1;
+            }
 
             this.fileStream.Seek(0, SeekOrigin.End);
             var offset = this.fileStream.Position;
@@ -251,7 +245,7 @@ namespace FileCabinetApp.Services
                 }
             }
 
-            return new FilesystemIterator(this, offsetsOfSelectedRecords);
+            return new FilesystemCollection(this, offsetsOfSelectedRecords);
         }
 
         /// <summary>
@@ -378,7 +372,6 @@ namespace FileCabinetApp.Services
                 binaryWriter.Write(status);
                 binaryWriter.Write(fileCabinetRecord.Id);
 
-                // to avoid CS8604
                 fileCabinetRecord.FirstName ??= string.Empty;
                 fileCabinetRecord.LastName ??= string.Empty;
 
@@ -438,17 +431,7 @@ namespace FileCabinetApp.Services
         private void EditRecord(RecordParameters recordToEdit)
         {
             this.validator.ValidateParameters(recordToEdit);
-
-            var record = new FileCabinetRecord
-            {
-                Id = recordToEdit.Id,
-                FirstName = recordToEdit.FirstName,
-                LastName = recordToEdit.LastName,
-                DateOfBirth = recordToEdit.DateOfBirth,
-                Height = recordToEdit.Height,
-                CashSavings = recordToEdit.CashSavings,
-                FavoriteLetter = recordToEdit.FavoriteLetter,
-            };
+            var record = new FileCabinetRecord(recordToEdit);
 
             if (this.TryGetOffsetOfRecordWithId(record.Id, out var offset))
             {
