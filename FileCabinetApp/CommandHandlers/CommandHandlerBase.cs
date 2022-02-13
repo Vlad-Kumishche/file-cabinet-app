@@ -52,7 +52,7 @@ namespace FileCabinetApp.CommandHandlers
         /// <inheritdoc/>
         public void SetNext(ICommandHandler commandHandler)
         {
-            this.nextHandler = commandHandler ?? throw new ArgumentNullException(nameof(commandHandler));
+            this.nextHandler = commandHandler;
         }
 
         /// <summary>

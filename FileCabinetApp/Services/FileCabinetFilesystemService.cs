@@ -1,8 +1,7 @@
 ﻿using System.Collections.ObjectModel;
 using System.Globalization;
-using FileCabinetApp.Cache;
+using FileCabinetApp.Collections;
 using FileCabinetApp.Data;
-using FileCabinetApp.Iterators;
 using FileCabinetApp.Validators;
 
 namespace FileCabinetApp.Services
@@ -70,16 +69,11 @@ namespace FileCabinetApp.Services
         public int CreateRecord(RecordParameters recordToCreate)
         {
             this.validator.ValidateParameters(recordToCreate);
-            var record = new FileCabinetRecord
+            var record = new FileCabinetRecord(recordToCreate);
+            if (record.Id == 0)
             {
-                Id = (recordToCreate.Id == 0) ? this.LastRecordId + 1 : recordToCreate.Id,
-                FirstName = recordToCreate.FirstName,
-                LastName = recordToCreate.LastName,
-                DateOfBirth = recordToCreate.DateOfBirth,
-                Height = recordToCreate.Height,
-                CashSavings = recordToCreate.CashSavings,
-                FavoriteLetter = recordToCreate.FavoriteLetter,
-            };
+                record.Id = this.LastRecordId + 1;
+            }
 
             this.fileStream.Seek(0, SeekOrigin.End);
             var offset = this.fileStream.Position;
@@ -125,18 +119,8 @@ namespace FileCabinetApp.Services
                 foreach (var sourceRecord in recordsToUpdate)
                 {
                     identifiersOfUpdatedRecords.Add(sourceRecord.Id);
-                    var recordToUpdate = new RecordParameters()
-                    {
-                        Id = sourceRecord.Id,
-                        FirstName = sourceRecord.FirstName,
-                        LastName = sourceRecord.LastName,
-                        DateOfBirth = sourceRecord.DateOfBirth,
-                        Height = sourceRecord.Height,
-                        CashSavings = sourceRecord.CashSavings,
-                        FavoriteLetter = sourceRecord.FavoriteLetter,
-                    };
-
-                    UpdateRecordParams(recordToUpdate, newParameters);
+                    var recordToUpdate = new RecordParameters(sourceRecord);
+                    RecordParameters.UpdateRecordParams(ref recordToUpdate, newParameters);
                     this.EditRecord(recordToUpdate);
                 }
 
@@ -162,16 +146,7 @@ namespace FileCabinetApp.Services
             var importedRecordsCount = 0;
             foreach (var importedRecord in loadedRecords)
             {
-                var recordParameters = new RecordParameters()
-                {
-                    Id = importedRecord.Id,
-                    FirstName = importedRecord.FirstName,
-                    LastName = importedRecord.LastName,
-                    DateOfBirth = importedRecord.DateOfBirth,
-                    Height = importedRecord.Height,
-                    CashSavings = importedRecord.CashSavings,
-                    FavoriteLetter = importedRecord.FavoriteLetter,
-                };
+                var recordParameters = new RecordParameters(importedRecord);
 
                 try
                 {
@@ -270,7 +245,7 @@ namespace FileCabinetApp.Services
                 }
             }
 
-            return new FilesystemIterator(this, offsetsOfSelectedRecords);
+            return new FilesystemCollection(this, offsetsOfSelectedRecords);
         }
 
         /// <summary>
@@ -397,7 +372,6 @@ namespace FileCabinetApp.Services
                 binaryWriter.Write(status);
                 binaryWriter.Write(fileCabinetRecord.Id);
 
-                // to avoid CS8604
                 fileCabinetRecord.FirstName ??= string.Empty;
                 fileCabinetRecord.LastName ??= string.Empty;
 
@@ -442,78 +416,6 @@ namespace FileCabinetApp.Services
             }
         }
 
-        private static void UpdateRecordParams(RecordParameters recordToUpdate, List<KeyValuePair<string, string>> newParameters)
-        {
-            foreach (var newRecordParameter in newParameters)
-            {
-                switch (newRecordParameter.Key)
-                {
-                    case "id":
-                        throw new ArgumentException("Update of the id field is prohibited.");
-
-                    case "firstname":
-                        recordToUpdate.FirstName = newRecordParameter.Value;
-
-                        break;
-
-                    case "lastname":
-                        recordToUpdate.LastName = newRecordParameter.Value;
-                        break;
-
-                    case "dateofbirth":
-                        if (DateTime.TryParse(newRecordParameter.Value, new CultureInfo("en-US"), DateTimeStyles.None, out DateTime dateOfBirth))
-                        {
-                            recordToUpdate.DateOfBirth = dateOfBirth;
-                        }
-                        else
-                        {
-                            throw new ArgumentException($"Invalid '{nameof(dateOfBirth)}' value.");
-                        }
-
-                        break;
-
-                    case "height":
-                        if (short.TryParse(newRecordParameter.Value, out short height))
-                        {
-                            recordToUpdate.Height = height;
-                        }
-                        else
-                        {
-                            throw new ArgumentException($"Invalid '{nameof(height)}' value.");
-                        }
-
-                        break;
-
-                    case "cashsavings":
-                        if (decimal.TryParse(newRecordParameter.Value, out decimal cashSavings))
-                        {
-                            recordToUpdate.CashSavings = cashSavings;
-                        }
-                        else
-                        {
-                            throw new ArgumentException($"Invalid '{nameof(cashSavings)}' value.");
-                        }
-
-                        break;
-
-                    case "favoriteletter":
-                        if (char.TryParse(newRecordParameter.Value, out char favoriteLetter))
-                        {
-                            recordToUpdate.FavoriteLetter = favoriteLetter;
-                        }
-                        else
-                        {
-                            throw new ArgumentException($"Invalid '{nameof(favoriteLetter)}' value.");
-                        }
-
-                        break;
-
-                    default:
-                        throw new ArgumentException($"Invalid key '{newRecordParameter.Key}'.");
-                }
-            }
-        }
-
         private static bool IsNeedToSelectAll(List<KeyValuePair<string, string>> searchOptions)
         {
             var firstPair = searchOptions.GetEnumerator();
@@ -529,17 +431,7 @@ namespace FileCabinetApp.Services
         private void EditRecord(RecordParameters recordToEdit)
         {
             this.validator.ValidateParameters(recordToEdit);
-
-            var record = new FileCabinetRecord
-            {
-                Id = recordToEdit.Id,
-                FirstName = recordToEdit.FirstName,
-                LastName = recordToEdit.LastName,
-                DateOfBirth = recordToEdit.DateOfBirth,
-                Height = recordToEdit.Height,
-                CashSavings = recordToEdit.CashSavings,
-                FavoriteLetter = recordToEdit.FavoriteLetter,
-            };
+            var record = new FileCabinetRecord(recordToEdit);
 
             if (this.TryGetOffsetOfRecordWithId(record.Id, out var offset))
             {

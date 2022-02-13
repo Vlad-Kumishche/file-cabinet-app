@@ -1,5 +1,4 @@
-﻿using System.Globalization;
-using System.Text.RegularExpressions;
+﻿using System.Text.RegularExpressions;
 using FileCabinetApp.Data;
 using FileCabinetApp.Services;
 
@@ -27,7 +26,6 @@ namespace FileCabinetApp.CommandHandlers
             const int attributeIndex = 1;
             const int attributeValueIndex = 2;
             const int maxRecordParamsCount = 7;
-            const string invalidParamNamesOrOrder = "Invalid parameter names or order.";
 
             try
             {
@@ -50,84 +48,14 @@ namespace FileCabinetApp.CommandHandlers
                         throw new ArgumentException($"The max number of required parameters is {maxRecordParamsCount}.");
                     }
 
-                    var recordForInsert = new RecordParameters();
+                    var parametersFromCommand = new List<KeyValuePair<string, string>>();
                     for (int i = 0; i < recordFields.Count; i++)
                     {
-                        switch (recordFields[i])
-                        {
-                            case "id":
-                                if (int.TryParse(recordValues[i], out int id))
-                                {
-                                    recordForInsert.Id = id;
-                                }
-                                else
-                                {
-                                    throw new ArgumentException($"Invalid {nameof(id)} value.");
-                                }
-
-                                break;
-
-                            case "firstname":
-                                recordForInsert.FirstName = recordValues[i];
-                                break;
-
-                            case "lastname":
-                                recordForInsert.LastName = recordValues[i];
-                                break;
-
-                            case "dateofbirth":
-                                if (DateTime.TryParse(recordValues[i], new CultureInfo("en-US"), DateTimeStyles.None, out DateTime dateOfBirth))
-                                {
-                                    recordForInsert.DateOfBirth = dateOfBirth;
-                                }
-                                else
-                                {
-                                    throw new ArgumentException($"Invalid {nameof(dateOfBirth)} value.");
-                                }
-
-                                break;
-
-                            case "height":
-                                if (short.TryParse(recordValues[i], out short height))
-                                {
-                                    recordForInsert.Height = height;
-                                }
-                                else
-                                {
-                                    throw new ArgumentException($"Invalid {nameof(height)} value.");
-                                }
-
-                                break;
-
-                            case "cashsavings":
-                                if (decimal.TryParse(recordValues[i], out decimal cashSavings))
-                                {
-                                    recordForInsert.CashSavings = cashSavings;
-                                }
-                                else
-                                {
-                                    throw new ArgumentException($"Invalid {nameof(cashSavings)} value.");
-                                }
-
-                                break;
-
-                            case "favoriteletter":
-                                if (char.TryParse(recordValues[i], out char favoriteLetter))
-                                {
-                                    recordForInsert.FavoriteLetter = favoriteLetter;
-                                }
-                                else
-                                {
-                                    throw new ArgumentException($"Invalid {nameof(favoriteLetter)} value.");
-                                }
-
-                                break;
-
-                            default:
-                                throw new ArgumentException(invalidParamNamesOrOrder);
-                        }
+                        parametersFromCommand.Add(new (recordFields[i], recordValues[i]));
                     }
 
+                    var recordForInsert = new RecordParameters();
+                    RecordParameters.UpdateRecordParams(ref recordForInsert, parametersFromCommand);
                     var insertedRecordId = this.FileCabinetService.Insert(recordForInsert);
                     Console.WriteLine($"Record #{insertedRecordId} inserted.");
                 }

@@ -37,7 +37,6 @@ namespace FileCabinetApp.Cache
             }
 
             records = this.service.SelectByOptions(searchOptions, logicalOperator);
-            this.cache.Add(key, records);
             return records;
         }
 
